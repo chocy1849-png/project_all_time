@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ead4fdfcb2ff3144948b6a6615f9709, type: 3}
+  m_Name: M3_CharacterB
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectAllTime.VN.Presentation.VNCharacterDefinition
+  characterId: m3_b
+  speakerAliases:
+  - M3 B
+  defaultFacing: 0
+  defaultScale: 1
+  backHairSprite: {fileID: 0}
+  bodySprite: {fileID: 5295952246292210158, guid: bc9d46fa74c88244ab79535970fd3117, type: 3}
+  defaultExpressionId: default
+  expressions:
+  - expressionId: default
+    headSprite: {fileID: 0}

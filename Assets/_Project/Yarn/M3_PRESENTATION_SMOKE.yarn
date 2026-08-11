@@ -1,0 +1,95 @@
+title: M3_PRESENTATION_START
+---
+<<vn_bg m3_bg_a>>
+CHECKPOINT BG-01 — Background A must be visible.
+
+<<vn_show m3_a default far_left>>
+CHECKPOINT A-00 — Character A must be visible at FarLeft with Body + default Head. BackHair is intentionally absent.
+
+<<vn_move m3_a far_left>>
+CHECKPOINT A-01 — Character A must now be at FarLeft.
+
+<<vn_move m3_a left>>
+CHECKPOINT A-02 — Character A must now be at Left.
+
+<<vn_move m3_a center>>
+CHECKPOINT A-03 — Character A must now be at Center.
+
+<<vn_move m3_a right>>
+CHECKPOINT A-04 — Character A must now be at Right.
+
+<<vn_move m3_a far_right>>
+CHECKPOINT A-05 — Character A must now be at FarRight.
+
+<<vn_hide m3_a>>
+CHECKPOINT A-06 — Character A must now be hidden.
+
+<<vn_show m3_b default far_left>>
+CHECKPOINT B-00 — Character B must be visible alone at FarLeft.
+
+<<vn_move m3_b far_left>>
+CHECKPOINT B-01 — Character B must now be at FarLeft.
+
+<<vn_move m3_b left>>
+CHECKPOINT B-02 — Character B must now be at Left.
+
+<<vn_move m3_b center>>
+CHECKPOINT B-03 — Character B must now be at Center.
+
+<<vn_move m3_b right>>
+CHECKPOINT B-04 — Character B must now be at Right.
+
+<<vn_move m3_b far_right>>
+CHECKPOINT B-05 — Character B must now be at FarRight.
+
+<<vn_hide m3_b>>
+CHECKPOINT B-06 — Character B must now be hidden.
+
+<<vn_show m3_a default left>>
+CHECKPOINT FOCUS-00A — Character A must be visible alone at Left before the dual-character test.
+
+<<vn_show m3_b default right>>
+CHECKPOINT FOCUS-00 — Characters A and B must both be visible at Left and Right.
+
+M3 A: CHECKPOINT FOCUS-01 — This is the A speaker-focus test. A must be active brightness and B must be dimmed.
+M3 B: CHECKPOINT FOCUS-02 — This is the B speaker-focus test. B must be active brightness and A must be dimmed.
+CHECKPOINT FOCUS-03 — This narration line has no speaker. A and B must both return to active brightness.
+
+<<vn_hide m3_b>>
+CHECKPOINT EXP-00 — Character B must now be hidden; only Character A remains for the expression test.
+
+<<vn_move m3_a center>>
+CHECKPOINT EXP-01 — Character A must be at Center with the DEFAULT Head.
+
+<<vn_expression m3_a smile>>
+CHECKPOINT EXP-02 — Character A must now show the SMILE Head while Body, slot, facing, and scale remain unchanged.
+
+<<vn_expression m3_a default>>
+CHECKPOINT EXP-03 — Character A must return to the DEFAULT Head.
+
+<<vn_facing m3_a right>>
+CHECKPOINT FACE-01 — Character A must face right as the known baseline; Body and Head must be aligned.
+
+<<vn_facing m3_a left>>
+CHECKPOINT FACE-02 — Character A must face left; Body and Head must flip together through CharacterVisualRoot.
+
+<<vn_scale m3_a 1.0>>
+CHECKPOINT SCALE-01 — Character A must be at scale 1.0.
+
+<<vn_scale m3_a 1.1>>
+CHECKPOINT SCALE-02 — Character A must now be approximately 10% larger, with Body and Head still aligned.
+
+<<vn_bg m3_bg_b>>
+CHECKPOINT BG-02 — Background B must be visible while Character A and the dialogue UI remain present.
+
+<<vn_cg m3_cg>>
+CHECKPOINT CG-01 — CG must be visible above background/character presentation while dialogue UI remains visible.
+
+<<vn_clear_cg>>
+CHECKPOINT CG-02 — CG must be gone and the underlying Background B + Character A presentation must still exist.
+
+<<vn_hide m3_a>>
+CHECKPOINT FINAL-01 — No characters must remain visible.
+
+M3 PRESENTATION SMOKE COMPLETE — user verification can now stop.
+===

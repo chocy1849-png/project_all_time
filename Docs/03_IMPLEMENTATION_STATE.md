@@ -29,6 +29,22 @@
 - M1 Play Gate passed: narrator and named-speaker lines, three options, all branch transitions, path-dependent results, variable updates, Play Mode variable reset, and normal end-node completion were verified.
 - Console errors: 0.
 
+## M3 Presentation Runtime
+
+- Project-owned code contracts now define fixed-pose layered character definitions (`BackHair` + `Body` + expression `Head`), the presentation catalog, fixed-slot uGUI presentation, Yarn command registration, and speaker focus.
+- Unity-authored M3 ScriptableObject assets, layered slot views, and `VN_Main.unity` references are wired for the M3 presentation runtime.
+- `Assets/_Project/Yarn/M3_PRESENTATION_SMOKE.yarn` is technical smoke content only and is not story canon. Its manual checkpoints expose each M3 presentation state for verification.
+
+## M3 USER-VERIFIED PLAY GATE
+
+- Background A/B replacement, CG show/clear, and dialogue UI ordering were verified.
+- Both characters moved through FarLeft, Left, Center, Right, and FarRight without stale or duplicate visuals.
+- Character A default → smile → default Head-expression switching was verified; Body and optional BackHair behavior remained correct.
+- Whole-character facing and scale changes were verified through the shared layered visual root.
+- `LocalizedLine.CharacterName` speaker focus was verified for `M3 A` and `M3 B`; narration hides the name container and restores active brightness to all visible characters.
+- The M3 smoke reaches normal completion. Console errors: 0.
+- Current M3 artwork is temporary test artwork, not production-final art.
+
 ## REPOSITORY-VERIFIED
 
 - Unity version is 6000.3.21f1.
