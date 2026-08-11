@@ -84,3 +84,16 @@ Status: ACCEPTED
 - Persistence is deferred to M5.
 - Convenience UX is deferred to M6.
 - Settings are deferred to M7.
+
+## DEC-011 — M3 presentation runtime contract
+
+Status: ACCEPTED
+
+- M3 presentation uses project-owned uGUI `Image` references; `SpriteRenderer` is not used.
+- The fixed character slots are `far_left`, `left`, `center`, `right`, and `far_right`.
+- Characters use one fixed pose assembled from layered `BackHair`, `Body`, and expression `Head` sprites. BackHair is optional; expressions swap only the Head sprite.
+- `VNPresentationCatalog` and `VNCharacterDefinition` assets contain authored IDs and sprites; presentation state remains runtime-only.
+- Speaker focus uses `LocalizedLine.CharacterName` aliases and Image tinting: active `1,1,1,1`, inactive `0.65,0.65,0.65,1`, over `0.20` seconds.
+- M3 commands are immediate; no pose, transition, or fade commands are introduced. Animation and Live2D-style systems are out of scope.
+- M3 artwork is temporary test artwork and is not production-final art.
+- The M3 presentation smoke is technical, non-canon content used for manual observation of presentation states.
