@@ -16,3 +16,8 @@
 *.meta whitespace=-trailing-space
 *.unity whitespace=-trailing-space
 *.scenetemplate whitespace=-trailing-space
+
+# TMP Essentials ships shader sources with intentional whitespace patterns.
+*.shader text eol=lf whitespace=-blank-at-eof,-space-before-tab,-trailing-space
+*.shadergraph text eol=lf whitespace=-blank-at-eof,-space-before-tab,-trailing-space
+*.cginc text eol=lf whitespace=-blank-at-eof,-space-before-tab,-trailing-space

@@ -1,0 +1,63 @@
+title: M1_RUNTIME_START
+---
+Narrator: M1 technical narrative-runtime smoke test has started.
+<<jump M1_VARIABLES>>
+===
+
+title: M1_VARIABLES
+---
+<<declare $m1_selected_path = "unset">>
+<<declare $m1_trust = 0>>
+<<declare $m1_memory_seen = false>>
+Narrator: Technical variables initialized. Select a smoke-test branch.
+-> Select the kind test path
+    <<jump M1_RUNTIME_KIND>>
+-> Select the cautious test path
+    <<jump M1_RUNTIME_CAUTIOUS>>
+-> Select the silent test path
+    <<jump M1_RUNTIME_SILENT>>
+===
+
+title: M1_RUNTIME_KIND
+---
+TestSpeaker: Kind path selected for runtime verification.
+<<set $m1_selected_path = "kind">>
+<<set $m1_trust = $m1_trust + 1>>
+<<set $m1_memory_seen = true>>
+<<jump M1_RUNTIME_RESULT>>
+===
+
+title: M1_RUNTIME_CAUTIOUS
+---
+TestSpeaker: Cautious path selected for runtime verification.
+<<set $m1_selected_path = "cautious">>
+<<set $m1_trust = $m1_trust + 2>>
+<<set $m1_memory_seen = false>>
+<<jump M1_RUNTIME_RESULT>>
+===
+
+title: M1_RUNTIME_SILENT
+---
+TestSpeaker: Silent path selected for runtime verification.
+<<set $m1_selected_path = "silent">>
+<<set $m1_trust = $m1_trust + 3>>
+<<set $m1_memory_seen = true>>
+<<jump M1_RUNTIME_RESULT>>
+===
+
+title: M1_RUNTIME_RESULT
+---
+<<if $m1_selected_path == "kind">>
+Narrator: Technical result: kind branch; numeric and boolean values were updated.
+<<elseif $m1_selected_path == "cautious">>
+Narrator: Technical result: cautious branch; numeric and boolean values were updated.
+<<else>>
+Narrator: Technical result: silent branch; numeric and boolean values were updated.
+<<endif>>
+<<jump M1_RUNTIME_END>>
+===
+
+title: M1_RUNTIME_END
+---
+Narrator: M1 technical narrative-runtime smoke test complete.
+===

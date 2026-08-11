@@ -58,3 +58,14 @@ Status: ACCEPTED
 Status: ACCEPTED
 
 - No gameplay implementation
+
+## DEC-009 — M1 narrative runtime
+
+Status: ACCEPTED
+
+- Yarn Spinner 3.2.7 is the M1 narrative-runtime package.
+- The OpenUPM package identifier is `dev.yarnspinner.unity`.
+- The built-in InMemoryVariableStorage is used for M1 only.
+- Persistent variable integration is deferred to M5.
+- The official Line Presenter and Options Presenter are temporary M1 smoke UI.
+- Custom VN presentation is deferred to M2.
