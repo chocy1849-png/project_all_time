@@ -1,0 +1,215 @@
+name: Discord PR Notification
+
+on:
+  create:
+  push:
+  pull_request:
+    types: [opened, reopened, synchronize, closed]
+
+permissions:
+  contents: read
+
+jobs:
+  notify:
+    name: Notify Discord
+    runs-on: ubuntu-latest
+    env:
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+    steps:
+      - name: Send repository notification
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [ -z "${DISCORD_WEBHOOK_URL}" ]; then
+            echo "DISCORD_WEBHOOK_URL secret is not configured; skipping notification."
+            exit 0
+          fi
+
+          if ! python3 <<'PY' > payload.json
+          import json
+          import os
+
+          BLUE = 0x0969DA
+          GREEN = 0x2DA44E
+          YELLOW = 0xBF8700
+          PURPLE = 0x8250DF
+          RED = 0xCF222E
+
+          PR_BODY_LIMIT = 1800
+          COMMIT_SUMMARY_LIMIT = 1800
+
+          def truncate(text, max_len):
+              if not text:
+                  return ""
+              text = str(text).strip()
+              if len(text) <= max_len:
+                  return text
+              return text[: max_len - 3].rstrip() + "..."
+
+          def branch_url(repo_url, branch):
+              return f"{repo_url}/tree/{branch}"
+
+          def short_sha(commit):
+              return commit[:7]
+
+          def first_line(text):
+              return (text or "").splitlines()[0].strip()
+
+          def field(name, value, inline=True):
+              return {
+                  "name": name,
+                  "value": truncate(value or "N/A", 1024),
+                  "inline": inline,
+              }
+
+          with open(os.environ["GITHUB_EVENT_PATH"], encoding="utf-8") as event_file:
+              event = json.load(event_file)
+
+          event_name = os.environ["GITHUB_EVENT_NAME"]
+          repo = event["repository"]
+          repo_name = repo["name"]
+          full_name = repo["full_name"]
+          repo_url = repo["html_url"]
+          sender = event.get("sender") or {}
+
+          payload = {
+              "username": sender.get("login") or "GitHub",
+              "avatar_url": sender.get("avatar_url") or "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png",
+              "embeds": [],
+          }
+
+          embed = {
+              "title": "",
+              "description": "",
+              "url": repo_url,
+              "color": BLUE,
+              "fields": [],
+          }
+
+          if event_name == "create":
+              if event.get("ref_type") != "branch":
+                  raise SystemExit("Skipping non-branch create event.")
+              branch = event["ref"]
+              embed["title"] = f"[{full_name}] New branch created: {branch}"
+              embed["url"] = branch_url(repo_url, branch)
+              embed["color"] = BLUE
+              embed["fields"] = [
+                  field("Repository", full_name),
+                  field("Branch", branch),
+                  field("Status", "Branch created"),
+              ]
+
+          elif event_name == "push":
+              branch = event.get("ref", "").removeprefix("refs/heads/")
+              commits = event.get("commits") or []
+              commit_count = len(commits)
+              commit_word = "commit" if commit_count == 1 else "commits"
+              compare_url = event.get("compare") or branch_url(repo_url, branch)
+              lines = []
+
+              for commit in commits[:5]:
+                  sha = short_sha(commit["id"])
+                  message = first_line(commit.get("message"))
+                  author = (commit.get("author") or {}).get("name") or "Unknown author"
+                  lines.append(f"`{sha}` {message} - {author}")
+
+              extra_count = commit_count - 5
+              if extra_count > 0:
+                  lines.append(f"...and {extra_count} more commits")
+
+              embed["title"] = f"[{repo_name}:{branch}] {commit_count} new {commit_word}"
+              embed["description"] = truncate("\n".join(lines), COMMIT_SUMMARY_LIMIT)
+              embed["url"] = compare_url
+              embed["color"] = BLUE
+              embed["fields"] = [
+                  field("Repository", full_name),
+                  field("Branch", branch),
+                  field("Status", "New commits"),
+              ]
+
+          elif event_name == "pull_request":
+              action = event["action"]
+              pr = event["pull_request"]
+              number = pr["number"]
+              title = pr["title"]
+              source_branch = pr["head"]["ref"]
+              target_branch = pr["base"]["ref"]
+              author = pr["user"]["login"]
+              pr_url = pr["html_url"]
+              latest_commit = pr.get("head", {}).get("sha")
+
+              if action == "opened":
+                  status = "Pull request opened"
+                  color = GREEN
+                  description = truncate(pr.get("body") or "No pull request description provided.", PR_BODY_LIMIT)
+              elif action == "reopened":
+                  status = "Pull request reopened"
+                  color = GREEN
+                  description = ""
+              elif action == "synchronize":
+                  status = "Pull request updated"
+                  color = YELLOW
+                  head_commit = event.get("head_commit") or {}
+                  commit_message = first_line(head_commit.get("message"))
+                  description = f"{source_branch} -> {target_branch}"
+                  if latest_commit:
+                      description += f"\nLatest commit: `{short_sha(latest_commit)}`"
+                  if commit_message:
+                      description += f" {commit_message}"
+              elif action == "closed" and pr.get("merged"):
+                  status = "Pull request merged"
+                  color = PURPLE
+                  description = ""
+              elif action == "closed":
+                  status = "Pull request closed"
+                  color = RED
+                  description = ""
+              else:
+                  raise SystemExit(f"Unsupported pull_request action: {action}")
+
+              embed["title"] = f"[{full_name}] {status}: #{number} {title}"
+              embed["description"] = description
+              embed["url"] = pr_url
+              embed["color"] = color
+              embed["fields"] = [
+                  field("Author", author),
+                  field("Branch", f"{source_branch} -> {target_branch}", False),
+                  field("Status", status),
+                  field("URL", pr_url, False),
+              ]
+
+          else:
+              raise SystemExit(f"Unsupported event: {event_name}")
+
+          if embed["description"]:
+              embed["description"] = truncate(embed["description"], 2048)
+          else:
+              embed.pop("description")
+
+          payload["embeds"].append(embed)
+          print(json.dumps(payload, ensure_ascii=False))
+          PY
+          then
+            echo "No Discord notification needed for this event."
+            exit 0
+          fi
+
+          response_file="$(mktemp)"
+          http_status="$(
+            curl --silent --show-error \
+              --output "${response_file}" \
+              --write-out "%{http_code}" \
+              --header "Content-Type: application/json" \
+              --request POST \
+              --data @payload.json \
+              "${DISCORD_WEBHOOK_URL}" || true
+          )"
+
+          if [ "${http_status}" -lt 200 ] || [ "${http_status}" -ge 300 ]; then
+            echo "Discord notification failed with HTTP status ${http_status}."
+            sed 's/[[:cntrl:]]//g' "${response_file}" | head -c 1000
+            echo
+            exit 0
+          fi
