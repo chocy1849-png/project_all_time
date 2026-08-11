@@ -1,0 +1,18 @@
+* text=auto
+
+*.cs text eol=lf
+*.asmdef text eol=lf
+*.asmref text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.yarn text eol=lf
+*.unity text eol=lf
+*.prefab text eol=lf
+*.asset text eol=lf
+*.meta text eol=lf
+
+# Unity serializes empty YAML values with trailing spaces. Preserve generated files unchanged.
+*.asset whitespace=-trailing-space
+*.meta whitespace=-trailing-space
+*.unity whitespace=-trailing-space
+*.scenetemplate whitespace=-trailing-space
