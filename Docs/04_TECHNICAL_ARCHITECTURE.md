@@ -10,11 +10,18 @@
 - Yarn Spinner 3.2.7 runtime through `dev.yarnspinner.unity`
 - Official Dialogue System with built-in InMemoryVariableStorage for M1 smoke testing
 
-## M1 temporary presentation boundary
+## M2 core VN play screen
 
-- Official Line Presenter and Options Presenter are temporary smoke UI.
-- No custom dialogue UI or custom presenter is implemented.
-- M1 does not define persistent variable behavior.
+- Project-owned uGUI objects and prefabs provide the VN play-screen layout.
+- Yarn Spinner supplied LinePresenter and OptionsPresenter remain the runtime presenter implementations.
+- The existing Yarn LineAdvancer provides click/Space hurry-then-advance behavior.
+- The existing InputSystemUIInputModule provides UI navigation.
+- A custom DialoguePresenterBase is not required.
+- Background, Character, and CG presentation are deferred to M3.
+- Audio and transitions are deferred to M4.
+- Persistence is deferred to M5.
+- Convenience UX is deferred to M6.
+- Settings are deferred to M7.
 
 ## PLANNED — NOT IMPLEMENTED
 
@@ -25,7 +32,5 @@ Future domains:
 - Save
 - Audio
 - Tests
-
-Custom VN presentation is deferred to M2.
 
 Persistent variable integration is deferred to M5.

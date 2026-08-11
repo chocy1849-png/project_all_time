@@ -39,3 +39,31 @@
 - The package baseline includes `com.unity.render-pipelines.universal` 17.0.3.
 - `Packages/manifest.json` and `Packages/packages-lock.json` specify Yarn Spinner 3.2.7.
 - The M1 Yarn project and technical smoke script exist.
+
+## M2 Core VN Play Screen
+
+- A project-owned uGUI VN play screen is configured in `VN_Main.unity`.
+- Yarn Spinner supplied LinePresenter and OptionsPresenter remain the runtime presenter implementations.
+- The existing Yarn LineAdvancer is reused for click/Space hurry-then-advance behavior.
+- The existing InputSystemUIInputModule is reused for UI navigation.
+- No custom DialoguePresenterBase is present.
+- `Assets/_Project/Yarn/M2_UI_SMOKE.yarn` is technical smoke content only and is not story canon.
+
+## Deferred after M2
+
+- Background, Character, and CG presentation: M3.
+- Audio and transitions: M4.
+- Persistence: M5.
+- Convenience UX: M6.
+- Settings: M7.
+
+## M2 USER-VERIFIED PLAY GATE
+
+- Narrator mode hides the speaker-name container; named-speaker mode shows the speaker name separately.
+- Dialogue text, typewriter behavior, and click/Space hurry-then-advance behavior were verified.
+- Two-, three-, and four-option layouts work with mouse and keyboard navigation/selection.
+- Normal advance input does not bypass active options.
+- No duplicate M1 presenter UI appears.
+- Layout was verified at 1280×720, 1600×900, 1920×1080, and 2560×1440.
+- Dialogue reaches `M2_UI_END` normally.
+- Console errors: 0.

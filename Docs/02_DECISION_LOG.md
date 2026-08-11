@@ -69,3 +69,18 @@ Status: ACCEPTED
 - Persistent variable integration is deferred to M5.
 - The official Line Presenter and Options Presenter are temporary M1 smoke UI.
 - Custom VN presentation is deferred to M2.
+
+## DEC-010 — M2 core VN play screen
+
+Status: ACCEPTED
+
+- The project-owned uGUI VN play screen is the M2 presentation shell.
+- Yarn Spinner supplied LinePresenter and OptionsPresenter remain the runtime presenter implementations.
+- The existing Yarn LineAdvancer is reused for click/Space hurry-then-advance behavior.
+- The existing InputSystemUIInputModule is reused for UI navigation.
+- A custom DialoguePresenterBase is not required in M2.
+- Background, Character, and CG presentation are deferred to M3.
+- Audio and transitions are deferred to M4.
+- Persistence is deferred to M5.
+- Convenience UX is deferred to M6.
+- Settings are deferred to M7.

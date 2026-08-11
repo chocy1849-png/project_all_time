@@ -1,0 +1,99 @@
+title: M2_UI_START
+---
+M2 technical UI smoke test: this narrator line has no character name.
+M2TestSpeaker: This named speaker line verifies the project-owned line presentation.
+M2TestSpeaker: This deliberately long technical line exists only to verify that the typewriter effect can be interrupted by the shared Advance input before every character has appeared on screen.
+<<jump M2_UI_TWO>>
+===
+
+title: M2_UI_TWO
+---
+M2TestSpeaker: Select one item from this two-option technical set.
+-> Two-option selection A
+    <<jump M2_UI_TWO_A>>
+-> Two-option selection B
+    <<jump M2_UI_TWO_B>>
+===
+
+title: M2_UI_TWO_A
+---
+M2TestSpeaker: Technical result: two-option selection A.
+<<jump M2_UI_THREE>>
+===
+
+title: M2_UI_TWO_B
+---
+M2TestSpeaker: Technical result: two-option selection B.
+<<jump M2_UI_THREE>>
+===
+
+title: M2_UI_THREE
+---
+M2TestSpeaker: Select one item from this three-option technical set.
+-> Three-option selection A
+    <<jump M2_UI_THREE_A>>
+-> Three-option selection B
+    <<jump M2_UI_THREE_B>>
+-> Three-option selection C
+    <<jump M2_UI_THREE_C>>
+===
+
+title: M2_UI_THREE_A
+---
+M2TestSpeaker: Technical result: three-option selection A.
+<<jump M2_UI_FOUR>>
+===
+
+title: M2_UI_THREE_B
+---
+M2TestSpeaker: Technical result: three-option selection B.
+<<jump M2_UI_FOUR>>
+===
+
+title: M2_UI_THREE_C
+---
+M2TestSpeaker: Technical result: three-option selection C.
+<<jump M2_UI_FOUR>>
+===
+
+title: M2_UI_FOUR
+---
+M2TestSpeaker: Select one item from this four-option technical set.
+-> Four-option selection A
+    <<jump M2_UI_FOUR_A>>
+-> Four-option selection B
+    <<jump M2_UI_FOUR_B>>
+-> Four-option selection C
+    <<jump M2_UI_FOUR_C>>
+-> Four-option selection D
+    <<jump M2_UI_FOUR_D>>
+===
+
+title: M2_UI_FOUR_A
+---
+M2TestSpeaker: Technical result: four-option selection A.
+<<jump M2_UI_END>>
+===
+
+title: M2_UI_FOUR_B
+---
+M2TestSpeaker: Technical result: four-option selection B.
+<<jump M2_UI_END>>
+===
+
+title: M2_UI_FOUR_C
+---
+M2TestSpeaker: Technical result: four-option selection C.
+<<jump M2_UI_END>>
+===
+
+title: M2_UI_FOUR_D
+---
+M2TestSpeaker: Technical result: four-option selection D.
+<<jump M2_UI_END>>
+===
+
+title: M2_UI_END
+---
+M2 technical UI smoke test complete.
+===
