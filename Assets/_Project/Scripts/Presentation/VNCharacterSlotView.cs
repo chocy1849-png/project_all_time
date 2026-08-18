@@ -10,15 +10,24 @@ namespace ProjectAllTime.VN.Presentation
         [SerializeField] private Image backHairImage;
         [SerializeField] private Image bodyImage;
         [SerializeField] private Image headImage;
+        [SerializeField] private CanvasGroup fadeCanvasGroup;
 
         public VNCharacterSlot Slot => slot;
         public Color Tint => bodyImage.color;
+        public CanvasGroup FadeCanvasGroup => fadeCanvasGroup;
+        public bool HasFadeCanvasGroup => fadeCanvasGroup != null;
 
         public bool IsConfigured => visualRoot != null && backHairImage != null && bodyImage != null && headImage != null;
 
         public void SetVisible(bool visible)
         {
+            if (visible && fadeCanvasGroup != null) fadeCanvasGroup.alpha = 1f;
             if (visualRoot != null) visualRoot.gameObject.SetActive(visible);
+        }
+
+        public void SetFadeAlpha(float alpha)
+        {
+            if (fadeCanvasGroup != null) fadeCanvasGroup.alpha = Mathf.Clamp01(alpha);
         }
 
         public void ApplyCharacter(VNCharacterDefinition character, VNExpressionDefinition expression, VNCharacterRuntimeState state)

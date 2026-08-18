@@ -7,7 +7,11 @@
     "**/*~/*",
     "./Samples/Yarn Spinner*/*"
   ],
-  "localisation": {},
+  "localisation": {
+    "ko": {
+      "assets": "..\\Audio\\Voice\\ko"
+    }
+  },
   "baseLanguage": "ko",
   "compilerOptions": {
     "diagnosticsSeverity": {}

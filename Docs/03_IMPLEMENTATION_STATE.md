@@ -45,6 +45,26 @@
 - The M3 smoke reaches normal completion. Console errors: 0.
 - Current M3 artwork is temporary test artwork, not production-final art.
 
+## M4 Audio / Voice / Transition Code Contracts
+
+- `VNAudioCatalog`, `VNAudioController`, and `VNYarnAudioCommands` define BGM and SFX contracts. Unity-owned M4 audio assets, AudioMixer groups, AudioSources, and catalog entries are wired in `VN_Main`.
+- `VNTransitionController` and `VNYarnTransitionCommands` define screen, background, character, and CG transition contracts. Unity-owned CanvasGroups, the second background Image, and TransitionLayer black overlay are wired in `VN_Main`.
+- M3 character slot views now expose an optional CanvasGroup alpha channel. M3 Image RGB speaker focus and all immediate M3 commands retain their established behavior.
+- M4 voice uses built-in localization asset association with per-line optional voice. `VNOptionalVoicePresenter` filters unvoiced lines and delegates valid AudioClip playback to Yarn Spinner 3.2.7 `VoiceOverPresenter`; the delegated presenter must not be registered directly with Dialogue Runner. Missing voice is normal, while a wrong-type associated asset remains an error.
+- `M4_AUDIO_TRANSITION_SMOKE.yarn` is technical, non-canon content. The normal Scene Start Node remains `M2_UI_START`.
+
+## M4 USER-VERIFIED PLAY GATE
+
+- BGM A/B playback, loop, audible crossfade, pause/resume position preservation, and fade-stop were verified.
+- `ui_confirm` single and repeated one-shots plus `door_close` resolve and play correctly.
+- Unvoiced lines complete silently. `#line:m4_voice_test` resolves to `m4_voice_test.wav`, plays through VoiceSource without duplicate playback or stale replay, and does not auto-advance; normal LineAdvancer input advances after voice completion.
+- Screen fade, background crossfade, CharacterVisualRoot CanvasGroup fades, and CG fades were verified. Character alpha remains independent from M3 speaker-focus RGB tint, and underlying presentation survives CG removal.
+- Established M3 immediate commands remain immediate, M4 duration commands remain awaited, and the smoke completes normally. Console Error: 0. Unhandled Command: 0.
+
+## DEFERRED BEYOND M4
+
+- Production voice acting, final audio mastering, advanced voice scheduling, lipsync, white flash, blur, screen shake, advanced transition presets, persistent audio/transition state, and settings UI or per-category user volume controls.
+
 ## REPOSITORY-VERIFIED
 
 - Unity version is 6000.3.21f1.

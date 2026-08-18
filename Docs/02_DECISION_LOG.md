@@ -97,3 +97,16 @@ Status: ACCEPTED
 - M3 commands are immediate; no pose, transition, or fade commands are introduced. Animation and Live2D-style systems are out of scope.
 - M3 artwork is temporary test artwork and is not production-final art.
 - The M3 presentation smoke is technical, non-canon content used for manual observation of presentation states.
+
+## DEC-012 ??M4 audio, voice, and transition runtime contract
+
+Status: ACCEPTED
+
+- M4 uses a project-owned `VNAudioCatalog` for BGM and SFX only. Voice clips are not catalogued there.
+- BGM uses two AudioSources for source-to-source crossfades; pause uses `AudioSource.Pause` and resume uses `AudioSource.UnPause` to preserve playback position.
+- SFX uses one AudioSource and `PlayOneShot`, allowing overlapping one-shots.
+- Voice assets are optional per line. `VNOptionalVoicePresenter` is the sole Dialogue Runner voice presenter: it silently completes unvoiced lines, reports wrong-type associated assets, and delegates valid playback and lifecycle callbacks to Yarn Spinner 3.2.7's supplied `VoiceOverPresenter`. The delegated presenter uses VoiceSource and is configured not to advance dialogue when voice playback finishes. Voice is associated with `LocalizedLine.TextID` through Yarn's built-in localization Assets Folder path.
+- M4 duration-based Yarn commands return `IEnumerator`, which Yarn Spinner 3.2.7 awaits before continuing dialogue.
+- Screen, background, character, and CG transitions use independent alpha channels. Character fade is `CanvasGroup.alpha` on each CharacterVisualRoot; M3 speaker focus remains Image RGB tint.
+- M3 immediate presentation commands remain unchanged. M4 adds only named fade/crossfade commands; `vn_pose` is not introduced.
+- Production voice acting, final audio mastering, advanced voice scheduling, lipsync, white flash, blur, screen shake, advanced transition presets, persistent audio/transition state, and settings UI or per-category user volume controls remain deferred beyond M4.

@@ -24,3 +24,17 @@ This guide records only the M1 technical rules established with Yarn Spinner 3.2
 - `<<vn_cg cg_id>>` and `<<vn_clear_cg>>` set and clear the CG Image.
 - Commands are immediate in M3; no pose, transition, or fade commands are defined. Animation and Live2D-style systems are out of scope.
 - `M3_PRESENTATION_SMOKE` is technical non-canon content. Every visual-state command is followed by a manually advanced checkpoint line; timed waits are not used for M3 verification.
+
+## M4 audio and transition commands
+
+- BGM/SFX IDs use stable lowercase snake_case and are authored in `VNAudioCatalog`. Voice does not use this catalog.
+- `<<bgm_play bgm_id>>` starts the resolved BGM immediately.
+- `<<bgm_crossfade bgm_id duration>>`, `<<bgm_pause duration>>`, `<<bgm_resume duration>>`, and `<<bgm_stop duration>>` wait for their duration-based operation to complete before Yarn continues. Durations are finite seconds greater than or equal to zero.
+- `<<sfx_play sfx_id>>` plays one SFX one-shot and does not wait for the clip to end.
+- `<<vn_fade_to_black duration>>` and `<<vn_fade_from_black duration>>` wait for the screen fade.
+- `<<vn_bg_crossfade background_id duration>>` waits for a background source-to-source crossfade.
+- `<<vn_show_fade character_id expression_id slot_id duration>>` and `<<vn_hide_fade character_id duration>>` wait for character CanvasGroup fades. Slot IDs remain `far_left`, `left`, `center`, `right`, and `far_right`.
+- `<<vn_cg_fade_in cg_id duration>>` and `<<vn_cg_fade_out duration>>` wait for CG CanvasGroup fades.
+- Existing M3 immediate commands remain available and unchanged. Do not use or introduce `vn_pose`.
+- Voice is optional per line. Reserve `#line:m4_voice_test` for the M4 technical voice line; its Korean built-in-localization Assets Folder AudioClip must be named exactly `m4_voice_test.wav` for Yarn Spinner's exact line-ID filename match. Lines without an associated voice asset are normal; an associated asset of the wrong type is an error.
+- `M4_AUDIO_TRANSITION_SMOKE` is technical non-canon test content. The M4 Play Gate passed; no production story or audio content is established here.
