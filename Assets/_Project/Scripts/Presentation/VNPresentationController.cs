@@ -36,6 +36,10 @@ namespace ProjectAllTime.VN.Presentation
         private Coroutine speakerHighlightCoroutine;
 
         public IReadOnlyDictionary<string, VNCharacterRuntimeState> VisibleCharacters => visibleCharacters;
+        public Image BackgroundImage => backgroundImage;
+        public Image CGImage => cgImage;
+        public string CurrentBackgroundId { get; private set; }
+        public string CurrentCGId { get; private set; }
 
         private void Awake()
         {
@@ -47,17 +51,19 @@ namespace ProjectAllTime.VN.Presentation
 
         public bool SetBackground(string backgroundId)
         {
-            if (backgroundImage == null || catalog == null || !catalog.TryGetBackground(backgroundId, out var sprite)) return Fail($"Cannot set unknown background '{backgroundId}'.");
+            if (!TryGetBackgroundSprite(backgroundId, out var sprite) || backgroundImage == null) return Fail($"Cannot set unknown background '{backgroundId}'.");
             backgroundImage.sprite = sprite;
             SetImageVisible(backgroundImage, true);
+            CurrentBackgroundId = backgroundId;
             return true;
         }
 
         public bool SetCG(string cgId)
         {
-            if (cgImage == null || catalog == null || !catalog.TryGetCG(cgId, out var sprite)) return Fail($"Cannot set unknown CG '{cgId}'.");
+            if (!TryGetCGSprite(cgId, out var sprite) || cgImage == null) return Fail($"Cannot set unknown CG '{cgId}'.");
             cgImage.sprite = sprite;
             SetImageVisible(cgImage, true);
+            CurrentCGId = cgId;
             return true;
         }
 
@@ -66,6 +72,27 @@ namespace ProjectAllTime.VN.Presentation
             if (cgImage == null) { Debug.LogError("VN Presentation Controller has no CG Image reference.", this); return; }
             cgImage.sprite = null;
             SetImageVisible(cgImage, false);
+            CurrentCGId = null;
+        }
+
+        public bool TryGetBackgroundSprite(string backgroundId, out Sprite sprite)
+        {
+            sprite = null;
+            return catalog != null && catalog.TryGetBackground(backgroundId, out sprite);
+        }
+
+        public bool TryGetCGSprite(string cgId, out Sprite sprite)
+        {
+            sprite = null;
+            return catalog != null && catalog.TryGetCG(cgId, out sprite);
+        }
+
+        public bool TryGetCharacterSlotView(VNCharacterSlot slot, out VNCharacterSlotView view) => TryGetSlotView(slot, out view);
+
+        public bool TryGetVisibleCharacterSlotView(string characterId, out VNCharacterSlotView view)
+        {
+            view = null;
+            return TryGetVisibleCharacter(characterId, out var state) && TryGetSlotView(state.Slot, out view);
         }
 
         public bool ShowCharacter(string characterId, string expressionId, VNCharacterSlot slot)
