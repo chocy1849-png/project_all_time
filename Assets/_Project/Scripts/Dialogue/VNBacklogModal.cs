@@ -22,6 +22,7 @@ namespace ProjectAllTime.VN.Dialogue
 
         public bool IsOpen => isOpen;
         public int PooledItemCount => itemPool.Count;
+        public event System.Action CloseRequested;
 
         private void Awake()
         {
@@ -71,7 +72,6 @@ namespace ProjectAllTime.VN.Dialogue
             if (emptyStateText != null)
             {
                 emptyStateText.gameObject.SetActive(count == 0);
-                emptyStateText.text = count == 0 ? "No backlog entries." : string.Empty;
             }
         }
 
@@ -106,6 +106,6 @@ namespace ProjectAllTime.VN.Dialogue
             modalCanvasGroup.blocksRaycasts = visible;
         }
 
-        private void HandleCloseClicked() => Close();
+        private void HandleCloseClicked() => CloseRequested?.Invoke();
     }
 }

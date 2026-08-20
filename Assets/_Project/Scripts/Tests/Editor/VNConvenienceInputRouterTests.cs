@@ -4,6 +4,8 @@ using NUnit.Framework;
 using ProjectAllTime.VN.Dialogue;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using Yarn.Markup;
 using Yarn.Unity;
 
@@ -118,11 +120,56 @@ namespace ProjectAllTime.Tests.Editor
             Assert.That(action.enabled, Is.False);
         }
 
+        [Test]
+        public void CurrentPositionRaycast_RecognizesOnlySelectableUi()
+        {
+            var graphic = new GameObject("Dialogue Graphic");
+            ownedObjects.Add(graphic);
+            Assert.That(IsInteractiveRaycastResult(graphic), Is.False);
+
+            var button = new GameObject("Interactive Button").AddComponent<Button>();
+            ownedObjects.Add(button.gameObject);
+            Assert.That(IsInteractiveRaycastResult(button.gameObject), Is.True);
+        }
+
+        [Test]
+        public void ModeChangesAndSkipHold_AreBlockedByModalLoadOrHidden_ButOptionsRemainAllowed()
+        {
+            gate.SetConvenienceModalActive(true);
+            Assert.That(convenience.ToggleAuto(), Is.False);
+            InvokeRouter("BeginSkipHold");
+            Assert.That(convenience.IsAutoEnabled, Is.False);
+            Assert.That(convenience.IsSkipEnabled, Is.False);
+
+            gate.SetConvenienceModalActive(false);
+            lifecycle.RunOptionsAsync(System.Array.Empty<DialogueOption>(), new LineCancellationToken());
+            Assert.That(convenience.ToggleAuto(), Is.True, "Options do not block user convenience modes.");
+            convenience.SetAutoEnabled(false);
+
+            gate.SetUiHidden(true);
+            Assert.That(convenience.ToggleSkip(), Is.False);
+            gate.SetUiHidden(false);
+
+            var saveLoad = new GameObject("Save Load").AddComponent<ProjectAllTime.VN.SaveLoad.VNSaveLoadController>();
+            ownedObjects.Add(saveLoad.gameObject);
+            SetPrivateField(gate, "saveLoadController", saveLoad);
+            SetPrivateField(saveLoad, "loadInProgress", true);
+            Assert.That(convenience.ToggleAuto(), Is.False);
+        }
+
         private bool RouteAdvance(bool leftMouse, bool pointerOverUi)
         {
             var method = typeof(VNConvenienceInputRouter).GetMethod("RouteAdvance", BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.That(method, Is.Not.Null);
             return (bool)method.Invoke(router, new object[] { leftMouse, pointerOverUi });
+        }
+
+        private static bool IsInteractiveRaycastResult(GameObject gameObject)
+        {
+            var method = typeof(VNConvenienceInputRouter).GetMethod("IsInteractiveUiRaycastResult", BindingFlags.Static | BindingFlags.NonPublic,
+                null, new[] { typeof(RaycastResult) }, null);
+            Assert.That(method, Is.Not.Null);
+            return (bool)method.Invoke(null, new object[] { new RaycastResult { gameObject = gameObject } });
         }
 
         private void InvokeRouter(string methodName) => InvokePrivateNoArguments(router, methodName);
@@ -139,6 +186,7 @@ namespace ProjectAllTime.Tests.Editor
                 HurryUpToken = System.Threading.CancellationToken.None,
             });
             lifecycle.OnLineDisplayBegin(default, null);
+            SetPrivateField(sessionState, "currentPresentationStartedFrame", -1);
         }
 
         private static void SetPrivateField(object target, string fieldName, object value)

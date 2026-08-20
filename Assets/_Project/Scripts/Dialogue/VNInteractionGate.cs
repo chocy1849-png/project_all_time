@@ -23,6 +23,8 @@ namespace ProjectAllTime.VN.Dialogue
         public bool CanAdvanceStory => sessionState != null && !sessionState.OptionsActive &&
             !IsBlockingModalActive && !IsLoadInProgress && !isUiHidden;
         public bool CanRunAutomation => CanAdvanceStory;
+        /// <summary>Options may remain visible; modal/load/hidden ownership blocks user mode changes.</summary>
+        public bool CanChangeConvenienceMode => !IsBlockingModalActive && !IsLoadInProgress && !isUiHidden;
         /// <summary>Save/Load is intentionally permitted while a Yarn choice is visible.</summary>
         public bool CanUseSaveLoad => !IsBlockingModalActive && !IsLoadInProgress && !isUiHidden;
         /// <summary>Hide requires an actual current line so command-only intervals stay visible.</summary>

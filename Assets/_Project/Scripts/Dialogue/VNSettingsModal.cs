@@ -12,6 +12,7 @@ namespace ProjectAllTime.VN.Dialogue
 
         private bool isOpen;
         public bool IsOpen => isOpen;
+        public event System.Action CloseRequested;
 
         private void Awake()
         {
@@ -57,6 +58,6 @@ namespace ProjectAllTime.VN.Dialogue
             modalCanvasGroup.blocksRaycasts = visible;
         }
 
-        private void HandleCloseClicked() => Close();
+        private void HandleCloseClicked() => CloseRequested?.Invoke();
     }
 }

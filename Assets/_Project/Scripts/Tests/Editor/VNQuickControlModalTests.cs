@@ -24,6 +24,9 @@ namespace ProjectAllTime.Tests.Editor
         private VNConvenienceModalController modalController;
         private VNBacklogModal backlogModal;
         private VNSettingsModal settingsModal;
+        private Button backlogCloseButton;
+        private Button settingsCloseButton;
+        private TextMeshProUGUI backlogEmptyStateText;
         private int forwardedCount;
 
         [SetUp]
@@ -48,6 +51,10 @@ namespace ProjectAllTime.Tests.Editor
             var settingsCanvas = settingsModal.gameObject.AddComponent<CanvasGroup>();
             var content = NewObject("Backlog Content").transform;
             var itemPrefab = NewObject("Backlog Item Prefab").AddComponent<VNBacklogItem>();
+            backlogCloseButton = NewObject("Backlog Close").AddComponent<Button>();
+            settingsCloseButton = NewObject("Settings Close").AddComponent<Button>();
+            backlogEmptyStateText = NewObject("Backlog Empty State").AddComponent<TextMeshProUGUI>();
+            backlogEmptyStateText.text = "Authored empty-state copy";
 
             SetPrivateField(lifecycle, "sessionState", sessionState);
             SetPrivateField(gate, "sessionState", sessionState);
@@ -65,11 +72,16 @@ namespace ProjectAllTime.Tests.Editor
             SetPrivateField(backlogModal, "content", content);
             SetPrivateField(backlogModal, "itemPrefab", itemPrefab);
             SetPrivateField(backlogModal, "sessionState", sessionState);
+            SetPrivateField(backlogModal, "closeButton", backlogCloseButton);
+            SetPrivateField(backlogModal, "emptyStateText", backlogEmptyStateText);
             SetPrivateField(settingsModal, "modalCanvasGroup", settingsCanvas);
+            SetPrivateField(settingsModal, "closeButton", settingsCloseButton);
             SetPrivateField(modalController, "interactionGate", gate);
             SetPrivateField(modalController, "convenienceController", convenience);
             SetPrivateField(modalController, "backlogModal", backlogModal);
             SetPrivateField(modalController, "settingsModal", settingsModal);
+            InvokePrivateNoArguments(backlogModal, "OnEnable");
+            InvokePrivateNoArguments(settingsModal, "OnEnable");
             InvokePrivateNoArguments(modalController, "OnEnable");
             bridge.AdvanceForwarded += _ => forwardedCount++;
         }
@@ -117,6 +129,22 @@ namespace ProjectAllTime.Tests.Editor
         }
 
         [Test]
+        public void ModalCloseButtons_DelegateClosureToTheCoordinator()
+        {
+            Assert.That(modalController.TryOpenBacklog(), Is.True);
+            backlogCloseButton.onClick.Invoke();
+            Assert.That(modalController.ActiveModal, Is.EqualTo(VNConvenienceModalKind.None));
+            Assert.That(gate.IsConvenienceModalActive, Is.False);
+            Assert.That(backlogModal.IsOpen, Is.False);
+
+            Assert.That(modalController.TryOpenSettings(), Is.True);
+            settingsCloseButton.onClick.Invoke();
+            Assert.That(modalController.ActiveModal, Is.EqualTo(VNConvenienceModalKind.None));
+            Assert.That(gate.IsConvenienceModalActive, Is.False);
+            Assert.That(settingsModal.IsOpen, Is.False);
+        }
+
+        [Test]
         public void Backlog_BindsInsertionOrder_ReusesPool_AndPreservesSessionData()
         {
             MarkRead("repeat", "First.", "Eve");
@@ -133,6 +161,20 @@ namespace ProjectAllTime.Tests.Editor
             Assert.That(sessionState.Backlog.Entries[1].Text, Is.EqualTo("Second."));
             Assert.That(sessionState.Backlog.Entries[2].Text, Is.EqualTo("Third."));
             Assert.That(sessionState.Backlog.Entries[1].IsNarration, Is.True);
+        }
+
+        [Test]
+        public void BacklogEmptyState_OnlyChangesVisibilityAndPreservesAuthoredText()
+        {
+            Assert.That(modalController.TryOpenBacklog(), Is.True);
+            Assert.That(backlogEmptyStateText.gameObject.activeSelf, Is.True);
+            Assert.That(backlogEmptyStateText.text, Is.EqualTo("Authored empty-state copy"));
+
+            Assert.That(modalController.CloseActiveModal(), Is.True);
+            MarkRead("entry", "One entry.", null);
+            Assert.That(modalController.TryOpenBacklog(), Is.True);
+            Assert.That(backlogEmptyStateText.gameObject.activeSelf, Is.False);
+            Assert.That(backlogEmptyStateText.text, Is.EqualTo("Authored empty-state copy"));
         }
 
         [Test]
@@ -207,6 +249,7 @@ namespace ProjectAllTime.Tests.Editor
         {
             lifecycle.RunLineAsync(CreateLine(lineId, text, speaker), Token());
             lifecycle.OnLineDisplayBegin(default, null);
+            SetPrivateField(sessionState, "currentPresentationStartedFrame", -1);
         }
 
         private static LineCancellationToken Token() => new()

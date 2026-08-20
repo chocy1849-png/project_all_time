@@ -68,7 +68,12 @@ namespace ProjectAllTime.VN.Dialogue
             AutoStateChanged?.Invoke(enabled);
         }
 
-        public void ToggleAuto() => SetAutoEnabled(!isAutoEnabled);
+        public bool ToggleAuto()
+        {
+            if (interactionGate == null || !interactionGate.CanChangeConvenienceMode) return false;
+            SetAutoEnabled(!isAutoEnabled);
+            return true;
+        }
 
         public void SetSkipEnabled(bool enabled)
         {
@@ -79,7 +84,12 @@ namespace ProjectAllTime.VN.Dialogue
             SkipStateChanged?.Invoke(enabled);
         }
 
-        public void ToggleSkip() => SetSkipEnabled(!isSkipEnabled);
+        public bool ToggleSkip()
+        {
+            if (interactionGate == null || !interactionGate.CanChangeConvenienceMode) return false;
+            SetSkipEnabled(!isSkipEnabled);
+            return true;
+        }
 
         /// <summary>
         /// The only future manual Next path. A hidden UI consumes this request
@@ -190,7 +200,7 @@ namespace ProjectAllTime.VN.Dialogue
                 return;
             }
 
-            if (isAutoEnabled) TickAuto(occurrence, unscaledTime);
+            if (isAutoEnabled) TickAuto(occurrence, unscaledTime, frameCount);
             if (isSkipEnabled) TickSkip(occurrence, unscaledTime, frameCount);
         }
 
@@ -201,7 +211,7 @@ namespace ProjectAllTime.VN.Dialogue
             return Mathf.Clamp(baseDelaySeconds + length * secondsPerCharacter, minimumDelaySeconds, maximumDelaySeconds);
         }
 
-        private void TickAuto(long occurrence, float unscaledTime)
+        private void TickAuto(long occurrence, float unscaledTime, int frameCount)
         {
             if (!sessionState.IsLineActive || !sessionState.IsCurrentLineFullyDisplayed || autoRequestedOccurrence == occurrence)
             {
@@ -216,7 +226,7 @@ namespace ProjectAllTime.VN.Dialogue
             }
 
             if (unscaledTime < autoDeadline || !IsCurrentVoiceComplete()) return;
-            if (advanceBridge.TryAdvance(VNAdvanceSource.Auto)) autoRequestedOccurrence = occurrence;
+            if (advanceBridge.TryAdvance(VNAdvanceSource.Auto, frameCount)) autoRequestedOccurrence = occurrence;
         }
 
         private void TickSkip(long occurrence, float unscaledTime, int frameCount)
@@ -231,7 +241,7 @@ namespace ProjectAllTime.VN.Dialogue
             if (sessionState.IsCurrentLineFullyDisplayed && skipConsumedOccurrence == occurrence) return;
             if (frameCount == lastSkipRequestFrame || unscaledTime - lastSkipRequestTime < Mathf.Max(0f, skipAdvanceIntervalSeconds)) return;
 
-            if (advanceBridge.TryAdvance(VNAdvanceSource.Skip))
+            if (advanceBridge.TryAdvance(VNAdvanceSource.Skip, frameCount))
             {
                 lastSkipRequestTime = unscaledTime;
                 lastSkipRequestFrame = frameCount;

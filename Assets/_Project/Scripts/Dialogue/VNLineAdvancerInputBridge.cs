@@ -34,6 +34,15 @@ namespace ProjectAllTime.VN.Dialogue
         /// </summary>
         public bool TryAdvance(VNAdvanceSource source)
         {
+            return TryAdvance(source, Time.frameCount);
+        }
+
+        /// <summary>
+        /// Mirrors Yarn's same-frame content guard before authorizing any read
+        /// state, so a rejected input cannot fabricate a consumed line.
+        /// </summary>
+        internal bool TryAdvance(VNAdvanceSource source, int frameCount)
+        {
             var resolvedLineAdvancer = ResolveLineAdvancer();
             if (resolvedLineAdvancer == null)
             {
@@ -45,6 +54,8 @@ namespace ProjectAllTime.VN.Dialogue
                 return false;
 
             if (!sessionState.IsLineActive) return false;
+
+            if (frameCount == sessionState.CurrentPresentationStartedFrame) return false;
 
             if (sessionState.IsCurrentLineFullyDisplayed && !sessionState.TryAuthorizeCurrentLineConsume())
                 return false;

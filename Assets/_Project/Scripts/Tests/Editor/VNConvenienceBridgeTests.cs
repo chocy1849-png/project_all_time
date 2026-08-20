@@ -241,6 +241,7 @@ namespace ProjectAllTime.Tests.Editor
         {
             lifecycle.RunLineAsync(CreateLine(lineId, text), NewLineToken());
             lifecycle.OnLineDisplayBegin(default, null);
+            SetPrivateField(sessionState, "currentPresentationStartedFrame", -1);
         }
 
         private void CompleteDisplay() => lifecycle.OnLineDisplayComplete();

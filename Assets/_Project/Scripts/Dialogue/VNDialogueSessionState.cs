@@ -15,6 +15,7 @@ namespace ProjectAllTime.VN.Dialogue
         private readonly VNReadHistoryService readHistory = new();
 
         private long currentOccurrence;
+        private int currentPresentationStartedFrame = -1;
         private bool isLineActive;
         private bool isCurrentLineFullyDisplayed;
         private bool optionsActive;
@@ -31,6 +32,8 @@ namespace ProjectAllTime.VN.Dialogue
         /// Automation uses this rather than a stable Yarn line ID, which can recur.
         /// </summary>
         public long CurrentPresentationOccurrence => currentOccurrence;
+        /// <summary>Frame in which the current line occurrence began.</summary>
+        public int CurrentPresentationStartedFrame => currentPresentationStartedFrame;
         public string CurrentLineId => currentLineId;
         public string CurrentSpeakerName => currentSpeakerName;
         public string CurrentText => currentText;
@@ -79,6 +82,7 @@ namespace ProjectAllTime.VN.Dialogue
         internal long BeginLine(LocalizedLine line)
         {
             currentOccurrence++;
+            currentPresentationStartedFrame = Time.frameCount;
             SetOptionsActive(false);
 
             isLineActive = true;

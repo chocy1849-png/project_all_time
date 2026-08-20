@@ -98,6 +98,28 @@ namespace ProjectAllTime.Tests.Editor
         }
 
         [Test]
+        public void Bridge_RejectsThePresentationFrame_BeforeHurryOrReadAuthorization()
+        {
+            Present("same-frame", "Same frame.");
+            SetPrivateField(sessionState, "currentPresentationStartedFrame", Time.frameCount);
+
+            Assert.That(bridge.TryAdvance(VNAdvanceSource.Manual), Is.False);
+            Assert.That(forwardedCount, Is.Zero);
+            Assert.That(sessionState.IsCurrentLineFullyDisplayed, Is.False);
+            Assert.That(sessionState.ReadHistory.IsRead("same-frame"), Is.False);
+
+            CompleteDisplay();
+            Assert.That(bridge.TryAdvance(VNAdvanceSource.Manual), Is.False);
+            Assert.That(sessionState.ReadHistory.IsRead("same-frame"), Is.False);
+
+            var method = typeof(VNLineAdvancerInputBridge).GetMethod("TryAdvance", BindingFlags.Instance | BindingFlags.NonPublic, null,
+                new[] { typeof(VNAdvanceSource), typeof(int) }, null);
+            Assert.That(method, Is.Not.Null);
+            Assert.That((bool)method.Invoke(bridge, new object[] { VNAdvanceSource.Manual, Time.frameCount + 1 }), Is.True);
+            Assert.That(sessionState.ReadHistory.IsRead("same-frame"), Is.True);
+        }
+
+        [Test]
         public void Bridge_RejectsInactiveAndBlankIdFullPresentationWithoutRead()
         {
             Assert.That(bridge.TryAdvance(VNAdvanceSource.Manual), Is.False);
@@ -198,6 +220,25 @@ namespace ProjectAllTime.Tests.Editor
         }
 
         [Test]
+        public void Skip_DoesNotConsumeThePresentationFrame_AndCanAdvanceOnALaterFrame()
+        {
+            Present("skip-frame", "Skip frame.");
+            CompleteDisplay();
+            convenience.SetSkipPolicy(VNSkipPolicy.All);
+            convenience.SetSkipEnabled(true);
+            SetPrivateField(sessionState, "currentPresentationStartedFrame", Time.frameCount);
+
+            Tick(0f, Time.frameCount); // observes the occurrence
+            Tick(1f, Time.frameCount); // requests Skip, but bridge rejects the presentation frame
+            Assert.That(forwardedCount, Is.Zero);
+            Assert.That(GetPrivateField<long>(convenience, "skipConsumedOccurrence"), Is.EqualTo(long.MinValue));
+
+            Tick(2f, Time.frameCount + 1);
+            Assert.That(forwardedCount, Is.EqualTo(1));
+            Assert.That(lastSource, Is.EqualTo(VNAdvanceSource.Skip));
+        }
+
+        [Test]
         public void AutoAndSkip_AreMutuallyExclusive()
         {
             convenience.SetAutoEnabled(true);
@@ -264,6 +305,7 @@ namespace ProjectAllTime.Tests.Editor
         {
             lifecycle.RunLineAsync(CreateLine(lineId, text), default);
             lifecycle.OnLineDisplayBegin(default, null);
+            SetPrivateField(sessionState, "currentPresentationStartedFrame", -1);
         }
 
         private void CompleteDisplay() => lifecycle.OnLineDisplayComplete();
@@ -289,6 +331,13 @@ namespace ProjectAllTime.Tests.Editor
             var field = target.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.That(field, Is.Not.Null, fieldName);
             field.SetValue(target, value);
+        }
+
+        private static T GetPrivateField<T>(object target, string fieldName)
+        {
+            var field = target.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(field, Is.Not.Null, fieldName);
+            return (T)field.GetValue(target);
         }
 
         private static MethodInfo GetPrivateMethod(Type type, string methodName)

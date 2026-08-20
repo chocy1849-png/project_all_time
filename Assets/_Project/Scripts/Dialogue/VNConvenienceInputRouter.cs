@@ -72,7 +72,7 @@ namespace ProjectAllTime.VN.Dialogue
 
         private void HandleAdvancePerformed(InputAction.CallbackContext context)
         {
-            RouteAdvance(IsLeftMouseButton(context.control), IsPointerOverUi());
+            RouteAdvance(IsLeftMouseButton(context.control), IsPointerOverInteractiveUi(context.control));
         }
 
         private void HandleToggleAutoPerformed(InputAction.CallbackContext context) => convenienceController?.ToggleAuto();
@@ -93,7 +93,7 @@ namespace ProjectAllTime.VN.Dialogue
         /// <summary>Separated for deterministic tests; Ctrl remains a momentary Skip overlay.</summary>
         internal void BeginSkipHold()
         {
-            if (convenienceController == null || skipHoldActive) return;
+            if (convenienceController == null || skipHoldActive || interactionGate == null || !interactionGate.CanChangeConvenienceMode) return;
             holdWasInvalidatedByLoad = false;
             skipHoldActive = true;
             skipWasEnabledBeforeHold = convenienceController.IsSkipEnabled;
@@ -182,10 +182,32 @@ namespace ProjectAllTime.VN.Dialogue
             return control is ButtonControl button && button.device is Mouse mouse && button == mouse.leftButton;
         }
 
-        private static bool IsPointerOverUi()
+        /// <summary>
+        /// Uses a current mouse-position raycast instead of EventSystem's
+        /// previous-frame pointer cache. Only a Selectable is treated as an
+        /// interactive UI control; dialogue graphics remain advanceable.
+        /// </summary>
+        internal static bool IsPointerOverInteractiveUi(InputControl control)
         {
-            var eventSystem = EventSystem.current;
-            return eventSystem != null && eventSystem.IsPointerOverGameObject();
+            if (control == null || control.device is not Mouse mouse) return false;
+            return IsPointerOverInteractiveUi(EventSystem.current, mouse.position.ReadValue());
+        }
+
+        internal static bool IsPointerOverInteractiveUi(EventSystem eventSystem, Vector2 pointerPosition)
+        {
+            if (eventSystem == null) return false;
+            var eventData = new PointerEventData(eventSystem) { position = pointerPosition };
+            var results = new List<RaycastResult>();
+            eventSystem.RaycastAll(eventData, results);
+            foreach (var result in results)
+                if (IsInteractiveUiRaycastResult(result))
+                    return true;
+            return false;
+        }
+
+        internal static bool IsInteractiveUiRaycastResult(RaycastResult result)
+        {
+            return result.gameObject != null && result.gameObject.GetComponentInParent<UnityEngine.UI.Selectable>() != null;
         }
 
         private void ClearSkipHoldBookkeeping()

@@ -17,11 +17,15 @@ namespace ProjectAllTime.VN.Dialogue
         private void OnEnable()
         {
             if (convenienceController != null) convenienceController.SafeManualStateRequested += HandleSafeManualStateRequested;
+            if (backlogModal != null) backlogModal.CloseRequested += HandleModalCloseRequested;
+            if (settingsModal != null) settingsModal.CloseRequested += HandleModalCloseRequested;
         }
 
         private void OnDisable()
         {
             if (convenienceController != null) convenienceController.SafeManualStateRequested -= HandleSafeManualStateRequested;
+            if (backlogModal != null) backlogModal.CloseRequested -= HandleModalCloseRequested;
+            if (settingsModal != null) settingsModal.CloseRequested -= HandleModalCloseRequested;
         }
 
         public bool TryOpenBacklog()
@@ -78,5 +82,7 @@ namespace ProjectAllTime.VN.Dialogue
         {
             if (IsConvenienceModalOpen) CloseActiveModal();
         }
+
+        private void HandleModalCloseRequested() => CloseActiveModal();
     }
 }
