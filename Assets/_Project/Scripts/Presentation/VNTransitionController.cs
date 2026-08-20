@@ -13,21 +13,77 @@ namespace ProjectAllTime.VN.Presentation
         [SerializeField] private CanvasGroup backgroundIncomingCanvasGroup;
         [SerializeField] private CanvasGroup cgCanvasGroup;
 
-        public IEnumerator FadeToBlack(float duration)
+        private int activeTransitionOperations;
+
+        /// <summary>True while an awaited M4 presentation operation is active.</summary>
+        public bool IsTransitionActive => activeTransitionOperations > 0;
+
+        public IEnumerator FadeToBlack(float duration) => TrackTransition(FadeToBlackRoutine(duration));
+
+        public IEnumerator FadeFromBlack(float duration) => TrackTransition(FadeFromBlackRoutine(duration));
+
+        public IEnumerator CrossfadeBackground(string backgroundId, float duration) => TrackTransition(CrossfadeBackgroundRoutine(backgroundId, duration));
+
+        public IEnumerator FadeCharacterIn(string characterId, string expressionId, VNCharacterSlot slot, float duration) => TrackTransition(FadeCharacterInRoutine(characterId, expressionId, slot, duration));
+
+        public IEnumerator FadeCharacterOut(string characterId, float duration) => TrackTransition(FadeCharacterOutRoutine(characterId, duration));
+
+        public IEnumerator FadeCGIn(string cgId, float duration) => TrackTransition(FadeCGInRoutine(cgId, duration));
+
+        public IEnumerator FadeCGOut(float duration) => TrackTransition(FadeCGOutRoutine(duration));
+
+        /// <summary>
+        /// Cancels transient M4 operations and restores their visual channels
+        /// to a stable baseline. Logical M3 state remains controller-owned and
+        /// is reconstructed immediately by the subsequent restore call.
+        /// </summary>
+        public void NormalizeForLoad()
+        {
+            StopAllCoroutines();
+            activeTransitionOperations = 0;
+
+            if (screenFadeCanvasGroup != null) screenFadeCanvasGroup.alpha = 0f;
+            if (backgroundCurrentCanvasGroup != null)
+            {
+                var current = presentationController == null ? null : presentationController.BackgroundImage;
+                backgroundCurrentCanvasGroup.alpha = current != null && current.enabled && current.sprite != null ? 1f : 0f;
+            }
+
+            ResetIncomingBackground();
+            if (cgCanvasGroup != null) cgCanvasGroup.alpha = 1f;
+            presentationController?.NormalizeStableCharacterVisuals();
+        }
+
+        /// <summary>Finalizes alpha and buffer state after immediate M3 restore.</summary>
+        public void FinalizeStableStateAfterLoad()
+        {
+            if (screenFadeCanvasGroup != null) screenFadeCanvasGroup.alpha = 0f;
+            if (backgroundCurrentCanvasGroup != null)
+            {
+                var current = presentationController == null ? null : presentationController.BackgroundImage;
+                backgroundCurrentCanvasGroup.alpha = current != null && current.enabled && current.sprite != null ? 1f : 0f;
+            }
+
+            ResetIncomingBackground();
+            if (cgCanvasGroup != null) cgCanvasGroup.alpha = 1f;
+            presentationController?.NormalizeStableCharacterVisuals();
+        }
+
+        private IEnumerator FadeToBlackRoutine(float duration)
         {
             if (!IsValidDuration(duration, "Screen fade to black")) yield break;
             if (screenFadeCanvasGroup == null) { LogMissingReference("Screen Fade CanvasGroup"); yield break; }
             yield return FadeCanvasGroup(screenFadeCanvasGroup, screenFadeCanvasGroup.alpha, 1f, duration);
         }
 
-        public IEnumerator FadeFromBlack(float duration)
+        private IEnumerator FadeFromBlackRoutine(float duration)
         {
             if (!IsValidDuration(duration, "Screen fade from black")) yield break;
             if (screenFadeCanvasGroup == null) { LogMissingReference("Screen Fade CanvasGroup"); yield break; }
             yield return FadeCanvasGroup(screenFadeCanvasGroup, screenFadeCanvasGroup.alpha, 0f, duration);
         }
 
-        public IEnumerator CrossfadeBackground(string backgroundId, float duration)
+        private IEnumerator CrossfadeBackgroundRoutine(string backgroundId, float duration)
         {
             if (!IsValidDuration(duration, "Background crossfade") || !TryGetBackgroundCrossfadeReferences(out var currentImage)) yield break;
             if (!presentationController.TryGetBackgroundSprite(backgroundId, out var targetSprite))
@@ -57,7 +113,7 @@ namespace ProjectAllTime.VN.Presentation
             ResetIncomingBackground();
         }
 
-        public IEnumerator FadeCharacterIn(string characterId, string expressionId, VNCharacterSlot slot, float duration)
+        private IEnumerator FadeCharacterInRoutine(string characterId, string expressionId, VNCharacterSlot slot, float duration)
         {
             if (!IsValidDuration(duration, "Character fade in")) yield break;
             if (presentationController == null) { LogMissingReference(nameof(VNPresentationController)); yield break; }
@@ -73,7 +129,7 @@ namespace ProjectAllTime.VN.Presentation
             yield return FadeCanvasGroup(view.FadeCanvasGroup, 0f, 1f, duration);
         }
 
-        public IEnumerator FadeCharacterOut(string characterId, float duration)
+        private IEnumerator FadeCharacterOutRoutine(string characterId, float duration)
         {
             if (!IsValidDuration(duration, "Character fade out")) yield break;
             if (presentationController == null) { LogMissingReference(nameof(VNPresentationController)); yield break; }
@@ -87,7 +143,7 @@ namespace ProjectAllTime.VN.Presentation
             presentationController.HideCharacter(characterId);
         }
 
-        public IEnumerator FadeCGIn(string cgId, float duration)
+        private IEnumerator FadeCGInRoutine(string cgId, float duration)
         {
             if (!IsValidDuration(duration, "CG fade in") || !TryGetCGFadeReferences()) yield break;
             if (!presentationController.TryGetCGSprite(cgId, out _))
@@ -101,7 +157,7 @@ namespace ProjectAllTime.VN.Presentation
             yield return FadeCanvasGroup(cgCanvasGroup, 0f, 1f, duration);
         }
 
-        public IEnumerator FadeCGOut(float duration)
+        private IEnumerator FadeCGOutRoutine(float duration)
         {
             if (!IsValidDuration(duration, "CG fade out") || !TryGetCGFadeReferences()) yield break;
             if (presentationController.CGImage == null || presentationController.CGImage.sprite == null)
@@ -143,9 +199,23 @@ namespace ProjectAllTime.VN.Presentation
 
         private void ResetIncomingBackground()
         {
+            if (backgroundIncomingCanvasGroup == null || backgroundIncomingImage == null) return;
             backgroundIncomingCanvasGroup.alpha = 0f;
             backgroundIncomingImage.sprite = null;
             backgroundIncomingImage.enabled = false;
+        }
+
+        private IEnumerator TrackTransition(IEnumerator operation)
+        {
+            activeTransitionOperations++;
+            try
+            {
+                while (operation != null && operation.MoveNext()) yield return operation.Current;
+            }
+            finally
+            {
+                activeTransitionOperations = Mathf.Max(0, activeTransitionOperations - 1);
+            }
         }
 
         private static IEnumerator FadePair(CanvasGroup first, float firstStart, float firstTarget, CanvasGroup second, float secondStart, float secondTarget, float duration)

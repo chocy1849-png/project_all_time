@@ -1,0 +1,58 @@
+title: M5_SAVE_LOAD_START
+---
+<<declare $m5_save_number = 10.5>>
+<<declare $m5_save_flag = true>>
+<<declare $m5_save_text = "STATE_A">>
+
+<<vn_bg m3_bg_a>>
+<<vn_clear_cg>>
+<<vn_show m3_a default left>>
+<<vn_facing m3_a right>>
+<<vn_scale m3_a 1.0>>
+<<bgm_play m4_bgm_a>>
+<<jump M5_CHECKPOINT_A>>
+===
+
+title: M5_CHECKPOINT_A
+---
+<<vn_checkpoint m5_checkpoint_a>>
+M5 CHECKPOINT A RESUMED/ACTIVE — number {$m5_save_number}, flag {$m5_save_flag}, text {$m5_save_text}.
+
+Save State A: open Save > Manual, select Slot 1, and verify its metadata and thumbnail. For Quick Save, use Save > Quick and select its only slot.
+
+Advance to create visibly and audibly different State B.
+
+<<set $m5_save_number = 99.25>>
+<<set $m5_save_flag = false>>
+<<set $m5_save_text = "STATE_B">>
+<<vn_bg m3_bg_b>>
+<<vn_clear_cg>>
+<<vn_expression m3_a smile>>
+<<vn_move m3_a right>>
+<<vn_facing m3_a left>>
+<<vn_scale m3_a 1.1>>
+<<bgm_play m4_bgm_b>>
+<<jump M5_CHECKPOINT_B>>
+===
+
+title: M5_CHECKPOINT_B
+---
+<<vn_checkpoint m5_checkpoint_b>>
+M5 CHECKPOINT B ACTIVE — number {$m5_save_number}, flag {$m5_save_flag}, text {$m5_save_text}.
+
+Load test: open Load > Manual and load Slot 1 to resume State A. Quick test: save here with Save > Quick; after advancing to A, Load > Quick restores this latest State B.
+
+Autosave rotation: advance to re-enter A, then advance again for B. Six total checkpoint entries exercise all five Auto slots and one overwrite.
+
+<<set $m5_save_number = 10.5>>
+<<set $m5_save_flag = true>>
+<<set $m5_save_text = "STATE_A">>
+<<vn_bg m3_bg_a>>
+<<vn_clear_cg>>
+<<vn_expression m3_a default>>
+<<vn_move m3_a left>>
+<<vn_facing m3_a right>>
+<<vn_scale m3_a 1.0>>
+<<bgm_play m4_bgm_a>>
+<<jump M5_CHECKPOINT_A>>
+===
