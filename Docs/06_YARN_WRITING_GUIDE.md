@@ -38,3 +38,14 @@ This guide records only the M1 technical rules established with Yarn Spinner 3.2
 - Existing M3 immediate commands remain available and unchanged. Do not use or introduce `vn_pose`.
 - Voice is optional per line. Reserve `#line:m4_voice_test` for the M4 technical voice line; its Korean built-in-localization Assets Folder AudioClip must be named exactly `m4_voice_test.wav` for Yarn Spinner's exact line-ID filename match. Lines without an associated voice asset are normal; an associated asset of the wrong type is an error.
 - `M4_AUDIO_TRANSITION_SMOKE` is technical non-canon test content. The M4 Play Gate passed; no production story or audio content is established here.
+
+## M5 checkpoint authoring
+
+- `<<vn_checkpoint checkpoint_id>>` is the only way Yarn establishes a saveable checkpoint. `checkpoint_id` must exactly match a unique lowercase-snake-case entry in the Unity-authored `VNCheckpointCatalog`.
+- Every production checkpoint must have a dedicated re-entry node whose first instruction is the matching `<<vn_checkpoint checkpoint_id>>` command. That node contains continuation only; it is safe to enter again after loading.
+- Put all non-idempotent state changes before the jump to a checkpoint re-entry node. Do not award items, increment counters, play one-shot effects, or make one-time presentation/audio changes inside the re-entry continuation.
+- Do not treat a currently displayed line, instruction position, or `Dialogue.CurrentNode` as save state. M5 resumes only through the catalog's exact dedicated `resumeNode`.
+- Production checkpoint IDs and chapter IDs use lowercase snake_case. Resume-node names remain exact Yarn node names and are checked against the assigned Yarn Project during validation.
+- M5 automatically requests one complete Auto save after each successful explicit checkpoint entry when the scene controller enables autosave. Do not add JSON/file commands to Yarn. A restored re-entry node's first matching checkpoint command is consumed once to avoid a duplicate Auto save; later genuine checkpoint entries remain eligible.
+- A full save is unavailable during an active transition/fade. Yarn must not attempt to persist transition progress, source-A/source-B state, speaker focus, SFX, or voice; the backend restores only stable catalog-backed M3/M4 state.
+- The M5 technical smoke (`M5_SAVE_LOAD_START`, `M5_CHECKPOINT_A`, and `M5_CHECKPOINT_B`) is non-canon. It validates the finalized checkpoint/node contract only and must not become the normal `VN_Main` start node.

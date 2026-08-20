@@ -25,6 +25,8 @@ namespace ProjectAllTime.VN.Presentation
         [SerializeField, Min(0.01f)] private float defaultScale = 1f;
         [SerializeField] private Sprite backHairSprite;
         [SerializeField] private Sprite bodySprite;
+        [Tooltip("Optional M5 Save/Load card icon. It is never persisted in SaveSlotData.")]
+        [SerializeField] private Sprite saveIcon;
         [SerializeField] private string defaultExpressionId;
         [SerializeField] private List<VNExpressionDefinition> expressions = new();
 
@@ -34,6 +36,7 @@ namespace ProjectAllTime.VN.Presentation
         public float DefaultScale => defaultScale;
         public Sprite BackHairSprite => backHairSprite;
         public Sprite BodySprite => bodySprite;
+        public Sprite SaveIcon => saveIcon;
         public string DefaultExpressionId => defaultExpressionId;
 
         public bool TryGetExpression(string expressionId, out VNExpressionDefinition expression)
