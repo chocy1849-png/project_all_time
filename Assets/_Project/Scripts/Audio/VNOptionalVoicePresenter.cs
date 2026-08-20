@@ -12,8 +12,19 @@ namespace ProjectAllTime.VN.Audio
     {
         [SerializeField] private VoiceOverPresenter voiceOverPresenter;
 
+        private long voiceOccurrence;
+        private string currentVoiceLineId = string.Empty;
+        private bool currentLineHasVoice;
+        private bool isCurrentVoiceComplete = true;
+
+        public string CurrentVoiceLineId => currentVoiceLineId;
+        public bool CurrentLineHasVoice => currentLineHasVoice;
+        public bool IsCurrentVoiceComplete => isCurrentVoiceComplete;
+        public bool IsCurrentVoicePendingOrPlaying => currentLineHasVoice && !isCurrentVoiceComplete;
+
         public override YarnTask RunLineAsync(LocalizedLine line, LineCancellationToken token)
         {
+            var occurrence = BeginVoicePresentation(line);
             if (line.Asset == null) return YarnTask.CompletedTask;
 
             if (!HasUsableVoiceAsset(line.Asset))
@@ -34,18 +45,60 @@ namespace ProjectAllTime.VN.Audio
                 return YarnTask.CompletedTask;
             }
 
-            return voiceOverPresenter.RunLineAsync(line, token);
+            SetVoicePending(occurrence);
+            return ObserveVoiceCompletionAsync(line, token, occurrence);
         }
 
-        public override YarnTask OnDialogueStartedAsync() =>
-            voiceOverPresenter != null
+        public override YarnTask OnDialogueStartedAsync()
+        {
+            ResetVoicePresentation();
+            return voiceOverPresenter != null
                 ? voiceOverPresenter.OnDialogueStartedAsync()
                 : YarnTask.CompletedTask;
+        }
 
-        public override YarnTask OnDialogueCompleteAsync() =>
-            voiceOverPresenter != null
+        public override YarnTask OnDialogueCompleteAsync()
+        {
+            ResetVoicePresentation();
+            return voiceOverPresenter != null
                 ? voiceOverPresenter.OnDialogueCompleteAsync()
                 : YarnTask.CompletedTask;
+        }
+
+        private long BeginVoicePresentation(LocalizedLine line)
+        {
+            voiceOccurrence++;
+            currentVoiceLineId = line?.TextID ?? string.Empty;
+            currentLineHasVoice = false;
+            isCurrentVoiceComplete = true;
+            return voiceOccurrence;
+        }
+
+        private async YarnTask ObserveVoiceCompletionAsync(LocalizedLine line, LineCancellationToken token, long occurrence)
+        {
+            await voiceOverPresenter.RunLineAsync(line, token);
+            CompleteVoicePresentation(occurrence);
+        }
+
+        private void SetVoicePending(long occurrence)
+        {
+            if (occurrence != voiceOccurrence) return;
+            currentLineHasVoice = true;
+            isCurrentVoiceComplete = false;
+        }
+
+        private void CompleteVoicePresentation(long occurrence)
+        {
+            if (occurrence == voiceOccurrence) isCurrentVoiceComplete = true;
+        }
+
+        private void ResetVoicePresentation()
+        {
+            voiceOccurrence++;
+            currentVoiceLineId = string.Empty;
+            currentLineHasVoice = false;
+            isCurrentVoiceComplete = true;
+        }
 
         private static bool HasUsableVoiceAsset(Object asset)
         {

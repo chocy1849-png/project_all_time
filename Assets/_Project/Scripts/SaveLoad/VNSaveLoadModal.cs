@@ -42,6 +42,7 @@ namespace ProjectAllTime.VN.SaveLoad
         private bool savedThumbnailBlocksRaycasts;
 
         public bool IsOpen => isOpen;
+        public bool IsOverwriteConfirmationActive => overwriteConfirmPanel != null && overwriteConfirmPanel.activeSelf;
         public VNSaveLoadMode Mode { get; private set; }
         public VNSaveLoadCategory Category { get; private set; }
         public int Page { get; private set; }
