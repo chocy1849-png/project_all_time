@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using TMPro;
 using UnityEngine;
@@ -167,35 +166,21 @@ namespace ProjectAllTime.VN.Dialogue
 
         private LinePresenter? ResolveAuthoritativeLinePresenter(DialogueRunner? runner)
         {
-            if (runner == null)
-            {
-                Debug.LogError("[M6-WIRING] Cannot resolve the authoritative LinePresenter: LocalizedLine.Source is not a DialogueRunner.", this);
-                return null;
-            }
-
-            var candidates = new List<LinePresenter>();
-            foreach (var presenter in runner.DialoguePresenters)
-            {
-                if (presenter is LinePresenter line && line.isActiveAndEnabled && !candidates.Contains(line))
-                    candidates.Add(line);
-            }
-
-            if (candidates.Count != 1)
+            if (!VNAuthoritativeLinePresenterResolver.TryResolve(runner, out var authoritative, out var diagnostic))
             {
                 Debug.LogError(
-                    $"[M6-WIRING] DialogueRunner {Describe(runner)} has {candidates.Count} enabled distinct LinePresenters; M6 will not authorize full display.",
+                    $"[M6-WIRING] {diagnostic} M6 will not authorize full display.",
                     this);
                 return null;
             }
 
-            var authoritative = candidates[0];
             if (!wiringLogged)
             {
                 wiringLogged = true;
                 VNConvenienceDiagnostics.Log(
                     $"[M6-WIRING] runner={Describe(runner)} authoritativePresenter={Describe(authoritative)} " +
                     $"serializedPresenter={Describe(linePresenter)} same={ReferenceEquals(linePresenter, authoritative)} " +
-                    $"lineText={Describe(authoritative.lineText)}");
+                    $"lineText={Describe(authoritative!.lineText)}");
             }
             if (linePresenter != null && !ReferenceEquals(linePresenter, authoritative) && !serializedMismatchLogged)
             {

@@ -187,3 +187,13 @@ Status: ACCEPTED
 - Persisted `windowedWidth` and `windowedHeight` always mean the last valid Windowed size. Entering fullscreen preserves them; returning to Windowed restores an exact available match, then 1920×1080 if available, otherwise the deterministic nearest option.
 - User-initiated display changes persist through `VNSettingsService` before `Screen.SetResolution` is requested. Startup-style application can request an effective fallback without rewriting write-protected settings. Display requests are end-of-frame Unity requests, not synchronous confirmation that the OS window already changed.
 - Settings UI, startup/scene wiring, resolution confirmation/revert UX, OS/monitor change reconciliation, and all non-display settings application remain deferred.
+
+## DEC-020 — M7 text and Auto speed runtime
+
+Status: ACCEPTED
+
+- M7 applies text speed only through the unique enabled `LinePresenter` owned by the authoritative `DialogueRunner`. Yarn Spinner 3.2.7 copies `lettersPerSecond` into its ByLetter `LetterTypewriter` during Awake, so runtime application updates both `LinePresenter.lettersPerSecond` and the active `LetterTypewriter.CharactersPerSecond`.
+- Text speed is a product/runtime clamp of 20–120 LPS with default 60. Storage validation remains only positive-value validation; applying a stored positive value outside the product range does not rewrite or corrupt the settings. A speed change never restarts, cancels, hurries, or otherwise changes the current line/occurrence lifecycle.
+- `autoSpeedNormalized` maps linearly from 0..1 to a 1.5..0.5 M6 Auto delay multiplier; default 0.5 maps to 1.0. M6 first performs its existing clamped text-delay calculation, M7 multiplies that result, and M6's existing 0.80..4.00 final bounds apply afterward.
+- Changing the Auto factor resets only its pending timer so the next eligible Auto tick re-arms with the new delay. It does not toggle Auto/Skip, change Skip policy, bypass voice completion, authorize full display, or consume choices.
+- User changes persist through `VNSettingsService` before runtime mutation. Startup-style application consumes the effective snapshot without requiring a write, including when future-schema protection has made settings write-protected. UI and startup scene wiring remain deferred.
