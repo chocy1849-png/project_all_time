@@ -226,3 +226,13 @@ Status: ACCEPTED
 - Duplicate effective keyboard paths are rejected across logical M7 targets. SkipHold is one logical target: its default LeftCtrl/RightCtrl pair is occupied together; a custom primary disables the RightCtrl companion, and reset restores both.
 - Overrides are official Input System JSON in `inputBindingOverridesJson`. Runtime changes and resets persist transactionally with rollback; startup load validates and rolls back malformed, fixed-binding-tampered, duplicate, or invalid SkipHold payloads without corrupting Settings schema persistence.
 - Settings UI/scene wiring remain deferred. M7-05 Mixer exposure remains an independent user integration gate.
+
+## DEC-024 — M7 Settings UI runtime
+
+Status: ACCEPTED
+
+- `VNSettingsService` and the existing M7 runtime controllers remain the sole settings authority. The five-category UI is a no-notify mirror and immediate-intent adapter; it has no staged Apply/Cancel DTO.
+- Slider previews are local presentation only and commit once at an explicit pointer/navigation completion seam. Write-protected settings remain inspectable but disable all mutations.
+- Audio editing validates the existing Mixer contract and degrades to read-only values with a diagnostic when exposure is absent. Controls delegates display/rebind/reset work to `VNInputRebindService`; capture is cancelled on category/modal exit.
+- Input override payloads are path-only for every frozen M7 binding. Processor/interaction overrides, including fixed LMB/Escape tampering, are rejected at runtime application and rolled back without changing Settings schema persistence.
+- Scene/prefab/bootstrap wiring and M7-05 Mixer exposure remain deferred.

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using ProjectAllTime.VN.Settings;
 
 namespace ProjectAllTime.VN.Dialogue
 {
@@ -9,6 +10,7 @@ namespace ProjectAllTime.VN.Dialogue
     {
         [SerializeField] private CanvasGroup modalCanvasGroup;
         [SerializeField] private Button closeButton;
+        [SerializeField] private VNSettingsPanel settingsPanel;
 
         private bool isOpen;
         public bool IsOpen => isOpen;
@@ -27,6 +29,7 @@ namespace ProjectAllTime.VN.Dialogue
         private void OnDisable()
         {
             if (closeButton != null) closeButton.onClick.RemoveListener(HandleCloseClicked);
+            settingsPanel?.PrepareForClose();
         }
 
         public bool TryOpen()
@@ -39,6 +42,7 @@ namespace ProjectAllTime.VN.Dialogue
 
             SetVisible(true);
             isOpen = true;
+            settingsPanel?.RefreshFromAuthority();
             return true;
         }
 
@@ -46,6 +50,7 @@ namespace ProjectAllTime.VN.Dialogue
         {
             if (!isOpen) return true;
             if (modalCanvasGroup == null) return false;
+            settingsPanel?.PrepareForClose();
             SetVisible(false);
             isOpen = false;
             return true;

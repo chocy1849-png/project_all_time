@@ -56,6 +56,13 @@ namespace ProjectAllTime.VN.Settings
             return ordered;
         }
 
+        /// <summary>Returns the controller-owned effective Windowed selection without requesting a display change.</summary>
+        public VNResolutionOption GetEffectiveWindowedResolution()
+        {
+            var settings = settingsService.Current;
+            return ResolveWindowedResolution(settings.windowedWidth, settings.windowedHeight);
+        }
+
         /// <summary>
         /// Startup/application seam. It does not load settings and does not need
         /// to rewrite them merely to request the effective display state.

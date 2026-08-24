@@ -168,3 +168,10 @@ Persistent variable integration is deferred to M5.
 - Input System 1.20 requires a target action to be disabled before `PerformInteractiveRebinding`. Capture is explicitly Keyboard-only, Escape-cancelable, and configured with matching-event/action-notification suppression. `VNConvenienceInputRouter` adds a narrow suspension seam that blocks all M6 callbacks and closes active momentary Ctrl Skip before capture.
 - Override JSON is produced/loaded only through `SaveBindingOverridesAsJson` and `LoadBindingOverridesFromJson`. User changes/reset operations retain runtime changes only after `VNSettingsService` succeeds; failures restore the exact previous override JSON. Startup load validates fixed bindings, keyboard paths, duplicates, and SkipHold's dual-Ctrl/custom-companion shape before retaining it.
 - Input UI, scene/bootstrap composition, controller/mouse remapping, and M7-05 Unity Mixer exposure remain deferred.
+
+## M7-08 Settings UI runtime
+
+- `VNSettingsPanel` composes five UI views over injected M7 controllers. It has no independent settings DTO: every refresh reads `VNSettingsService.Current`, and every user operation rereads authority before refreshing UI with no-notify APIs.
+- `VNSettingsSliderCommit` makes slider adjustment presentation transient and invokes a controller mutation only on explicit completion. Display resolution options and stale-resolution fallback remain owned by `VNDisplaySettingsController`; audio availability remains owned by `VNAudioSettingsController`.
+- `VNSettingsModal` preserves M6 modal ownership while refreshing an initialized panel on open and asking it to cancel an active rebind before close/disable. No Scene/Prefab wiring or startup construction is introduced.
+- Frozen input bindings accept path-only overrides. Any `overrideProcessors` or `overrideInteractions` payload is rejected and rolled back; M7-05 Mixer exposure remains a separate integration gate.
