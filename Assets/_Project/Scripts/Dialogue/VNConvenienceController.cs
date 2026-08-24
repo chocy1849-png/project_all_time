@@ -28,6 +28,7 @@ namespace ProjectAllTime.VN.Dialogue
         private bool isAutoEnabled;
         private bool isSkipEnabled;
         private VNSkipPolicy skipPolicy = VNSkipPolicy.ReadOnly;
+        private float autoDelayMultiplier = 1f;
         private long observedOccurrence = long.MinValue;
         private bool autoTimerArmed;
         private float autoDeadline;
@@ -46,6 +47,7 @@ namespace ProjectAllTime.VN.Dialogue
         public bool IsAutoEnabled => isAutoEnabled;
         public bool IsSkipEnabled => isSkipEnabled;
         public VNSkipPolicy SkipPolicy => skipPolicy;
+        public float AutoDelayMultiplier => autoDelayMultiplier;
 
         private void OnEnable()
         {
@@ -179,6 +181,20 @@ namespace ProjectAllTime.VN.Dialogue
             SkipPolicyChanged?.Invoke(policy);
         }
 
+        /// <summary>
+        /// Changes only the runtime factor applied after M6's established base
+        /// delay clamp. Existing Auto/Skip enablement and policy stay untouched.
+        /// </summary>
+        public bool TrySetAutoDelayMultiplier(float multiplier)
+        {
+            if (float.IsNaN(multiplier) || float.IsInfinity(multiplier) || multiplier <= 0f) return false;
+            if (Mathf.Approximately(autoDelayMultiplier, multiplier)) return true;
+
+            autoDelayMultiplier = multiplier;
+            ResetAutoScheduling();
+            return true;
+        }
+
         /// <summary>Exposed for deterministic EditMode tests; production calls this from Update.</summary>
         internal void Tick(float unscaledTime, int frameCount)
         {
@@ -205,11 +221,12 @@ namespace ProjectAllTime.VN.Dialogue
             if (isSkipEnabled) TickSkip(occurrence, unscaledTime, frameCount);
         }
 
-        /// <summary>Returns the provisional M6 text delay for a displayed string.</summary>
+        /// <summary>Returns the M6 base delay followed by the M7 runtime factor and final M6 bounds.</summary>
         public float GetAutoDelaySeconds(string displayedText)
         {
             var length = displayedText?.Length ?? 0;
-            return Mathf.Clamp(baseDelaySeconds + length * secondsPerCharacter, minimumDelaySeconds, maximumDelaySeconds);
+            var baseDelay = Mathf.Clamp(baseDelaySeconds + length * secondsPerCharacter, minimumDelaySeconds, maximumDelaySeconds);
+            return Mathf.Clamp(baseDelay * autoDelayMultiplier, minimumDelaySeconds, maximumDelaySeconds);
         }
 
         private void TickAuto(long occurrence, float unscaledTime, int frameCount)

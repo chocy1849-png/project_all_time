@@ -77,6 +77,19 @@
 
 - No Settings UI, startup/scene wiring, confirmation/revert UX, monitor or refresh-rate selection, OS fullscreen reconciliation, or non-display settings application is implemented.
 
+## M7-04 Text / Auto Speed Runtime — COMPLETE
+
+### REPOSITORY-VERIFIED
+
+- `VNTextAutoSettingsController` applies a persisted settings snapshot to the unique enabled LinePresenter owned by its DialogueRunner and to the existing `VNConvenienceController`. Yarn's active `LetterTypewriter.CharactersPerSecond` is updated together with `LinePresenter.lettersPerSecond`.
+- Text speed is runtime-clamped to 20–120 LPS (default 60) without changing schema-level positive-value validation or rewriting stored out-of-range positive values during startup application. Current lines are never restarted or cancelled for a speed change.
+- Auto speed maps normalized 0..1 to a 1.5..0.5 multiplier. M6's established clamped delay remains base authority; the multiplier is applied afterward and final 0.80..4.00 bounds remain in force. Changing the multiplier re-arms pending Auto timing without changing Auto/Skip state or policy.
+- Full-display, voice-completion, choice, read-history, and occurrence ownership stay with M6. User changes persist first through `VNSettingsService`; failed persistence produces no corresponding speed mutation.
+
+### DEFERRED
+
+- Settings UI, startup/scene wiring, text/Auto controls, other settings runtime application, and any current-line speed restart behavior remain out of scope.
+
 ## M3 Presentation Runtime
 
 - Project-owned code contracts now define fixed-pose layered character definitions (`BackHair` + `Body` + expression `Head`), the presentation catalog, fixed-slot uGUI presentation, Yarn command registration, and speaker focus.
