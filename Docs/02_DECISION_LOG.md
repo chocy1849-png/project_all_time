@@ -197,3 +197,13 @@ Status: ACCEPTED
 - `autoSpeedNormalized` maps linearly from 0..1 to a 1.5..0.5 M6 Auto delay multiplier; default 0.5 maps to 1.0. M6 first performs its existing clamped text-delay calculation, M7 multiplies that result, and M6's existing 0.80..4.00 final bounds apply afterward.
 - Changing the Auto factor resets only its pending timer so the next eligible Auto tick re-arms with the new delay. It does not toggle Auto/Skip, change Skip policy, bypass voice completion, authorize full display, or consume choices.
 - User changes persist through `VNSettingsService` before runtime mutation. Startup-style application consumes the effective snapshot without requiring a write, including when future-schema protection has made settings write-protected. UI and startup scene wiring remain deferred.
+
+## DEC-021 — M7 audio settings runtime
+
+Status: ACCEPTED
+
+- M7 maps persisted normalized Master, BGM, SFX, and Voice preferences to Mixer attenuation only: zero is -80 dB, one is 0 dB, and intermediate values use `20 * log10(normalized)` clamped to -80..0 dB. M7 never produces positive user gain.
+- The exact exposed Mixer parameter contract is `MasterVolumeDb`, `BgmVolumeDb`, `SfxVolumeDb`, and `VoiceVolumeDb`. Master and child attenuation are not manually combined in C#; the Mixer hierarchy composes them.
+- M4 continues to own authored `AudioSource.volume`, BGM crossfades, pause/resume/fade-stop, restore normalization, and SFX `PlayOneShot` scales. Voice playback remains Yarn-owned. M7 has no source-volume, playback, or voice-lifecycle fallback.
+- Runtime application validates all four exposed parameters before mutation, captures prior values for best-effort startup rollback, and persists user changes before applying one matching Mixer parameter. Future-schema write protection does not prevent read-only startup application.
+- `AudioMixer.SetFloat` composition remains a future Start-or-later startup concern. Settings UI, scene wiring, and exposing Mixer attenuation parameters through the Unity Mixer UI remain deferred user/integration work.

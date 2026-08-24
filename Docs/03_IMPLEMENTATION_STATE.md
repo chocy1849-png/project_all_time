@@ -90,6 +90,22 @@
 
 - Settings UI, startup/scene wiring, text/Auto controls, other settings runtime application, and any current-line speed restart behavior remain out of scope.
 
+## M7-05 Audio Settings Runtime — COMPLETE (MIXER EXPOSURE PENDING)
+
+### REPOSITORY-VERIFIED
+
+- `VNAudioSettingsController` is a scene-independent owner over `VNSettingsService` and a narrow AudioMixer seam. It maps Master/BGM/SFX/Voice normalized values to -80..0 dB and applies only the four frozen exposed parameter names.
+- Startup application validates all four parameters before touching the mixer, takes prior values for best-effort rollback after unexpected `SetFloat` failure, and performs no write. User changes validate first, persist one copied settings field first, then update only its matching parameter.
+- M4 `VNAudioController` source volume, crossfade, pause/resume, fade-stop, SFX, capture, and restore ownership are unchanged. Yarn voice playback/lifecycle and M6's voice gate are unchanged.
+
+### USER MIXER EXPOSURE PENDING
+
+- `VNAudioMixer.mixer` retains `Master → BGM/SFX/Voice` but has no exposed parameters. The four group attenuation controls must be exposed and named `MasterVolumeDb`, `BgmVolumeDb`, `SfxVolumeDb`, and `VoiceVolumeDb` in Unity before runtime scene integration.
+
+### DEFERRED
+
+- Settings UI, startup/scene composition, mixer reference wiring, and Unity-side Mixer exposure are outside this code phase.
+
 ## M3 Presentation Runtime
 
 - Project-owned code contracts now define fixed-pose layered character definitions (`BackHair` + `Body` + expression `Head`), the presentation catalog, fixed-slot uGUI presentation, Yarn command registration, and speaker focus.
