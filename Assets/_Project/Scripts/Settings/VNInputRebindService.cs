@@ -109,10 +109,10 @@ namespace ProjectAllTime.VN.Settings
             display = null;
             if (!TryResolve(target, out var resolved, out diagnostic)) return false;
             var primary = resolved.Action.bindings[resolved.PrimaryIndex];
-            var isDefault = primary.overridePath == null;
+            var isDefault = primary.overridePath == null && !HasProcessorOrInteractionOverride(primary);
             var effectivePath = primary.effectivePath ?? string.Empty;
             var displayString = resolved.Action.GetBindingDisplayString(resolved.PrimaryIndex);
-            if (target == VNRebindTarget.SkipHold && isDefault && resolved.Action.bindings[resolved.CompanionIndex].overridePath == null)
+            if (target == VNRebindTarget.SkipHold && isDefault && IsDefaultBinding(resolved.Action.bindings[resolved.CompanionIndex]))
             {
                 effectivePath = string.Concat(effectivePath, " | ", resolved.Action.bindings[resolved.CompanionIndex].effectivePath ?? string.Empty);
                 displayString = string.Concat(displayString, " / ", resolved.Action.GetBindingDisplayString(resolved.CompanionIndex));
@@ -265,12 +265,12 @@ namespace ProjectAllTime.VN.Settings
         private bool TryValidateRuntimeOverrides(out string diagnostic)
         {
             if (!TryValidateInputContract(out diagnostic)) return false;
-            if (!TryFindBinding(FixedAdvanceMouseBindingId, out var mouseAction, out var mouseIndex) || mouseAction.bindings[mouseIndex].overridePath != null)
+            if (!TryFindBinding(FixedAdvanceMouseBindingId, out var mouseAction, out var mouseIndex) || !IsDefaultBinding(mouseAction.bindings[mouseIndex]))
             {
                 diagnostic = "Persisted overrides may not modify fixed Advance Left Mouse.";
                 return false;
             }
-            if (!TryFindBinding(FixedCancelBindingId, out var cancelAction, out var cancelIndex) || cancelAction.bindings[cancelIndex].overridePath != null)
+            if (!TryFindBinding(FixedCancelBindingId, out var cancelAction, out var cancelIndex) || !IsDefaultBinding(cancelAction.bindings[cancelIndex]))
             {
                 diagnostic = "Persisted overrides may not modify fixed Cancel Escape.";
                 return false;
@@ -281,6 +281,11 @@ namespace ProjectAllTime.VN.Settings
             {
                 if (!TryResolve(definition.Target, out var resolved, out diagnostic)) return false;
                 var primary = resolved.Action.bindings[resolved.PrimaryIndex];
+                if (HasProcessorOrInteractionOverride(primary))
+                {
+                    diagnostic = $"Target '{definition.Target}' may not override processors or interactions.";
+                    return false;
+                }
                 if (!IsKeyboardPath(primary.effectivePath))
                 {
                     diagnostic = $"Target '{definition.Target}' has a non-Keyboard effective binding.";
@@ -294,6 +299,11 @@ namespace ProjectAllTime.VN.Settings
                 if (resolved.HasCompanion)
                 {
                     var companion = resolved.Action.bindings[resolved.CompanionIndex];
+                    if (HasProcessorOrInteractionOverride(companion))
+                    {
+                        diagnostic = "SkipHold companion may not override processors or interactions.";
+                        return false;
+                    }
                     var defaultState = primary.overridePath == null && companion.overridePath == null;
                     var customState = !string.IsNullOrEmpty(primary.overridePath) && companion.overridePath == string.Empty;
                     if (!defaultState && !customState)
@@ -406,6 +416,8 @@ namespace ProjectAllTime.VN.Settings
         }
 
         private static bool IsKeyboardOriginal(InputBinding binding) => IsKeyboardPath(binding.path);
+        private static bool IsDefaultBinding(InputBinding binding) => binding.overridePath == null && !HasProcessorOrInteractionOverride(binding);
+        private static bool HasProcessorOrInteractionOverride(InputBinding binding) => binding.overrideProcessors != null || binding.overrideInteractions != null;
         private static bool IsMouseLeftOriginal(InputBinding binding) => string.Equals(binding.path, "<Mouse>/leftButton", StringComparison.OrdinalIgnoreCase);
         private static bool IsEscapeOriginal(InputBinding binding) => string.Equals(binding.path, "<Keyboard>/escape", StringComparison.OrdinalIgnoreCase);
         private static bool IsKeyboardPath(string path) => !string.IsNullOrEmpty(path) && path.StartsWith(KeyboardPathPrefix, StringComparison.OrdinalIgnoreCase);

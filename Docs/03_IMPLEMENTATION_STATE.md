@@ -125,6 +125,13 @@
 - Nested malformed or tampered override JSON fails only runtime application and restores prior bindings; it does not alter M7 Settings schema preservation. SkipHold custom bindings disable RightCtrl; reset restores both Ctrl bindings.
 - Settings UI, bootstrap/scene composition, rebind UI, and M7-05 Unity Mixer exposure remain deferred.
 
+## M7-08 Settings UI Runtime — COMPLETE
+
+- Project-owned panel/views expose Display, Text, Audio, Gameplay, and Controls as authority-mirroring runtime UI adapters. Refresh reads `VNSettingsService.Current` with no-notify control APIs and performs no load, write, or runtime application.
+- Slider commit seams coalesce preview changes into one controller mutation; write-protected settings remain readable and non-mutable. Missing AudioMixer exposure disables only audio editing and reports the existing controller diagnostic.
+- Controls uses `VNInputBindingDisplay` and `VNInputRebindService` for all six targets. Rebind capture is cancelled before closing Settings or leaving Controls. Processor/interaction override tampering is rejected during input override loading.
+- Scene/prefab/bootstrap wiring and M7-05 Unity Mixer exposure remain deferred.
+
 ## M3 Presentation Runtime
 
 - Project-owned code contracts now define fixed-pose layered character definitions (`BackHair` + `Body` + expression `Head`), the presentation catalog, fixed-slot uGUI presentation, Yarn command registration, and speaker focus.

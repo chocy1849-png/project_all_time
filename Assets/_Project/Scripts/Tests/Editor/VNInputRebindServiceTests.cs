@@ -154,6 +154,32 @@ namespace ProjectAllTime.Tests.Editor
         }
 
         [Test]
+        public void ProcessorAndInteractionTampering_IsRejectedAndRolledBackForFrozenBindings()
+        {
+            var service = CreateService();
+            var rebind = CreateServiceUnderTest(service, out var asset);
+            OverrideProcessors(asset, "7c75d042-0409-418a-bf92-a84220ce2099", "7e3a486e-8b78-41c4-b91c-91bb167f735e", "scale(factor=2)");
+            SaveOverrides(service, asset);
+            asset.RemoveAllBindingOverrides();
+            Assert.That(rebind.TryApplyCurrentSettings(out _), Is.False);
+            AssertEffective(asset, "7c75d042-0409-418a-bf92-a84220ce2099", "7e3a486e-8b78-41c4-b91c-91bb167f735e", "<Mouse>/leftButton");
+
+            OverrideInteractions(asset, "b889a0b7-f81d-4fd3-a1b8-f29f540ade64", "6ef85e6d-940b-4612-b1ce-4986893c4e63", "press");
+            SaveOverrides(service, asset);
+            asset.RemoveAllBindingOverrides();
+            Assert.That(rebind.TryApplyCurrentSettings(out _), Is.False);
+            AssertEffective(asset, "b889a0b7-f81d-4fd3-a1b8-f29f540ade64", "6ef85e6d-940b-4612-b1ce-4986893c4e63", "<Keyboard>/escape");
+
+            OverrideProcessors(asset, "40c4fd51-8e22-48d7-91dd-90a40c664f55", "cd8b1b2c-2f7e-4350-a613-b1a3a03e5b50", "scale(factor=2)");
+            Assert.That(rebind.TryGetBindingDisplay(VNRebindTarget.ToggleAuto, out var display, out _), Is.True);
+            Assert.That(display.IsDefault, Is.False);
+            SaveOverrides(service, asset);
+            asset.RemoveAllBindingOverrides();
+            Assert.That(rebind.TryApplyCurrentSettings(out _), Is.False);
+            AssertEffective(asset, "40c4fd51-8e22-48d7-91dd-90a40c664f55", "cd8b1b2c-2f7e-4350-a613-b1a3a03e5b50", "<Keyboard>/a");
+        }
+
+        [Test]
         public void PersistenceFailure_ResetRollsRuntimeOverridesBack()
         {
             const string futureJson = "{\"schemaVersion\":999,\"futureField\":\"preserve-me\"}";
@@ -334,6 +360,18 @@ namespace ProjectAllTime.Tests.Editor
             Assert.That(action, Is.Not.Null);
             var index = BindingIndex(action, bindingId);
             action.ApplyBindingOverride(index, path);
+        }
+
+        private static void OverrideProcessors(InputActionAsset asset, string actionId, string bindingId, string processors)
+        {
+            var action = asset.FindAction(new Guid(actionId));
+            action.ApplyBindingOverride(BindingIndex(action, bindingId), new InputBinding { overrideProcessors = processors });
+        }
+
+        private static void OverrideInteractions(InputActionAsset asset, string actionId, string bindingId, string interactions)
+        {
+            var action = asset.FindAction(new Guid(actionId));
+            action.ApplyBindingOverride(BindingIndex(action, bindingId), new InputBinding { overrideInteractions = interactions });
         }
 
         private static void AssertEffective(InputActionAsset asset, string actionId, string bindingId, string expectedPath)
