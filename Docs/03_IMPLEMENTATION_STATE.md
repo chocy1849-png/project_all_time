@@ -46,8 +46,23 @@
 ### DEFERRED
 
 - Persistent read IDs, gallery/archive/CG progress, and cloud/Steam saves remain M8/M9 or later work.
-- Settings contents/persistence, rebinding UI, final keyboard scheme, and a user-facing Skip All policy are M7 work.
+- Settings application/UI, rebinding UI, final keyboard scheme, and a user-facing Skip All policy remain later M7 work.
 - Backlog voice replay, backlog persistence, choice history, rewind, auto/skip choice selection, Skip transition speed-up, and main menu remain later scope.
+
+## M7-02 Settings Persistence Kernel — COMPLETE
+
+### REPOSITORY-VERIFIED
+
+- `Assets/_Project/Scripts/Settings/` now owns a scene-independent schema-v1 global settings DTO, exact defaults, pure validation, a durable repository, and a session service. Production storage is exactly `Application.persistentDataPath/Settings/settings.json`; M5 remains independently rooted at `Application.persistentDataPath/SaveData`.
+- The only persisted display strings are `full_screen_window` and `windowed`. Writes validate every field, flush a unique same-directory UTF-8 temporary file, and use `File.Move` for first write or `File.Replace` for replacement.
+- Missing settings create no file. Malformed or invalid schema-v1 JSON is moved intact to a unique `settings.json.<GUID-N>.corrupt` file before session defaults are used. A failed quarantine leaves the authoritative file untouched and blocks writes.
+- Future schemas are neither deserialized as v1 nor quarantined, downgraded, or rewritten. The service exposes session defaults in that case and remains write-protected.
+- EditMode tests cover exact defaults, validation boundaries, missing-file behavior, full-field round trip, overwrite cleanup, corruption quarantine/preservation, future-schema protection, failed-quarantine write protection, and the M5/M7 root separation.
+
+### DEFERRED
+
+- Applying persisted settings to display mode/resolution, audio mixer groups, text presentation, screen shake, skip policy, or Input System binding overrides is deferred to later M7 work.
+- Settings UI, rebinding UI, final keyboard scheme, and user-facing Skip All policy are not implemented by M7-02.
 
 ## M3 Presentation Runtime
 
@@ -129,7 +144,7 @@
 
 ## DEFERRED BEYOND M5
 
-- Cloud/cross-device save, encryption, compression, migrations beyond the v1 extension point, unlimited pages, save search/filter, advanced save UI animation, final keyboard Quick Save/Load UX, settings persistence, M6 convenience UX, M7 settings/input, M8 meta-progress, and M9 gallery/archive/achievement persistence.
+- Cloud/cross-device save, encryption, compression, migrations beyond the v1 extension point, unlimited pages, save search/filter, advanced save UI animation, final keyboard Quick Save/Load UX, settings application/UI and rebinding, M8 meta-progress, and M9 gallery/archive/achievement persistence.
 
 ## REPOSITORY-VERIFIED
 
