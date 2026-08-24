@@ -177,3 +177,13 @@ Status: ACCEPTED
 - Schema-v1 settings JSON must explicitly contain every required top-level contract field. Incomplete schema-v1 files are corrupt and follow the same preservation-first quarantine rule; explicit valid zero and false values remain valid.
 - Malformed, missing/invalid-schema, and invalid schema-v1 JSON is moved intact to a unique sibling `.corrupt` file before defaults are used. If preservation cannot be completed, writes are blocked.
 - Future schema files are preserved byte-for-byte, never quarantined, downgraded, parsed as v1, or overwritten by ordinary saves. They yield session defaults under explicit write protection until a future migration owns them.
+
+## DEC-019 — M7 display runtime
+
+Status: ACCEPTED
+
+- M7 display runtime supports only `FullScreenMode.FullScreenWindow` and `FullScreenMode.Windowed`. Fullscreen requests use `Display.main.systemWidth` and `systemHeight`; no fullscreen resolution, monitor, refresh-rate, exclusive-fullscreen, or maximized-window choice is exposed.
+- Windowed choices originate from `Screen.resolutions`, discard invalid entries, deduplicate by width and height only, ignore refresh rate, and order width then height ascending. Empty runtime lists retain the 1920×1080 project fallback.
+- Persisted `windowedWidth` and `windowedHeight` always mean the last valid Windowed size. Entering fullscreen preserves them; returning to Windowed restores an exact available match, then 1920×1080 if available, otherwise the deterministic nearest option.
+- User-initiated display changes persist through `VNSettingsService` before `Screen.SetResolution` is requested. Startup-style application can request an effective fallback without rewriting write-protected settings. Display requests are end-of-frame Unity requests, not synchronous confirmation that the OS window already changed.
+- Settings UI, startup/scene wiring, resolution confirmation/revert UX, OS/monitor change reconciliation, and all non-display settings application remain deferred.
