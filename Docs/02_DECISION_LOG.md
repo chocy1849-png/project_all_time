@@ -207,3 +207,12 @@ Status: ACCEPTED
 - M4 continues to own authored `AudioSource.volume`, BGM crossfades, pause/resume/fade-stop, restore normalization, and SFX `PlayOneShot` scales. Voice playback remains Yarn-owned. M7 has no source-volume, playback, or voice-lifecycle fallback.
 - Runtime application validates all four exposed parameters before mutation, captures prior values for best-effort startup rollback, and persists user changes before applying one matching Mixer parameter. Future-schema write protection does not prevent read-only startup application.
 - `AudioMixer.SetFloat` composition remains a future Start-or-later startup concern. Settings UI, scene wiring, and exposing Mixer attenuation parameters through the Unity Mixer UI remain deferred user/integration work.
+
+## DEC-022 — M7 gameplay settings runtime
+
+Status: ACCEPTED
+
+- `skipUnread` maps exactly to existing M6 policy: false selects `VNSkipPolicy.ReadOnly`; true selects `VNSkipPolicy.All`. M7 changes only that policy after persistence and does not redesign Skip eligibility, scheduling, throttle, full-display authorization, read history, choices, voice behavior, or Auto/Skip mutual exclusion.
+- M6 policy changes reset M6 Skip scheduling and publish its existing policy event, but do not synthesize an advance. The next normal M6 Tick evaluates the current line under the selected policy.
+- `screenShakeEnabled` remains a schema-v1 persisted preference with default true. M7 exposes only a read-only future-consumer gate backed by `VNSettingsService`; it introduces no screen-shake consumer, camera behavior, event system, or package.
+- Startup-style application reads effective settings without a write, including under future-schema protection. Settings UI and startup/scene wiring remain deferred. M7-05 Mixer parameter exposure remains a separate Unity user integration gate.

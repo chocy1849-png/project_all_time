@@ -106,6 +106,18 @@
 
 - Settings UI, startup/scene composition, mixer reference wiring, and Unity-side Mixer exposure are outside this code phase.
 
+## M7-06 Gameplay Settings Runtime — COMPLETE
+
+### REPOSITORY-VERIFIED
+
+- `VNGameplaySettingsController` maps persisted `skipUnread` directly to the existing M6 `VNSkipPolicy`: false is ReadOnly and true is All. User changes copy and persist only that settings field before calling the existing `VNConvenienceController.SetSkipPolicy` seam; startup apply is read-only.
+- M6 remains the authority for all actual Skip behavior, including scheduling, read-history checks, Skip All eligibility, presentation-frame protection, choices, voice, and Auto/Skip state. A policy change neither toggles convenience modes nor forces an advance.
+- `IVNScreenShakeGate` exposes `screenShakeEnabled` directly from effective settings. It is a future-consumer gate only; no screen-shake implementation, camera runtime, or package was added.
+
+### DEFERRED
+
+- Settings UI, startup/scene composition, actual screen-shake consumers, and M7-05 Unity Mixer parameter exposure remain deferred.
+
 ## M3 Presentation Runtime
 
 - Project-owned code contracts now define fixed-pose layered character definitions (`BackHair` + `Body` + expression `Head`), the presentation catalog, fixed-slot uGUI presentation, Yarn command registration, and speaker focus.
