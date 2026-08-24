@@ -21,7 +21,7 @@
 - Audio and transitions are deferred to M4.
 - Persistence is deferred to M5.
 - Convenience UX is deferred to M6.
-- Settings are deferred to M7.
+- Settings application and UI are deferred to M7.
 
 ## PLANNED — NOT IMPLEMENTED
 
@@ -120,3 +120,13 @@ Persistent variable integration is deferred to M5.
 - Auto waits for full display, text-length delay, and optional Voice completion before using the shared advance bridge. Skip applies ReadOnly/All policy through that same bridge and never selects choices.
 - Interaction gates arbitrate hidden UI, M6 Backlog/Settings modals, and M5 Save/Load ownership. Hide changes only DialogueLayer and QuickControlLayer CanvasGroups.
 - M5 Load validates, signals loading, stops dialogue, awaits LinePresenter quiescence, restores, adopts the checkpoint, and starts the resume node. This barrier prevents a stale presenter flash.
+
+## M7-02 settings persistence kernel
+
+- `VNSettingsData` is a plain JsonUtility-compatible schema-v1 DTO under `ProjectAllTime.VN.Settings`. It persists only stable data: display mode (`full_screen_window` or `windowed`), windowed dimensions, text/auto speed, normalized master/BGM/SFX/voice volumes, skip and screen-shake flags, and Input System override JSON. It contains no Unity object references and does not apply runtime behavior.
+- `VNSettingsDefaults.CreateDefault()` returns a fresh exact product-default object. `VNSettingsValidation.TryValidate` is pure and rejects null data, non-v1 schemas, unknown display modes, non-positive dimensions/text speed, non-finite or out-of-range normalized values, and null binding JSON. It never clamps input.
+- The parameterless `VNSettingsRepository` uses exactly `Path.Combine(Application.persistentDataPath, "Settings")` with canonical `settings.json`; `CreateForTesting(root)` is the only test construction path. This root is deliberately separate from M5 `SaveData`.
+- Read first probes `schemaVersion` without interpreting a future schema as v1. Schema 1 is parsed and validated; malformed, missing/invalid schema, and invalid schema-v1 data are corrupt. Corrupt canonical bytes are moved, never copied or overwritten, to a collision-safe `settings.json.<GUID-N>.corrupt` sibling. If the move cannot be guaranteed, the original remains authoritative and the result is write-protected.
+- Future schemas remain byte-for-byte untouched: they are Unsupported, not quarantined or rewritten. Repository write paths re-inspect an existing canonical file and refuse to replace corrupt, unreadable, or future-schema data.
+- Valid writes serialize UTF-8 JSON to a unique same-directory `.tmp`, call `FileStream.Flush(true)`, then use `File.Move` for first write or `File.Replace` for overwrite. Failed writes clean only their exact temporary file and never fall back to delete-and-copy.
+- `VNSettingsService` is a scene-independent session owner. It exposes a defensive settings snapshot, storage state, diagnostic, and write-protection status. Missing/correctly quarantined corrupt data yields session defaults; Unsupported or failed-preservation reads yield defaults while ordinary saves stay blocked. Display, audio, input, and gameplay application remain outside this kernel.

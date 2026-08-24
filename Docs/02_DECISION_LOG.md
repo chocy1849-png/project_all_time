@@ -166,3 +166,13 @@ Status: ACCEPTED
 - M2's VNDialoguePanel LinePresenter is authoritative. M6 resolves it from the delivering DialogueRunner's unique enabled LinePresenter rather than trusting duplicate scene presenter components. The official ActionMarkupHandler callback is primary; TMP visual observation is an idempotent defensive watchdog.
 - QuickLoad retains the M5 stop → LinePresenter visual-quiescence barrier → restore → StartDialogue ordering.
 - M6 technical smoke, checkpoint, and voice assets are non-canon regression fixtures. The normal start node remains `M2_UI_START`.
+
+## DEC-018 — M7 settings persistence kernel
+
+Status: ACCEPTED
+
+- Global settings are a project-owned schema-v1 JSON contract at `Application.persistentDataPath/Settings/settings.json`, deliberately independent from M5 save data at `Application.persistentDataPath/SaveData`.
+- The first persisted contract contains only stable user preferences: display mode string, windowed dimensions, text/auto speed, normalized audio categories, skip and screen-shake flags, and Input System binding override JSON. Applying those values to runtime systems and exposing settings/rebinding UI are later M7 work.
+- Valid writes use same-directory temporary UTF-8 files, a flush-to-disk boundary, and `File.Move`/`File.Replace`; delete-and-copy replacement is prohibited.
+- Malformed, missing/invalid-schema, and invalid schema-v1 JSON is moved intact to a unique sibling `.corrupt` file before defaults are used. If preservation cannot be completed, writes are blocked.
+- Future schema files are preserved byte-for-byte, never quarantined, downgraded, parsed as v1, or overwritten by ordinary saves. They yield session defaults under explicit write protection until a future migration owns them.
