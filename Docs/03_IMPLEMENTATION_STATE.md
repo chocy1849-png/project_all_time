@@ -64,6 +64,19 @@
 - Applying persisted settings to display mode/resolution, audio mixer groups, text presentation, screen shake, skip policy, or Input System binding overrides is deferred to later M7 work.
 - Settings UI, rebinding UI, final keyboard scheme, and user-facing Skip All policy are not implemented by M7-02.
 
+## M7-03 Display Runtime — COMPLETE
+
+### REPOSITORY-VERIFIED
+
+- `VNDisplaySettingsController` applies only persisted `full_screen_window` and `windowed` preferences through a narrow Unity display seam. Fullscreen uses primary-display native dimensions; Windowed options come from `Screen.resolutions`, ignore refresh-rate variants, deduplicate by width × height, and sort deterministically.
+- The stored Windowed size remains unchanged when entering fullscreen. Stale Windowed sizes resolve exact-match first, then the 1920×1080 default, then deterministic nearest available resolution. Empty option lists retain the 1920×1080 fallback.
+- User-initiated changes save a replacement snapshot through `VNSettingsService` before requesting `Screen.SetResolution`; failed persistence causes no runtime request. Startup-style application can safely request the effective current setting without rewriting protected settings.
+- EditMode tests use a fake display runtime and never call the real Screen API.
+
+### DEFERRED
+
+- No Settings UI, startup/scene wiring, confirmation/revert UX, monitor or refresh-rate selection, OS fullscreen reconciliation, or non-display settings application is implemented.
+
 ## M3 Presentation Runtime
 
 - Project-owned code contracts now define fixed-pose layered character definitions (`BackHair` + `Body` + expression `Head`), the presentation catalog, fixed-slot uGUI presentation, Yarn command registration, and speaker focus.
