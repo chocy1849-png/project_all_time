@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Threading;
 using NUnit.Framework;
 using ProjectAllTime.VN.Dialogue;
+using TMPro;
 using UnityEngine;
 using UnityEngine.TestTools;
 using Yarn.Markup;
@@ -17,6 +18,9 @@ namespace ProjectAllTime.Tests.Editor
         private readonly List<Object> ownedObjects = new();
         private VNDialogueSessionState sessionState;
         private VNLineLifecyclePresenter lifecyclePresenter;
+        private VNLineLifecycleMarkupHandler markupHandler;
+        private LinePresenter linePresenter;
+        private TextMeshProUGUI lineText;
 
         [SetUp]
         public void SetUp()
@@ -25,7 +29,16 @@ namespace ProjectAllTime.Tests.Editor
             ownedObjects.Add(gameObject);
             sessionState = gameObject.AddComponent<VNDialogueSessionState>();
             lifecyclePresenter = gameObject.AddComponent<VNLineLifecyclePresenter>();
+            markupHandler = gameObject.AddComponent<VNLineLifecycleMarkupHandler>();
+            linePresenter = gameObject.AddComponent<LinePresenter>();
+            var textObject = new GameObject("M6 Visual Text");
+            ownedObjects.Add(textObject);
+            lineText = textObject.AddComponent<TextMeshProUGUI>();
+            linePresenter.lineText = lineText;
+            linePresenter.characterNameText = lineText;
             SetPrivateField(lifecyclePresenter, "sessionState", sessionState);
+            SetPrivateField(lifecyclePresenter, "linePresenter", linePresenter);
+            SetPrivateField(markupHandler, "lifecyclePresenter", lifecyclePresenter);
         }
 
         [TearDown]
@@ -142,9 +155,10 @@ namespace ProjectAllTime.Tests.Editor
         public void TransientInvalidation_RejectsStaleDisplayAndConsume()
         {
             Present(CreateLine("stale", "Eve", "This is interrupted."));
-            lifecyclePresenter.OnLineDisplayBegin(default, null);
             sessionState.InvalidateTransientPresentation();
-            lifecyclePresenter.OnLineDisplayComplete();
+            lineText.text = "This is interrupted.";
+            lineText.maxVisibleCharacters = lineText.GetTextInfo(lineText.text).characterCount;
+            InvokePrivateNoArguments(lifecyclePresenter, "LateUpdate");
 
             Assert.That(sessionState.Backlog.Count, Is.Zero);
             Assert.That(sessionState.TryAuthorizeCurrentLineConsume(), Is.False);
@@ -199,12 +213,17 @@ namespace ProjectAllTime.Tests.Editor
                 NextContentToken = CancellationToken.None,
                 HurryUpToken = CancellationToken.None,
             });
-            lifecyclePresenter.OnLineDisplayBegin(line.TextWithoutCharacterName, null);
+            SetPrivateField(sessionState, "currentPresentationStartedFrame", -1);
         }
 
-        private void CompleteDisplay() => lifecyclePresenter.OnLineDisplayComplete();
+        private void CompleteDisplay()
+        {
+            lineText.text = sessionState.CurrentText;
+            lineText.maxVisibleCharacters = lineText.GetTextInfo(lineText.text).characterCount;
+            InvokePrivateNoArguments(lifecyclePresenter, "LateUpdate");
+        }
 
-        private void Dismiss() => lifecyclePresenter.OnLineWillDismiss();
+        private void Dismiss() { }
 
         private static LocalizedLine CreateLine(string lineId, string speakerName, string text)
         {
@@ -252,6 +271,13 @@ namespace ProjectAllTime.Tests.Editor
             var field = target.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.That(field, Is.Not.Null);
             field.SetValue(target, value);
+        }
+
+        private static void InvokePrivateNoArguments(object target, string methodName)
+        {
+            var method = target.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(method, Is.Not.Null, methodName);
+            method.Invoke(target, null);
         }
     }
 }

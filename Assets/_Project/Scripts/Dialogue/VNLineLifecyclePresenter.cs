@@ -1,7 +1,7 @@
 using System.Threading;
+using System;
 using TMPro;
 using UnityEngine;
-using Yarn.Markup;
 using Yarn.Unity;
 
 #nullable enable
@@ -9,51 +9,30 @@ using Yarn.Unity;
 namespace ProjectAllTime.VN.Dialogue
 {
     /// <summary>
-    /// Passive Yarn presenter that captures localized line data and observes the
-    /// existing LinePresenter typewriter. It never advances dialogue or selects
-    /// options.
+    /// Passive Yarn presenter that owns per-occurrence session lifecycle and
+    /// observes the actual LinePresenter TMP view for full-display authority.
     /// </summary>
-    public sealed class VNLineLifecyclePresenter : DialoguePresenterBase, IActionMarkupHandler
+    public sealed class VNLineLifecyclePresenter : DialoguePresenterBase
     {
         [SerializeField] private VNDialogueSessionState? sessionState;
         [SerializeField] private LinePresenter? linePresenter;
 
         private long currentLineOccurrence;
-        private long displayOccurrence;
         private LineCancellationToken currentLineToken;
         private bool hasCurrentLineToken;
-        private bool handlerRegistered;
+        private string expectedDisplayText = string.Empty;
+        private int matchingTextObservedFrame = -1;
+        private bool visualStateLogged;
 
-        private void Awake()
+        private void LateUpdate()
         {
-            TryRegisterTypewriterHandler();
-        }
-
-        private void OnEnable()
-        {
-            TryRegisterTypewriterHandler();
-        }
-
-        private void Start()
-        {
-            TryRegisterTypewriterHandler();
-        }
-
-        private void OnDisable()
-        {
-            UnregisterTypewriterHandler();
-        }
-
-        private void OnDestroy()
-        {
-            UnregisterTypewriterHandler();
+            ObserveVisualFullDisplay();
         }
 
         public override YarnTask OnDialogueStartedAsync()
         {
             ClearTrackedLine();
             sessionState?.InvalidateTransientPresentation();
-            TryRegisterTypewriterHandler();
             return YarnTask.CompletedTask;
         }
 
@@ -68,10 +47,13 @@ namespace ProjectAllTime.VN.Dialogue
         {
             if (sessionState == null) return YarnTask.CompletedTask;
 
-            TryRegisterTypewriterHandler();
             currentLineOccurrence = sessionState.BeginLine(line);
             currentLineToken = token;
             hasCurrentLineToken = true;
+            expectedDisplayText = GetExpectedDisplayText(line);
+            matchingTextObservedFrame = -1;
+            visualStateLogged = false;
+            VNConvenienceDiagnostics.Log($"[M6-LIFECYCLE] line Begin: lineId={sessionState.CurrentLineId}, occurrence={currentLineOccurrence}");
             return YarnTask.CompletedTask;
         }
 
@@ -83,32 +65,22 @@ namespace ProjectAllTime.VN.Dialogue
             return ObserveOptionsAsync(optionOccurrence, cancellationToken);
         }
 
-        public void OnPrepareForLine(MarkupParseResult line, TMP_Text text) { }
-
-        public void OnLineDisplayBegin(MarkupParseResult line, TMP_Text text)
+        /// <summary>Advisory-only legacy handler seam retained for M6-08B wiring.</summary>
+        internal void HandleMarkupDisplayBegin()
         {
-            // Yarn invokes this synchronously from the current LinePresenter
-            // typewriter. Preserve the occurrence it belongs to so an old
-            // callback cannot act after transient state has been invalidated.
-            displayOccurrence = hasCurrentLineToken ? currentLineOccurrence : 0;
+            VNConvenienceDiagnostics.Log("[M6-LIFECYCLE] markup callback: display begin (advisory)");
         }
 
-        public YarnTask OnCharacterWillAppear(int currentCharacterIndex, MarkupParseResult line, CancellationToken cancellationToken)
+        /// <summary>Advisory-only legacy handler seam retained for M6-08B wiring.</summary>
+        internal void HandleMarkupDisplayComplete()
         {
-            return YarnTask.CompletedTask;
+            VNConvenienceDiagnostics.Log("[M6-LIFECYCLE] markup callback: display complete (advisory)");
         }
 
-        public void OnLineDisplayComplete()
+        /// <summary>Advisory-only legacy handler seam retained for M6-08B wiring.</summary>
+        internal void HandleMarkupLineWillDismiss()
         {
-            if (!hasCurrentLineToken || sessionState == null || displayOccurrence == 0) return;
-            sessionState.TryRecordFullDisplay(displayOccurrence, currentLineToken.IsNextContentRequested);
-        }
-
-        public void OnLineWillDismiss()
-        {
-            if (sessionState != null && hasCurrentLineToken)
-                sessionState.EndLine(currentLineOccurrence);
-            ClearTrackedLine();
+            VNConvenienceDiagnostics.Log("[M6-LIFECYCLE] markup callback: line dismiss (advisory)");
         }
 
         private async YarnTask<DialogueOption?> ObserveOptionsAsync(long optionOccurrence, LineCancellationToken cancellationToken)
@@ -120,28 +92,62 @@ namespace ProjectAllTime.VN.Dialogue
             return await DialogueRunner.NoOptionSelected;
         }
 
-        private void TryRegisterTypewriterHandler()
+        private void ObserveVisualFullDisplay()
         {
-            if (handlerRegistered || linePresenter == null || linePresenter.Typewriter == null) return;
-            var handlers = linePresenter.Typewriter.ActionMarkupHandlers;
-            if (!handlers.Contains(this)) handlers.Add(this);
-            handlerRegistered = true;
+            if (!hasCurrentLineToken || sessionState == null || !sessionState.IsLineActive ||
+                sessionState.IsCurrentLineFullyDisplayed || currentLineOccurrence != sessionState.CurrentPresentationOccurrence ||
+                currentLineToken.IsNextContentRequested || linePresenter?.lineText == null ||
+                Time.frameCount <= sessionState.CurrentPresentationStartedFrame)
+                return;
+
+            var textView = linePresenter.lineText;
+            var displayedText = textView.text ?? string.Empty;
+            if (!string.Equals(displayedText, expectedDisplayText, StringComparison.Ordinal)) return;
+
+            var visibleCharacterCount = textView.GetTextInfo(displayedText).characterCount;
+            if (!visualStateLogged)
+            {
+                visualStateLogged = true;
+                VNConvenienceDiagnostics.Log(
+                    $"[M6-LIFECYCLE] visual state: lineId={sessionState.CurrentLineId}, occurrence={currentLineOccurrence}, " +
+                    $"active={sessionState.IsLineActive}, full={sessionState.IsCurrentLineFullyDisplayed}, text={displayedText}, " +
+                    $"visible={textView.maxVisibleCharacters}, characters={visibleCharacterCount}, nextRequested={currentLineToken.IsNextContentRequested}, " +
+                    $"backlog={sessionState.Backlog.Count}, read={sessionState.ReadHistory.IsRead(sessionState.CurrentLineId)}");
+            }
+
+            // Empty text has no visible-character transition to distinguish a
+            // newly prepared line from stale empty UI, so require a later
+            // matching frame before accepting it.
+            if (visibleCharacterCount == 0)
+            {
+                if (matchingTextObservedFrame < 0)
+                {
+                    matchingTextObservedFrame = Time.frameCount;
+                    return;
+                }
+                if (Time.frameCount <= matchingTextObservedFrame) return;
+            }
+
+            if (textView.maxVisibleCharacters < visibleCharacterCount) return;
+            if (sessionState.TryRecordFullDisplay(currentLineOccurrence, false))
+                VNConvenienceDiagnostics.Log($"[M6-LIFECYCLE] visual display Complete: lineId={sessionState.CurrentLineId}, occurrence={currentLineOccurrence}");
         }
 
-        private void UnregisterTypewriterHandler()
+        private string GetExpectedDisplayText(LocalizedLine line)
         {
-            if (!handlerRegistered) return;
-            if (linePresenter?.Typewriter != null)
-                linePresenter.Typewriter.ActionMarkupHandlers.Remove(this);
-            handlerRegistered = false;
+            if (linePresenter?.characterNameText == null && linePresenter?.showCharacterNameInLine == true)
+                return line?.Text.Text ?? string.Empty;
+            return line?.TextWithoutCharacterName.Text ?? string.Empty;
         }
 
         private void ClearTrackedLine()
         {
             hasCurrentLineToken = false;
             currentLineOccurrence = 0;
-            displayOccurrence = 0;
             currentLineToken = default;
+            expectedDisplayText = string.Empty;
+            matchingTextObservedFrame = -1;
+            visualStateLogged = false;
         }
     }
 }

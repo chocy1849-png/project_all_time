@@ -33,6 +33,7 @@ namespace ProjectAllTime.VN.Dialogue
         private float autoDeadline;
         private long autoRequestedOccurrence = long.MinValue;
         private long skipConsumedOccurrence = long.MinValue;
+        private long skipReadCheckedOccurrence = long.MinValue;
         private float lastSkipRequestTime = float.NegativeInfinity;
         private int lastSkipRequestFrame = -1;
 
@@ -223,19 +224,35 @@ namespace ProjectAllTime.VN.Dialogue
             {
                 autoTimerArmed = true;
                 autoDeadline = unscaledTime + GetAutoDelaySeconds(sessionState.CurrentText);
+                VNConvenienceDiagnostics.Log($"[M6-AUTO] armed: lineId={sessionState.CurrentLineId}, occurrence={occurrence}, deadline={autoDeadline:0.###}");
             }
 
             if (unscaledTime < autoDeadline || !IsCurrentVoiceComplete()) return;
-            if (advanceBridge.TryAdvance(VNAdvanceSource.Auto, frameCount)) autoRequestedOccurrence = occurrence;
+            var advanced = advanceBridge.TryAdvance(VNAdvanceSource.Auto, frameCount);
+            VNConvenienceDiagnostics.Log($"[M6-AUTO] advance request: lineId={sessionState.CurrentLineId}, occurrence={occurrence}, result={advanced}");
+            if (advanced)
+            {
+                autoRequestedOccurrence = occurrence;
+            }
         }
 
         private void TickSkip(long occurrence, float unscaledTime, int frameCount)
         {
             if (!sessionState.IsLineActive) return;
-            if (skipPolicy == VNSkipPolicy.ReadOnly && !sessionState.ReadHistory.IsRead(sessionState.CurrentLineId))
+            if (skipPolicy == VNSkipPolicy.ReadOnly)
             {
-                SetSkipEnabled(false);
-                return;
+                var isRead = sessionState.ReadHistory.IsRead(sessionState.CurrentLineId);
+                if (skipReadCheckedOccurrence != occurrence)
+                {
+                    skipReadCheckedOccurrence = occurrence;
+                    VNConvenienceDiagnostics.Log($"[M6-SKIP] read check: lineId={sessionState.CurrentLineId}, occurrence={occurrence}, isRead={isRead}");
+                }
+                if (!isRead)
+                {
+                    VNConvenienceDiagnostics.Log($"[M6-SKIP] unread stop: lineId={sessionState.CurrentLineId}, occurrence={occurrence}");
+                    SetSkipEnabled(false);
+                    return;
+                }
             }
 
             if (sessionState.IsCurrentLineFullyDisplayed && skipConsumedOccurrence == occurrence) return;
@@ -246,6 +263,7 @@ namespace ProjectAllTime.VN.Dialogue
                 lastSkipRequestTime = unscaledTime;
                 lastSkipRequestFrame = frameCount;
                 if (sessionState.IsCurrentLineFullyDisplayed) skipConsumedOccurrence = occurrence;
+                VNConvenienceDiagnostics.Log($"[M6-SKIP] advance request: lineId={sessionState.CurrentLineId}, occurrence={occurrence}");
             }
         }
 
@@ -281,6 +299,7 @@ namespace ProjectAllTime.VN.Dialogue
         private void ResetSkipScheduling()
         {
             skipConsumedOccurrence = long.MinValue;
+            skipReadCheckedOccurrence = long.MinValue;
             ResetSkipThrottle();
         }
 

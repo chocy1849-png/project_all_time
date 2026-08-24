@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
 using Yarn.Markup;
 using Yarn.Unity;
 
@@ -17,6 +18,9 @@ namespace ProjectAllTime.Tests.Editor
         private readonly List<Object> ownedObjects = new();
         private VNDialogueSessionState sessionState;
         private VNLineLifecyclePresenter lifecycle;
+        private VNLineLifecycleMarkupHandler markupHandler;
+        private LinePresenter linePresenter;
+        private TextMeshProUGUI lineText;
         private VNInteractionGate gate;
         private VNLineAdvancerInputBridge bridge;
         private VNConvenienceController convenience;
@@ -32,11 +36,20 @@ namespace ProjectAllTime.Tests.Editor
             root.AddComponent<LineAdvancer>().enabled = false;
             sessionState = root.AddComponent<VNDialogueSessionState>();
             lifecycle = root.AddComponent<VNLineLifecyclePresenter>();
+            markupHandler = root.AddComponent<VNLineLifecycleMarkupHandler>();
+            linePresenter = root.AddComponent<LinePresenter>();
+            var textObject = new GameObject("M6 Visual Text");
+            ownedObjects.Add(textObject);
+            lineText = textObject.AddComponent<TextMeshProUGUI>();
+            linePresenter.lineText = lineText;
+            linePresenter.characterNameText = lineText;
             gate = root.AddComponent<VNInteractionGate>();
             bridge = root.AddComponent<VNLineAdvancerInputBridge>();
             convenience = root.AddComponent<VNConvenienceController>();
             router = root.AddComponent<VNConvenienceInputRouter>();
             SetPrivateField(lifecycle, "sessionState", sessionState);
+            SetPrivateField(lifecycle, "linePresenter", linePresenter);
+            SetPrivateField(markupHandler, "lifecyclePresenter", lifecycle);
             SetPrivateField(gate, "sessionState", sessionState);
             SetPrivateField(bridge, "sessionState", sessionState);
             SetPrivateField(bridge, "interactionGate", gate);
@@ -185,7 +198,6 @@ namespace ProjectAllTime.Tests.Editor
                 NextContentToken = System.Threading.CancellationToken.None,
                 HurryUpToken = System.Threading.CancellationToken.None,
             });
-            lifecycle.OnLineDisplayBegin(default, null);
             SetPrivateField(sessionState, "currentPresentationStartedFrame", -1);
         }
 

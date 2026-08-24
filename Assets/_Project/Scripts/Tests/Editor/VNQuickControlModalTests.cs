@@ -17,6 +17,9 @@ namespace ProjectAllTime.Tests.Editor
         private readonly List<UnityEngine.Object> ownedObjects = new();
         private VNDialogueSessionState sessionState;
         private VNLineLifecyclePresenter lifecycle;
+        private VNLineLifecycleMarkupHandler markupHandler;
+        private LinePresenter linePresenter;
+        private TextMeshProUGUI lineText;
         private VNInteractionGate gate;
         private VNLineAdvancerInputBridge bridge;
         private VNConvenienceController convenience;
@@ -37,6 +40,12 @@ namespace ProjectAllTime.Tests.Editor
             root.AddComponent<LineAdvancer>().enabled = false;
             sessionState = root.AddComponent<VNDialogueSessionState>();
             lifecycle = root.AddComponent<VNLineLifecyclePresenter>();
+            markupHandler = root.AddComponent<VNLineLifecycleMarkupHandler>();
+            linePresenter = root.AddComponent<LinePresenter>();
+            var lineTextObject = NewObject("M6 Visual Text");
+            lineText = lineTextObject.AddComponent<TextMeshProUGUI>();
+            linePresenter.lineText = lineText;
+            linePresenter.characterNameText = lineText;
             gate = root.AddComponent<VNInteractionGate>();
             bridge = root.AddComponent<VNLineAdvancerInputBridge>();
             visibility = root.AddComponent<VNUIVisibilityController>();
@@ -57,6 +66,8 @@ namespace ProjectAllTime.Tests.Editor
             backlogEmptyStateText.text = "Authored empty-state copy";
 
             SetPrivateField(lifecycle, "sessionState", sessionState);
+            SetPrivateField(lifecycle, "linePresenter", linePresenter);
+            SetPrivateField(markupHandler, "lifecyclePresenter", lifecycle);
             SetPrivateField(gate, "sessionState", sessionState);
             SetPrivateField(bridge, "sessionState", sessionState);
             SetPrivateField(bridge, "interactionGate", gate);
@@ -240,16 +251,21 @@ namespace ProjectAllTime.Tests.Editor
         private void MarkRead(string lineId, string text, string speaker)
         {
             Present(lineId, text, speaker);
-            lifecycle.OnLineDisplayComplete();
+            CompleteDisplay();
             Assert.That(sessionState.TryAuthorizeCurrentLineConsume(), Is.True);
-            lifecycle.OnLineWillDismiss();
         }
 
         private void Present(string lineId, string text, string speaker = null)
         {
             lifecycle.RunLineAsync(CreateLine(lineId, text, speaker), Token());
-            lifecycle.OnLineDisplayBegin(default, null);
             SetPrivateField(sessionState, "currentPresentationStartedFrame", -1);
+        }
+
+        private void CompleteDisplay()
+        {
+            lineText.text = sessionState.CurrentText;
+            lineText.maxVisibleCharacters = lineText.GetTextInfo(lineText.text).characterCount;
+            InvokePrivateNoArguments(lifecycle, "LateUpdate");
         }
 
         private static LineCancellationToken Token() => new()

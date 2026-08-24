@@ -4,6 +4,7 @@ using System.Reflection;
 using NUnit.Framework;
 using ProjectAllTime.VN.Audio;
 using ProjectAllTime.VN.Dialogue;
+using TMPro;
 using UnityEngine;
 using Yarn.Markup;
 using Yarn.Unity;
@@ -16,6 +17,9 @@ namespace ProjectAllTime.Tests.Editor
         private readonly List<UnityEngine.Object> ownedObjects = new();
         private VNDialogueSessionState sessionState;
         private VNLineLifecyclePresenter lifecycle;
+        private VNLineLifecycleMarkupHandler markupHandler;
+        private LinePresenter linePresenter;
+        private TextMeshProUGUI lineText;
         private VNInteractionGate gate;
         private VNLineAdvancerInputBridge bridge;
         private VNConvenienceController convenience;
@@ -35,11 +39,20 @@ namespace ProjectAllTime.Tests.Editor
             lineAdvancer.enabled = false;
             sessionState = gameObject.AddComponent<VNDialogueSessionState>();
             lifecycle = gameObject.AddComponent<VNLineLifecyclePresenter>();
+            markupHandler = gameObject.AddComponent<VNLineLifecycleMarkupHandler>();
+            linePresenter = gameObject.AddComponent<LinePresenter>();
+            var textObject = new GameObject("M6 Visual Text");
+            ownedObjects.Add(textObject);
+            lineText = textObject.AddComponent<TextMeshProUGUI>();
+            linePresenter.lineText = lineText;
+            linePresenter.characterNameText = lineText;
             gate = gameObject.AddComponent<VNInteractionGate>();
             bridge = gameObject.AddComponent<VNLineAdvancerInputBridge>();
             convenience = gameObject.AddComponent<VNConvenienceController>();
 
             SetPrivateField(lifecycle, "sessionState", sessionState);
+            SetPrivateField(lifecycle, "linePresenter", linePresenter);
+            SetPrivateField(markupHandler, "lifecyclePresenter", lifecycle);
             SetPrivateField(gate, "sessionState", sessionState);
             SetPrivateField(bridge, "sessionState", sessionState);
             SetPrivateField(bridge, "interactionGate", gate);
@@ -164,7 +177,6 @@ namespace ProjectAllTime.Tests.Editor
             Assert.That(convenience.IsAutoEnabled, Is.True);
 
             gate.SetUiHidden(false);
-            lifecycle.OnLineWillDismiss();
             Present("new", "New.");
             CompleteDisplay();
             Tick(10f, 4); // occurrence reset, no inherited deadline
@@ -183,7 +195,7 @@ namespace ProjectAllTime.Tests.Editor
             Assert.That(convenience.IsSkipEnabled, Is.False);
             Assert.That(forwardedCount, Is.Zero);
 
-            lifecycle.OnLineWillDismiss();
+            markupHandler.OnLineWillDismiss();
             Present(" ", "Blank id.");
             convenience.SetSkipEnabled(true);
             Tick(1f, 3);
@@ -298,17 +310,21 @@ namespace ProjectAllTime.Tests.Editor
             Present(lineId, text);
             CompleteDisplay();
             Assert.That(sessionState.TryAuthorizeCurrentLineConsume(), Is.True);
-            lifecycle.OnLineWillDismiss();
+            markupHandler.OnLineWillDismiss();
         }
 
         private void Present(string lineId, string text)
         {
             lifecycle.RunLineAsync(CreateLine(lineId, text), default);
-            lifecycle.OnLineDisplayBegin(default, null);
             SetPrivateField(sessionState, "currentPresentationStartedFrame", -1);
         }
 
-        private void CompleteDisplay() => lifecycle.OnLineDisplayComplete();
+        private void CompleteDisplay()
+        {
+            lineText.text = sessionState.CurrentText;
+            lineText.maxVisibleCharacters = lineText.GetTextInfo(lineText.text).characterCount;
+            InvokePrivateNoArguments(lifecycle, "LateUpdate");
+        }
 
         private void Tick(float time, int frame)
         {
@@ -345,6 +361,13 @@ namespace ProjectAllTime.Tests.Editor
             var method = type.GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.That(method, Is.Not.Null, methodName);
             return method;
+        }
+
+        private static void InvokePrivateNoArguments(object target, string methodName)
+        {
+            var method = target.GetType().GetMethod(methodName, BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(method, Is.Not.Null, methodName);
+            method.Invoke(target, null);
         }
     }
 }

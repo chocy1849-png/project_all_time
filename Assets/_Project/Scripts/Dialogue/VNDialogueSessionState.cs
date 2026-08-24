@@ -51,12 +51,16 @@ namespace ProjectAllTime.VN.Dialogue
         /// </summary>
         public bool TryAuthorizeCurrentLineConsume()
         {
-            if (!isLineActive || !isCurrentLineFullyDisplayed || optionsActive ||
+            var fullyDisplayed = isCurrentLineFullyDisplayed;
+            if (!isLineActive || !fullyDisplayed || optionsActive ||
                 string.IsNullOrWhiteSpace(currentLineId))
                 return false;
 
             var wasAdded = readHistory.RecordAuthorizedConsume(currentLineId);
             if (wasAdded) ReadStateChanged?.Invoke(currentLineId);
+            VNConvenienceDiagnostics.Log(
+                $"[M6-READ] consume result: lineId={currentLineId}, occurrence={currentOccurrence}, " +
+                $"fullyDisplayed={fullyDisplayed}, recorded={wasAdded}, readHistoryContains={readHistory.IsRead(currentLineId)}");
             return true;
         }
 
