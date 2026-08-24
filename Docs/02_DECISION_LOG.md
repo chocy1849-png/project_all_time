@@ -174,5 +174,6 @@ Status: ACCEPTED
 - Global settings are a project-owned schema-v1 JSON contract at `Application.persistentDataPath/Settings/settings.json`, deliberately independent from M5 save data at `Application.persistentDataPath/SaveData`.
 - The first persisted contract contains only stable user preferences: display mode string, windowed dimensions, text/auto speed, normalized audio categories, skip and screen-shake flags, and Input System binding override JSON. Applying those values to runtime systems and exposing settings/rebinding UI are later M7 work.
 - Valid writes use same-directory temporary UTF-8 files, a flush-to-disk boundary, and `File.Move`/`File.Replace`; delete-and-copy replacement is prohibited.
+- Schema-v1 settings JSON must explicitly contain every required top-level contract field. Incomplete schema-v1 files are corrupt and follow the same preservation-first quarantine rule; explicit valid zero and false values remain valid.
 - Malformed, missing/invalid-schema, and invalid schema-v1 JSON is moved intact to a unique sibling `.corrupt` file before defaults are used. If preservation cannot be completed, writes are blocked.
 - Future schema files are preserved byte-for-byte, never quarantined, downgraded, parsed as v1, or overwritten by ordinary saves. They yield session defaults under explicit write protection until a future migration owns them.

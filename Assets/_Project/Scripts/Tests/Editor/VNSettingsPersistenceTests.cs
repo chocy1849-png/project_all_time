@@ -167,9 +167,77 @@ namespace ProjectAllTime.Tests.Editor
         }
 
         [Test]
+        public void PartialSchemaV1_MissingNormalizedField_IsQuarantined()
+        {
+            var original = "{\"schemaVersion\":1,\"displayMode\":\"windowed\",\"windowedWidth\":1920,\"windowedHeight\":1080,\"textSpeedLps\":60,\"autoSpeedNormalized\":0.5,\"bgmVolumeNormalized\":1,\"sfxVolumeNormalized\":1,\"voiceVolumeNormalized\":1,\"skipUnread\":false,\"screenShakeEnabled\":true,\"inputBindingOverridesJson\":\"\"}";
+            WriteCanonicalText(original);
+
+            var result = repository.Read();
+
+            Assert.That(result.State, Is.EqualTo(VNSettingsStorageState.Corrupted));
+            Assert.That(result.Settings, Is.Null);
+            Assert.That(File.Exists(repository.CanonicalFilePath), Is.False);
+            AssertQuarantinedText(original);
+
+            var service = new VNSettingsService(repository);
+            var defaults = service.Load();
+            Assert.That(defaults.masterVolumeNormalized, Is.EqualTo(1f));
+            Assert.That(service.IsWriteProtected, Is.False);
+        }
+
+        [Test]
+        public void PartialSchemaV1_MissingBooleanField_IsQuarantined()
+        {
+            var original = "{\"schemaVersion\":1,\"displayMode\":\"windowed\",\"windowedWidth\":1920,\"windowedHeight\":1080,\"textSpeedLps\":60,\"autoSpeedNormalized\":0.5,\"masterVolumeNormalized\":1,\"bgmVolumeNormalized\":1,\"sfxVolumeNormalized\":1,\"voiceVolumeNormalized\":1,\"skipUnread\":false,\"inputBindingOverridesJson\":\"\"}";
+            WriteCanonicalText(original);
+
+            var result = repository.Read();
+
+            Assert.That(result.State, Is.EqualTo(VNSettingsStorageState.Corrupted));
+            Assert.That(result.Settings, Is.Null);
+            Assert.That(File.Exists(repository.CanonicalFilePath), Is.False);
+            AssertQuarantinedText(original);
+
+            var service = new VNSettingsService(repository);
+            var defaults = service.Load();
+            Assert.That(defaults.screenShakeEnabled, Is.True);
+            Assert.That(service.IsWriteProtected, Is.False);
+        }
+
+        [Test]
+        public void CompleteSchemaV1_ExplicitZeroAndFalseValuesRemainValid()
+        {
+            var complete = "{\"schemaVersion\":1,\"displayMode\":\"windowed\",\"windowedWidth\":1920,\"windowedHeight\":1080,\"textSpeedLps\":60,\"autoSpeedNormalized\":0,\"masterVolumeNormalized\":0,\"bgmVolumeNormalized\":0,\"sfxVolumeNormalized\":0,\"voiceVolumeNormalized\":0,\"skipUnread\":false,\"screenShakeEnabled\":false,\"inputBindingOverridesJson\":\"\"}";
+            WriteCanonicalText(complete);
+
+            var result = repository.Read();
+
+            Assert.That(result.State, Is.EqualTo(VNSettingsStorageState.Valid));
+            Assert.That(result.Settings.autoSpeedNormalized, Is.EqualTo(0f));
+            Assert.That(result.Settings.masterVolumeNormalized, Is.EqualTo(0f));
+            Assert.That(result.Settings.skipUnread, Is.False);
+            Assert.That(result.Settings.screenShakeEnabled, Is.False);
+            Assert.That(Directory.GetFiles(temporaryRoot, "settings.json.*.corrupt", SearchOption.TopDirectoryOnly), Is.Empty);
+        }
+
+        [Test]
+        public void CompleteSchemaV1_ExtraFieldRemainsAccepted()
+        {
+            var complete = "{\"schemaVersion\":1,\"displayMode\":\"windowed\",\"windowedWidth\":1920,\"windowedHeight\":1080,\"textSpeedLps\":60,\"autoSpeedNormalized\":0.5,\"masterVolumeNormalized\":1,\"bgmVolumeNormalized\":1,\"sfxVolumeNormalized\":1,\"voiceVolumeNormalized\":1,\"skipUnread\":false,\"screenShakeEnabled\":true,\"inputBindingOverridesJson\":\"\",\"nonBreakingExtraField\":\"ignored\"}";
+            WriteCanonicalText(complete);
+
+            var result = repository.Read();
+
+            Assert.That(result.State, Is.EqualTo(VNSettingsStorageState.Valid));
+            Assert.That(result.Settings.displayMode, Is.EqualTo(VNSettingsDefaults.WindowedDisplayMode));
+            Assert.That(result.Settings.textSpeedLps, Is.EqualTo(60));
+            Assert.That(Directory.GetFiles(temporaryRoot, "settings.json.*.corrupt", SearchOption.TopDirectoryOnly), Is.Empty);
+        }
+
+        [Test]
         public void FutureSchema_IsPreservedAndBlocksRepositoryAndServiceWrites()
         {
-            var original = "{\"schemaVersion\":2,\"futureField\":{\"mustRemain\":true}}";
+            var original = "{\"schemaVersion\":999,\"futureField\":\"preserve-me\"}";
             WriteCanonicalText(original);
 
             var read = repository.Read();
@@ -235,6 +303,13 @@ namespace ProjectAllTime.Tests.Editor
         {
             Directory.CreateDirectory(temporaryRoot);
             File.WriteAllBytes(repository.CanonicalFilePath, contents);
+        }
+
+        private void AssertQuarantinedText(string expected)
+        {
+            var quarantined = Directory.GetFiles(temporaryRoot, "settings.json.*.corrupt", SearchOption.TopDirectoryOnly);
+            Assert.That(quarantined, Has.Length.EqualTo(1));
+            Assert.That(File.ReadAllText(quarantined[0]), Is.EqualTo(expected));
         }
 
         private static VNSettingsData CreateValidSettings()
