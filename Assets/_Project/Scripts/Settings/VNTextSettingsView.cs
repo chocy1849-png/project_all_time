@@ -38,9 +38,12 @@ namespace ProjectAllTime.VN.Settings
         public void Refresh(VNSettingsData settings, bool canWrite)
         {
             if (!initialized) return;
-            if (textSpeedSlider != null) { textSpeedSlider.SetValueWithoutNotify(settings.textSpeedLps); textSpeedSlider.interactable = canWrite; }
+            var effectiveTextSpeed = VNTextAutoSettingsController.ClampTextSpeedLps(settings.textSpeedLps);
+            if (textSpeedSlider != null) { textSpeedSlider.SetValueWithoutNotify(effectiveTextSpeed); textSpeedSlider.interactable = canWrite; }
             if (autoSpeedSlider != null) { autoSpeedSlider.SetValueWithoutNotify(settings.autoSpeedNormalized); autoSpeedSlider.interactable = canWrite; }
-            UpdateTextLabel(settings.textSpeedLps);
+            textSpeedCommit?.SyncAuthoritativeValue(effectiveTextSpeed);
+            autoSpeedCommit?.SyncAuthoritativeValue(settings.autoSpeedNormalized);
+            UpdateTextLabel(effectiveTextSpeed);
             UpdateAutoLabel(settings.autoSpeedNormalized);
         }
 
@@ -63,6 +66,12 @@ namespace ProjectAllTime.VN.Settings
         private void UpdateTextLabel(int value) { if (textSpeedValueLabel != null) textSpeedValueLabel.text = value.ToString(); }
         private void UpdateAutoLabel(float value) { if (autoSpeedValueLabel != null) autoSpeedValueLabel.text = Mathf.RoundToInt(Mathf.Clamp01(value) * 100f) + "%"; }
         private bool CanMutate() => initialized && settingsService.CanWrite;
+        public bool TryValidateWiring(out string diagnostic)
+        {
+            if (textSpeedSlider == null || autoSpeedSlider == null || textSpeedCommit == null || autoSpeedCommit == null) { diagnostic = "Text Settings UI requires both Sliders and commit seams."; return false; }
+            if (!textSpeedCommit.TryValidateWiring(out diagnostic) || !autoSpeedCommit.TryValidateWiring(out diagnostic)) return false;
+            diagnostic = null; return true;
+        }
         private void RegisterListeners(bool add)
         {
             if (textSpeedSlider != null) { if (add) textSpeedSlider.onValueChanged.AddListener(PreviewText); else textSpeedSlider.onValueChanged.RemoveListener(PreviewText); }

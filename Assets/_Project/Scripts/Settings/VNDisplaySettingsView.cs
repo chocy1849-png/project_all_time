@@ -25,6 +25,11 @@ namespace ProjectAllTime.VN.Settings
             controller = displayController ?? throw new ArgumentNullException(nameof(displayController));
             report = diagnostic;
             initialized = true;
+            if (displayModeDropdown != null)
+            {
+                displayModeDropdown.ClearOptions();
+                displayModeDropdown.AddOptions(new List<string> { "FullScreen Window", "Windowed" });
+            }
             PopulateResolutionOptions();
             Refresh(service.Current, service.CanWrite);
         }
@@ -49,6 +54,7 @@ namespace ProjectAllTime.VN.Settings
         private void HandleDisplayModeChanged(int value)
         {
             if (!CanMutate()) return;
+            if (value != 0 && value != 1) { report?.Invoke("Unsupported display mode selection."); Refresh(settingsService.Current, settingsService.CanWrite); return; }
             var success = value == 0 ? controller.TryUseFullScreenWindow(out var diagnostic) : controller.TryUseWindowed(out diagnostic);
             if (!success || !string.IsNullOrEmpty(diagnostic)) report?.Invoke(diagnostic);
             Refresh(settingsService.Current, settingsService.CanWrite);
@@ -80,6 +86,11 @@ namespace ProjectAllTime.VN.Settings
             return 0;
         }
         private bool CanMutate() => initialized && settingsService.CanWrite;
+        public bool TryValidateWiring(out string diagnostic)
+        {
+            if (displayModeDropdown == null || resolutionDropdown == null) { diagnostic = "Display Settings UI requires mode and resolution dropdowns."; return false; }
+            diagnostic = null; return true;
+        }
         private void RegisterListeners(bool add)
         {
             if (displayModeDropdown != null) { if (add) displayModeDropdown.onValueChanged.AddListener(HandleDisplayModeChanged); else displayModeDropdown.onValueChanged.RemoveListener(HandleDisplayModeChanged); }

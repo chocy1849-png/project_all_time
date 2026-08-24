@@ -15,6 +15,11 @@ namespace ProjectAllTime.VN.Settings
         [SerializeField] private Button resetButton;
 
         public VNRebindTarget Target => target;
+        public bool TryValidateWiring(out string diagnostic)
+        {
+            if (bindingText == null || rebindButton == null || resetButton == null) { diagnostic = $"Rebind item '{target}' requires binding text and both buttons."; return false; }
+            diagnostic = null; return true;
+        }
         public event Action<VNRebindTarget> RebindRequested;
         public event Action<VNRebindTarget> ResetRequested;
 

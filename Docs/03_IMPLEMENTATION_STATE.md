@@ -131,6 +131,7 @@
 - Slider commit seams coalesce preview changes into one controller mutation; write-protected settings remain readable and non-mutable. Missing AudioMixer exposure disables only audio editing and reports the existing controller diagnostic.
 - Controls uses `VNInputBindingDisplay` and `VNInputRebindService` for all six targets. Rebind capture is cancelled before closing Settings or leaving Controls. Processor/interaction override tampering is rejected during input override loading.
 - Scene/prefab/bootstrap wiring and M7-05 Unity Mixer exposure remain deferred.
+- Pre-wiring hardening requires complete serialized UI graphs, de-duplicates slider completion through authority baselines, owns display mode options in code, and mirrors clamped effective Text speed.
 
 ## M3 Presentation Runtime
 

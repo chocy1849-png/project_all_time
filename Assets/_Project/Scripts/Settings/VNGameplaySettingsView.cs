@@ -33,6 +33,11 @@ namespace ProjectAllTime.VN.Settings
         private void HandleSkipUnread(bool value) => Commit(value, controller.TrySetSkipUnread);
         private void HandleScreenShake(bool value) => Commit(value, controller.TrySetScreenShakeEnabled);
         private delegate bool ToggleMutation(bool value, out string diagnostic);
+        public bool TryValidateWiring(out string diagnostic)
+        {
+            if (skipUnreadToggle == null || screenShakeToggle == null) { diagnostic = "Gameplay Settings UI requires both Toggles."; return false; }
+            diagnostic = null; return true;
+        }
         private void Commit(bool value, ToggleMutation mutation)
         {
             if (!initialized || !settingsService.CanWrite) return;

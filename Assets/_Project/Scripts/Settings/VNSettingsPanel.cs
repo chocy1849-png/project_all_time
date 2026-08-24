@@ -51,6 +51,12 @@ namespace ProjectAllTime.VN.Settings
                 ReportDiagnostic("Settings UI requires all M7 runtime dependencies.");
                 return false;
             }
+            if (!TryValidateWiring(out var wiringDiagnostic))
+            {
+                ReportDiagnostic(wiringDiagnostic);
+                initialized = false;
+                return false;
+            }
             if (initialized && !ReferenceEquals(settingsService, service))
             {
                 ReportDiagnostic("Settings UI is already initialized with a different settings service.");
@@ -62,11 +68,26 @@ namespace ProjectAllTime.VN.Settings
             textView?.Initialize(service, textAutoController, ReportDiagnostic);
             audioView?.Initialize(service, audioController, ReportDiagnostic);
             gameplayView?.Initialize(service, gameplayController, ReportDiagnostic);
-            controlsView?.Initialize(service, rebindService, ReportDiagnostic);
+            if (!controlsView.Initialize(service, rebindService, ReportDiagnostic))
+            {
+                initialized = false;
+                ReportDiagnostic("Controls Settings UI initialization failed.");
+                return false;
+            }
             initialized = true;
             ShowCategory(selectedCategory);
             RefreshFromAuthority();
             return true;
+        }
+
+        public bool TryValidateWiring(out string diagnostic)
+        {
+            if (displayCategoryButton == null || textCategoryButton == null || audioCategoryButton == null || gameplayCategoryButton == null || controlsCategoryButton == null ||
+                displayContent == null || textContent == null || audioContent == null || gameplayContent == null || controlsContent == null ||
+                displayView == null || textView == null || audioView == null || gameplayView == null || controlsView == null)
+            { diagnostic = "Settings Panel requires all category buttons, content roots, and category views."; return false; }
+            if (!displayView.TryValidateWiring(out diagnostic) || !textView.TryValidateWiring(out diagnostic) || !audioView.TryValidateWiring(out diagnostic) || !gameplayView.TryValidateWiring(out diagnostic) || !controlsView.TryValidateWiring(out diagnostic)) return false;
+            diagnostic = null; return true;
         }
 
         public void RefreshFromAuthority()

@@ -47,6 +47,7 @@ namespace ProjectAllTime.VN.Settings
             RefreshSlider(bgmSlider, settings.bgmVolumeNormalized, canWrite && mixerAvailable); UpdateLabel(bgmValueLabel, settings.bgmVolumeNormalized);
             RefreshSlider(sfxSlider, settings.sfxVolumeNormalized, canWrite && mixerAvailable); UpdateLabel(sfxValueLabel, settings.sfxVolumeNormalized);
             RefreshSlider(voiceSlider, settings.voiceVolumeNormalized, canWrite && mixerAvailable); UpdateLabel(voiceValueLabel, settings.voiceVolumeNormalized);
+            masterCommit?.SyncAuthoritativeValue(settings.masterVolumeNormalized); bgmCommit?.SyncAuthoritativeValue(settings.bgmVolumeNormalized); sfxCommit?.SyncAuthoritativeValue(settings.sfxVolumeNormalized); voiceCommit?.SyncAuthoritativeValue(settings.voiceVolumeNormalized);
         }
 
         private void CommitMaster(float value) => Commit(value, controller.TrySetMasterVolumeNormalized);
@@ -72,6 +73,22 @@ namespace ProjectAllTime.VN.Settings
         private void RegisterListeners(bool add)
         {
             SetListener(masterCommit, CommitMaster, add); SetListener(bgmCommit, CommitBgm, add); SetListener(sfxCommit, CommitSfx, add); SetListener(voiceCommit, CommitVoice, add);
+            SetPreviewListener(masterSlider, PreviewMaster, add); SetPreviewListener(bgmSlider, PreviewBgm, add); SetPreviewListener(sfxSlider, PreviewSfx, add); SetPreviewListener(voiceSlider, PreviewVoice, add);
+        }
+        private void PreviewMaster(float value) => UpdateLabel(masterValueLabel, value);
+        private void PreviewBgm(float value) => UpdateLabel(bgmValueLabel, value);
+        private void PreviewSfx(float value) => UpdateLabel(sfxValueLabel, value);
+        private void PreviewVoice(float value) => UpdateLabel(voiceValueLabel, value);
+        private static void SetPreviewListener(Slider slider, UnityEngine.Events.UnityAction<float> callback, bool add)
+        {
+            if (slider == null) return;
+            if (add) slider.onValueChanged.AddListener(callback); else slider.onValueChanged.RemoveListener(callback);
+        }
+        public bool TryValidateWiring(out string diagnostic)
+        {
+            if (masterSlider == null || bgmSlider == null || sfxSlider == null || voiceSlider == null || masterCommit == null || bgmCommit == null || sfxCommit == null || voiceCommit == null) { diagnostic = "Audio Settings UI requires four Sliders and commit seams."; return false; }
+            if (!masterCommit.TryValidateWiring(out diagnostic) || !bgmCommit.TryValidateWiring(out diagnostic) || !sfxCommit.TryValidateWiring(out diagnostic) || !voiceCommit.TryValidateWiring(out diagnostic)) return false;
+            diagnostic = null; return true;
         }
         private static void SetListener(VNSettingsSliderCommit commit, Action<float> callback, bool add)
         {
