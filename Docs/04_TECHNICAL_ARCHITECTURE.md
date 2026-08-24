@@ -154,3 +154,10 @@ Persistent variable integration is deferred to M5.
 - Startup application validates and captures all four exposed values before multi-parameter mutation; a later failure returns a diagnostic and attempts best-effort restoration. User changes validate the full contract, persist only their copied field through `VNSettingsService`, then set only the matching Mixer parameter. A post-persistence SetFloat failure leaves the saved setting authoritative for a later reconciliation.
 - M4 source/fade volumes and BGM source state are intentionally not dependencies. Voice sources/presenter lifecycle and M6 voice gating are also untouched. A future startup owner must apply the controller in `Start` or later, never automatically from Awake, OnEnable, or an after-scene-load initializer.
 - The serialized Mixer remains `Master → BGM/SFX/Voice` with no exposed parameters, so Unity user exposure of each group attenuation parameter is required before real scene integration. UI and scene/bootstrap wiring remain deferred.
+
+## M7-06 gameplay settings runtime
+
+- `VNGameplaySettingsController` is a plain owner of `VNSettingsService` plus `VNConvenienceController`. It maps only `skipUnread`: false to `VNSkipPolicy.ReadOnly`, true to `VNSkipPolicy.All`. It neither calls settings `Load` nor duplicates M6 Skip logic.
+- Startup application applies the effective policy without persistence. A user Skip preference copies and persists one field first, then calls M6's existing policy setter. That setter retains ownership of Skip scheduling reset/event behavior and does not synthesize advance or toggle Auto/Skip modes.
+- `IVNScreenShakeGate.IsScreenShakeEnabled` reads effective `VNSettingsService.Current.screenShakeEnabled`; successful user changes persist one field and immediately change this query result. No cached second authority, consumer, camera behavior, event system, or package exists.
+- Settings UI, startup/scene composition, screen-shake implementation, and the separate M7-05 Unity Mixer exposure task remain deferred.
