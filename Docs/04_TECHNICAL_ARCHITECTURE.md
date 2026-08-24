@@ -161,3 +161,10 @@ Persistent variable integration is deferred to M5.
 - Startup application applies the effective policy without persistence. A user Skip preference copies and persists one field first, then calls M6's existing policy setter. That setter retains ownership of Skip scheduling reset/event behavior and does not synthesize advance or toggle Auto/Skip modes.
 - `IVNScreenShakeGate.IsScreenShakeEnabled` reads effective `VNSettingsService.Current.screenShakeEnabled`; successful user changes persist one field and immediately change this query result. No cached second authority, consumer, camera behavior, event system, or package exists.
 - Settings UI, startup/scene composition, screen-shake implementation, and the separate M7-05 Unity Mixer exposure task remain deferred.
+
+## M7-07 input rebinding runtime
+
+- `VNInputRebindService` uses a project-owned six-target inventory and stable Action/Binding GUIDs. It scans action bindings for IDs to obtain temporary Input System indices, never persists indices or action names. `VNInputBindingDisplay` reports effective path/display text, including default dual-Ctrl SkipHold.
+- Input System 1.20 requires a target action to be disabled before `PerformInteractiveRebinding`. Capture is explicitly Keyboard-only, Escape-cancelable, and configured with matching-event/action-notification suppression. `VNConvenienceInputRouter` adds a narrow suspension seam that blocks all M6 callbacks and closes active momentary Ctrl Skip before capture.
+- Override JSON is produced/loaded only through `SaveBindingOverridesAsJson` and `LoadBindingOverridesFromJson`. User changes/reset operations retain runtime changes only after `VNSettingsService` succeeds; failures restore the exact previous override JSON. Startup load validates fixed bindings, keyboard paths, duplicates, and SkipHold's dual-Ctrl/custom-companion shape before retaining it.
+- Input UI, scene/bootstrap composition, controller/mouse remapping, and M7-05 Unity Mixer exposure remain deferred.

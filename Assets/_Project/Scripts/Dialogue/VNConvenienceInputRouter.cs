@@ -28,6 +28,21 @@ namespace ProjectAllTime.VN.Dialogue
         private bool skipWasEnabledBeforeHold;
         private bool autoWasEnabledBeforeHold;
         private bool holdWasInvalidatedByLoad;
+        private int rebindCaptureSuspensionDepth;
+
+        public bool IsRebindCaptureSuspended => rebindCaptureSuspensionDepth > 0;
+
+        /// <summary>Temporarily blocks all M6 routing while Input System captures a rebind.</summary>
+        public void BeginRebindCaptureSuspension()
+        {
+            if (rebindCaptureSuspensionDepth == 0) EndSkipHold();
+            rebindCaptureSuspensionDepth++;
+        }
+
+        public void EndRebindCaptureSuspension()
+        {
+            if (rebindCaptureSuspensionDepth > 0) rebindCaptureSuspensionDepth--;
+        }
 
         private void OnEnable()
         {
@@ -72,28 +87,29 @@ namespace ProjectAllTime.VN.Dialogue
 
         private void HandleAdvancePerformed(InputAction.CallbackContext context)
         {
+            if (IsRebindCaptureSuspended) return;
             RouteAdvance(IsLeftMouseButton(context.control), IsPointerOverInteractiveUi(context.control));
         }
 
-        private void HandleToggleAutoPerformed(InputAction.CallbackContext context) => convenienceController?.ToggleAuto();
-        private void HandleToggleHidePerformed(InputAction.CallbackContext context) => convenienceController?.ToggleUiVisibility();
-        private void HandleQuickSavePerformed(InputAction.CallbackContext context) => convenienceController?.QuickSave();
-        private void HandleQuickLoadPerformed(InputAction.CallbackContext context) => convenienceController?.QuickLoad();
-        private void HandleCancelPerformed(InputAction.CallbackContext context) => convenienceController?.HandleCancel();
-        private void HandleSkipHoldStarted(InputAction.CallbackContext context) => BeginSkipHold();
-        private void HandleSkipHoldCanceled(InputAction.CallbackContext context) => EndSkipHold();
+        private void HandleToggleAutoPerformed(InputAction.CallbackContext context) { if (!IsRebindCaptureSuspended) convenienceController?.ToggleAuto(); }
+        private void HandleToggleHidePerformed(InputAction.CallbackContext context) { if (!IsRebindCaptureSuspended) convenienceController?.ToggleUiVisibility(); }
+        private void HandleQuickSavePerformed(InputAction.CallbackContext context) { if (!IsRebindCaptureSuspended) convenienceController?.QuickSave(); }
+        private void HandleQuickLoadPerformed(InputAction.CallbackContext context) { if (!IsRebindCaptureSuspended) convenienceController?.QuickLoad(); }
+        private void HandleCancelPerformed(InputAction.CallbackContext context) { if (!IsRebindCaptureSuspended) convenienceController?.HandleCancel(); }
+        private void HandleSkipHoldStarted(InputAction.CallbackContext context) { if (!IsRebindCaptureSuspended) BeginSkipHold(); }
+        private void HandleSkipHoldCanceled(InputAction.CallbackContext context) { if (!IsRebindCaptureSuspended) EndSkipHold(); }
 
         /// <summary>Separated for deterministic tests; mouse UI suppression never applies to Space.</summary>
         internal bool RouteAdvance(bool triggeredByLeftMouse, bool pointerOverUi)
         {
-            if (convenienceController == null || triggeredByLeftMouse && pointerOverUi) return false;
+            if (IsRebindCaptureSuspended || convenienceController == null || triggeredByLeftMouse && pointerOverUi) return false;
             return convenienceController.HandleManualAdvance();
         }
 
         /// <summary>Separated for deterministic tests; Ctrl remains a momentary Skip overlay.</summary>
         internal void BeginSkipHold()
         {
-            if (convenienceController == null || skipHoldActive || interactionGate == null || !interactionGate.CanChangeConvenienceMode) return;
+            if (IsRebindCaptureSuspended || convenienceController == null || skipHoldActive || interactionGate == null || !interactionGate.CanChangeConvenienceMode) return;
             holdWasInvalidatedByLoad = false;
             skipHoldActive = true;
             skipWasEnabledBeforeHold = convenienceController.IsSkipEnabled;
