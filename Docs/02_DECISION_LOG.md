@@ -216,3 +216,13 @@ Status: ACCEPTED
 - M6 policy changes reset M6 Skip scheduling and publish its existing policy event, but do not synthesize an advance. The next normal M6 Tick evaluates the current line under the selected policy.
 - `screenShakeEnabled` remains a schema-v1 persisted preference with default true. M7 exposes only a read-only future-consumer gate backed by `VNSettingsService`; it introduces no screen-shake consumer, camera behavior, event system, or package.
 - Startup-style application reads effective settings without a write, including under future-schema protection. Settings UI and startup/scene wiring remain deferred. M7-05 Mixer parameter exposure remains a separate Unity user integration gate.
+
+## DEC-023 — M7 input rebinding runtime
+
+Status: ACCEPTED
+
+- M7 exposes exactly six keyboard targets: Advance, ToggleAuto, SkipHold, ToggleHide, QuickSave, and QuickLoad. Every target resolves by frozen Action ID plus Binding ID; a binding index is derived only at runtime. Advance Left Mouse and Cancel Escape remain fixed.
+- Interactive capture is keyboard-only, Escape-cancelable, single-operation, and uses Input System matching-event plus action-notification suppression. The target action is temporarily disabled as required by Input System 1.20, then restored with operation disposal and M6 Router capture suspension on every exit path.
+- Duplicate effective keyboard paths are rejected across logical M7 targets. SkipHold is one logical target: its default LeftCtrl/RightCtrl pair is occupied together; a custom primary disables the RightCtrl companion, and reset restores both.
+- Overrides are official Input System JSON in `inputBindingOverridesJson`. Runtime changes and resets persist transactionally with rollback; startup load validates and rolls back malformed, fixed-binding-tampered, duplicate, or invalid SkipHold payloads without corrupting Settings schema persistence.
+- Settings UI/scene wiring remain deferred. M7-05 Mixer exposure remains an independent user integration gate.

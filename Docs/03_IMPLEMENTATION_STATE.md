@@ -118,6 +118,13 @@
 
 - Settings UI, startup/scene composition, actual screen-shake consumers, and M7-05 Unity Mixer parameter exposure remain deferred.
 
+## M7-07 Input Rebinding Runtime — COMPLETE
+
+- `VNInputRebindService` owns six frozen keyboard-only targets by stable Action/Binding GUID, official Input System override JSON, startup load, reset-one/reset-all, display data, duplicate rejection, and persistence rollback. LMB and Escape are fixed.
+- Rebind capture suspends M6 Router routing, closes an active Ctrl SkipHold safely, suppresses Input System matching events/action notifications, temporarily disables only the target action, and disposes/restores every exit path.
+- Nested malformed or tampered override JSON fails only runtime application and restores prior bindings; it does not alter M7 Settings schema preservation. SkipHold custom bindings disable RightCtrl; reset restores both Ctrl bindings.
+- Settings UI, bootstrap/scene composition, rebind UI, and M7-05 Unity Mixer exposure remain deferred.
+
 ## M3 Presentation Runtime
 
 - Project-owned code contracts now define fixed-pose layered character definitions (`BackHair` + `Body` + expression `Head`), the presentation catalog, fixed-slot uGUI presentation, Yarn command registration, and speaker focus.
