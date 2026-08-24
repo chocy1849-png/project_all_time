@@ -1,0 +1,61 @@
+title: M6_CONVENIENCE_START
+---
+<<declare $m6_repeat_count = 0>>
+
+M6 SMOKE — TECHNICAL / NON-CANON. This short line is the Auto timing baseline. #line:m6_short_01
+
+M6 SMOKE — This substantially longer technical line deliberately contains enough additional words to make the configured Auto delay visibly longer than the preceding short baseline, without changing the M6 timing settings. #line:m6_long_01
+
+<<vn_bg m3_bg_a>>
+<<vn_clear_cg>>
+<<vn_show m3_a default left>>
+
+M3 A: M6 BACKLOG NAMED-01 — Open Backlog later to verify this speaker name and insertion order. #line:m6_backlog_named_01
+M6 BACKLOG NARRATION-02 — This narration entry must have no speaker container. #line:m6_backlog_narration_02
+M3 A: M6 BACKLOG NAMED-03 — This named entry must follow the narration without duplicate UI rows. #line:m6_backlog_named_03
+
+M6 UNVOICED CONTROL — This line must remain unvoiced after the later voiced fixture. #line:m6_unvoiced_before_01
+M3 A: M6 VOICE TEST — This new M6 line must play m6_voice_test.wav; Auto must wait for the voice to finish. #line:m6_voice_test
+M6 UNVOICED CONTROL — No stale voice audio may continue on this following line. #line:m6_unvoiced_after_01
+
+<<jump M6_CHECKPOINT_A>>
+===
+
+title: M6_CHECKPOINT_A
+---
+<<vn_checkpoint m6_checkpoint_a>>
+M6 CHECKPOINT A — TECHNICAL / NON-CANON. Once the catalog entry is present, F1 Quick Save and F2 Quick Load are valid here. #line:m6_checkpoint_01
+<<jump M6_REPEAT_LINE>>
+===
+
+title: M6_REPEAT_LINE
+---
+<<set $m6_repeat_count = $m6_repeat_count + 1>>
+M6 TEST REPEAT OCCURRENCE {$m6_repeat_count} — This is the one authored source line that executes twice with stable ID m6_repeat_01. Read occurrence 1 manually; enable ReadOnly Skip while occurrence 2 is current. #line:m6_repeat_01
+<<if $m6_repeat_count == 1>>
+M6 TEST — Occurrence 1 is now read. Advance this instruction to re-enter the exact same authored repeat line. #line:m6_repeat_return_01
+<<jump M6_REPEAT_LINE>>
+<<else>>
+<<jump M6_UNREAD_AFTER_REPEAT>>
+<<endif>>
+===
+
+title: M6_UNREAD_AFTER_REPEAT
+---
+M6 TEST UNREAD STOP — This new unread line must display normally because ReadOnly Skip stops here. #line:m6_unread_after_repeat_01
+
+M6 TEST CHOICE — Auto, Skip, and Next must not select either option. #line:m6_choice_prompt_01
+-> M6 CHOICE A — Rejoin the smoke continuation. #line:m6_choice_a_01
+    <<jump M6_CHOICE_CONTINUE>>
+-> M6 CHOICE B — Rejoin the smoke continuation. #line:m6_choice_b_01
+    <<jump M6_CHOICE_CONTINUE>>
+===
+
+title: M6_CHOICE_CONTINUE
+---
+M6 TRANSITION TEST — Advance to run the existing awaited M3 background crossfade. #line:m6_transition_intro_01
+<<vn_bg_crossfade m3_bg_b 1>>
+M6 TRANSITION COMPLETE — Background B must be visible before this line can appear. #line:m6_transition_complete_01
+
+M6 SMOKE COMPLETE — TECHNICAL / NON-CANON. Visual Play Gate verification may now stop. #line:m6_end_01
+===

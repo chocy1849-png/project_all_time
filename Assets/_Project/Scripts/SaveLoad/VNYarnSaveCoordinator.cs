@@ -1,5 +1,6 @@
 using System;
 using ProjectAllTime.VN.Audio;
+using ProjectAllTime.VN.Dialogue;
 using ProjectAllTime.VN.Presentation;
 using Yarn.Unity;
 
@@ -97,6 +98,7 @@ namespace ProjectAllTime.VN.SaveLoad
         private readonly VNPresentationController presentationController;
         private readonly VNTransitionController transitionController;
         private readonly VNAudioController audioController;
+        private readonly VNLinePresenterLoadBarrier linePresenterLoadBarrier = new();
 
         /// <summary>
         /// Retained for pre-M5-04 callers. Full composition requires the M3/M4
@@ -306,8 +308,15 @@ namespace ProjectAllTime.VN.SaveLoad
                 if (dialogueRunner.IsDialogueRunning)
                 {
                     crossedStopBoundary = true;
+                    VNConvenienceDiagnostics.Log("[M6-LOAD] Stop begin");
                     await dialogueRunner.Stop();
+                    VNConvenienceDiagnostics.Log("[M6-LOAD] Stop complete");
                 }
+
+                var quiescence = await linePresenterLoadBarrier.WaitForQuiescence(dialogueRunner);
+                if (!quiescence.Succeeded)
+                    return VNYarnLoadExecutionResult.Failure(crossedStopBoundary, quiescence.Diagnostic);
+                VNConvenienceDiagnostics.Log("[M6-LOAD] LinePresenter quiescent");
 
                 transitionController.NormalizeForLoad();
                 audioController.NormalizeTransientForLoad();
@@ -325,7 +334,9 @@ namespace ProjectAllTime.VN.SaveLoad
                 // This is after the destructive boundary, but before the
                 // re-entry node can issue any subsequent checkpoint command.
                 checkpointService.AdoptValidatedContext(validation.Checkpoint);
+                VNConvenienceDiagnostics.Log($"[M6-LOAD] StartDialogue begin: {validation.Checkpoint.ResumeNode}");
                 await dialogueRunner.StartDialogue(validation.Checkpoint.ResumeNode);
+                VNConvenienceDiagnostics.Log("[M6-LOAD] StartDialogue complete");
                 return VNYarnLoadExecutionResult.Success(crossedStopBoundary);
             }
             catch (Exception)

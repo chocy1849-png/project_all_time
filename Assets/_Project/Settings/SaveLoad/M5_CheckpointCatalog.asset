@@ -21,3 +21,7 @@ MonoBehaviour:
     resumeNode: M5_CHECKPOINT_B
     chapterId: m5_technical
     sceneTitle: M5 Technical Checkpoint B
+  - checkpointId: m6_checkpoint_a
+    resumeNode: M6_CHECKPOINT_A
+    chapterId: m6_technical
+    sceneTitle: M6 Technical Checkpoint B

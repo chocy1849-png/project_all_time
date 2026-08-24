@@ -112,3 +112,11 @@ Persistent variable integration is deferred to M5.
 - The production scene baseline remains `M2_UI_START`. `M5_SAVE_LOAD_START` and `M5_CHECKPOINT_A`/`M5_CHECKPOINT_B` are imported technical smoke nodes, not the normal start node.
 - Load is a two-phase transaction: validate the complete JSON/checkpoint/Yarn/presentation/audio/play-time plans without mutation, then stop an active runner if needed, normalize transient M4 state, restore the prepared logical state, adopt the checkpoint context, and `StartDialogue` at the catalog resume node. The one matching checkpoint event on that re-entry is consumed by the autosave guard; later checkpoint entries autosave normally.
 - Repository verification covers serialized wiring and EditMode contracts. Visual/runtime behavior is separately USER-VERIFIED by the completed M5 Play Gate.
+
+## M6 convenience runtime
+
+- Manual input flows `InputAction → VNConvenienceInputRouter → VNConvenienceController → VNLineAdvancerInputBridge → Yarn LineAdvancer`.
+- For each line, `VNLineLifecyclePresenter` resolves the delivering DialogueRunner's unique enabled LinePresenter. The active VNDialoguePanel `VNLineLifecycleMarkupHandler` callback marks full display; an authoritative TMP visual observer is an idempotent watchdog. `VNDialogueSessionState` is the sole Backlog/full-display/read authority.
+- Auto waits for full display, text-length delay, and optional Voice completion before using the shared advance bridge. Skip applies ReadOnly/All policy through that same bridge and never selects choices.
+- Interaction gates arbitrate hidden UI, M6 Backlog/Settings modals, and M5 Save/Load ownership. Hide changes only DialogueLayer and QuickControlLayer CanvasGroups.
+- M5 Load validates, signals loading, stops dialogue, awaits LinePresenter quiescence, restores, adopts the checkpoint, and starts the resume node. This barrier prevents a stale presenter flash.

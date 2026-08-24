@@ -155,3 +155,14 @@ Status: ACCEPTED
 - Presentation persistence remains logical M3 state only (background, CG, and visible character ID/expression/slot/facing/scale). Audio persistence remains logical BGM ID plus approximate playback seconds. Pose, speaker focus, RGB/alpha/transitional state, BGM source role, SFX, Voice, and mixer settings are not persisted.
 - The one-shot matching checkpoint event after a load is intentionally consumed to suppress duplicate autosave. A later genuine checkpoint entry returns to normal autosave allocation.
 - `VN_Main` keeps `M2_UI_START` as its normal start node. M5 smoke nodes are technical-only. Repository checks and the completed user Play Gate are recorded as distinct evidence classes in implementation state and the M5 Draft PR.
+
+## DEC-017 — M6 core convenience UX
+
+Status: ACCEPTED
+
+- Backlog and Read History are application-session services only. Backlog records full-display occurrences; Read History records stable Yarn `TextID` values only after an authorized normal consume.
+- ReadOnly Skip is the default policy. Skip All remains runtime-supported, but its user-facing policy control is deferred to M7. Auto and Skip are mutually exclusive and both use the shared LineAdvancer bridge.
+- `VNConvenienceInputRouter` owns M6 Input System routing. Hide affects only DialogueLayer and QuickControlLayer; Backlog and Settings are M6 modal owners, while M5 retains Save/Load and overwrite ownership.
+- M2's VNDialoguePanel LinePresenter is authoritative. M6 resolves it from the delivering DialogueRunner's unique enabled LinePresenter rather than trusting duplicate scene presenter components. The official ActionMarkupHandler callback is primary; TMP visual observation is an idempotent defensive watchdog.
+- QuickLoad retains the M5 stop → LinePresenter visual-quiescence barrier → restore → StartDialogue ordering.
+- M6 technical smoke, checkpoint, and voice assets are non-canon regression fixtures. The normal start node remains `M2_UI_START`.

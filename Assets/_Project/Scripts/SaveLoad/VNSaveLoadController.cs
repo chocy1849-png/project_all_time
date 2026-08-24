@@ -76,12 +76,17 @@ namespace ProjectAllTime.VN.SaveLoad
 
         public event Action<VNSaveLoadOperationResult> OperationCompleted;
         public event Action<string> StatusChanged;
+        /// <summary>Raised exactly while a validated Load transaction owns runtime state.</summary>
+        public event Action<bool> LoadStateChanged;
 
         public VNPlayTimeTracker PlayTimeTracker => playTimeTracker;
         public VNSaveRepository Repository => repository;
         public VNSaveLoadMode CurrentMode => saveLoadModal == null ? VNSaveLoadMode.Save : saveLoadModal.Mode;
         public VNSaveLoadCategory CurrentCategory => saveLoadModal == null ? VNSaveLoadCategory.Manual : saveLoadModal.Category;
         public int CurrentPage => saveLoadModal == null ? 0 : saveLoadModal.Page;
+        public bool IsModalOpen => saveLoadModal != null && saveLoadModal.IsOpen;
+        public bool IsLoadInProgress => loadInProgress;
+        public bool IsOverwriteConfirmationActive => saveLoadModal != null && saveLoadModal.IsOverwriteConfirmationActive;
 
         private void Awake()
         {
@@ -186,7 +191,7 @@ namespace ProjectAllTime.VN.SaveLoad
             pendingManualOverwrite = null;
             saveLoadModal?.Hide();
             autosaveGuard.ExpectLoadedCheckpoint(validation.Checkpoint.CheckpointId);
-            loadInProgress = true;
+            SetLoadInProgress(true);
             StartLoad(validation);
             return Complete(VNSaveLoadOperationStatus.Succeeded, "Load prepared and started.");
         }
@@ -310,7 +315,7 @@ namespace ProjectAllTime.VN.SaveLoad
                 // If the resumed node contained no matching checkpoint command,
                 // do not let a later unrelated checkpoint be consumed.
                 autosaveGuard.Clear();
-                loadInProgress = false;
+                SetLoadInProgress(false);
                 RestoreDialogueAdvanceInput();
             }
         }
@@ -396,6 +401,13 @@ namespace ProjectAllTime.VN.SaveLoad
                 dialogueAdvanceAction.action.Enable();
             dialogueAdvanceSuppressed = false;
             dialogueAdvanceWasEnabled = false;
+        }
+
+        private void SetLoadInProgress(bool value)
+        {
+            if (loadInProgress == value) return;
+            loadInProgress = value;
+            LoadStateChanged?.Invoke(value);
         }
 
         private VNSaveLoadOperationResult Complete(VNSaveLoadOperationStatus status, string message)
