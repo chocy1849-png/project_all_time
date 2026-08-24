@@ -41,7 +41,7 @@ namespace ProjectAllTime.Tests.Editor
                 new VNTextAutoSettingsController(service, runner, convenience), new VNAudioSettingsController(service, new FakeMixer()),
                 new VNGameplaySettingsController(service, convenience), new VNInputRebindService(service, asset, router));
 
-            Assert.That(initialized, Is.True);
+            Assert.That(initialized, Is.False);
             panel.RefreshFromAuthority();
             Assert.That(File.Exists(repository.CanonicalFilePath), Is.False);
         }
@@ -64,6 +64,29 @@ namespace ProjectAllTime.Tests.Editor
             commit.Commit();
             Assert.That(count, Is.EqualTo(1));
             Assert.That(value, Is.EqualTo(0.8f));
+        }
+
+        [Test]
+        public void SliderCommit_AuthoritativeBaselineMakesDuplicateCompletionAndFailureRecoveryNoOps()
+        {
+            var root = Track(new GameObject("Slider Baseline Test"));
+            var slider = root.AddComponent<Slider>();
+            var commit = root.AddComponent<VNSettingsSliderCommit>();
+            commit.Initialize(slider);
+            commit.SyncAuthoritativeValue(0.5f);
+            var count = 0;
+            commit.CommitRequested += _ => count++;
+            slider.value = 0.8f;
+            commit.Commit();
+            commit.SyncAuthoritativeValue(0.8f);
+            commit.Commit();
+            Assert.That(count, Is.EqualTo(1));
+
+            // A failed owner mutation refreshes the old authority and suppresses later completion callbacks.
+            commit.SyncAuthoritativeValue(0.5f);
+            slider.SetValueWithoutNotify(0.5f);
+            commit.Commit();
+            Assert.That(count, Is.EqualTo(1));
         }
 
         private T Track<T>(T value) where T : UnityEngine.Object { owned.Add(value); return value; }

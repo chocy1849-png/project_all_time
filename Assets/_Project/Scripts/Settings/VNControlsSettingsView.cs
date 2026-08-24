@@ -49,6 +49,16 @@ namespace ProjectAllTime.VN.Settings
             return true;
         }
 
+        public bool TryValidateWiring(out string diagnostic)
+        {
+            diagnostic = null;
+            if (resetAllButton == null || rebindItems == null || rebindItems.Length != Enum.GetValues(typeof(VNRebindTarget)).Length) { diagnostic = "Controls UI requires Reset All and exactly six rebind items."; return false; }
+            var seen = new HashSet<VNRebindTarget>();
+            foreach (var item in rebindItems)
+                if (item == null || !item.TryValidateWiring(out diagnostic) || !seen.Add(item.Target)) { diagnostic ??= "Controls UI contains a missing or duplicate target."; return false; }
+            diagnostic = null; return true;
+        }
+
         public void Refresh(VNSettingsData settings, bool canWrite)
         {
             if (!initialized) return;

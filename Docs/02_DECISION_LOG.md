@@ -236,3 +236,4 @@ Status: ACCEPTED
 - Audio editing validates the existing Mixer contract and degrades to read-only values with a diagnostic when exposure is absent. Controls delegates display/rebind/reset work to `VNInputRebindService`; capture is cancelled on category/modal exit.
 - Input override payloads are path-only for every frozen M7 binding. Processor/interaction overrides, including fixed LMB/Escape tampering, are rejected at runtime application and rolled back without changing Settings schema persistence.
 - Scene/prefab/bootstrap wiring and M7-05 Mixer exposure remain deferred.
+- Pre-wiring clarification: slider commits compare against a refreshed authority baseline so duplicate completion events cannot duplicate mutations; required UI references fail fast, display mode options are code-owned, and Text UI mirrors effective clamped LPS.
