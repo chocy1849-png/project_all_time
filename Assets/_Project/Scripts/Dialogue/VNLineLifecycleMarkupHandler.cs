@@ -9,9 +9,9 @@ using Yarn.Unity;
 namespace ProjectAllTime.VN.Dialogue
 {
     /// <summary>
-    /// Legacy serialized Yarn Typewriter Event Handler retained only for
-    /// diagnostics. M6 full-display state is observed from LinePresenter TMP
-    /// state by VNLineLifecyclePresenter and does not depend on this component.
+    /// Serialized Yarn Typewriter Event Handler for the authoritative active
+    /// LinePresenter. Its completion callback is M6's primary full-display
+    /// signal; the presenter retains TMP observation as a defensive watchdog.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class VNLineLifecycleMarkupHandler : ActionMarkupHandler

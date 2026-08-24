@@ -49,3 +49,11 @@ This guide records only the M1 technical rules established with Yarn Spinner 3.2
 - M5 automatically requests one complete Auto save after each successful explicit checkpoint entry when the scene controller enables autosave. Do not add JSON/file commands to Yarn. A restored re-entry node's first matching checkpoint command is consumed once to avoid a duplicate Auto save; later genuine checkpoint entries remain eligible.
 - A full save is unavailable during an active transition/fade. Yarn must not attempt to persist transition progress, source-A/source-B state, speaker focus, SFX, or voice; the backend restores only stable catalog-backed M3/M4 state.
 - The M5 technical smoke (`M5_SAVE_LOAD_START`, `M5_CHECKPOINT_A`, and `M5_CHECKPOINT_B`) is non-canon. It validates the finalized checkpoint/node contract only and must not become the normal `VN_Main` start node.
+
+## M6 convenience authoring
+
+- Visible lines retain stable, unique explicit line IDs. Changing an ID changes its session ReadHistory identity.
+- A repeatedly executed authored line keeps the same stable ID; do not duplicate one explicit ID across separate authored source lines.
+- Choices are never Auto-selected or Skip-selected.
+- ReadHistory is session-only and is not persisted by M6.
+- `M6_CONVENIENCE_SMOKE` and its voice/checkpoint fixtures are non-canon technical regression content.

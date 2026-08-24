@@ -7076,7 +7076,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2958262985454349548, guid: 52571f68872914e24837210513edea1d, type: 3}
       propertyPath: eventHandlers.Array.size
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2958262985454349548, guid: 52571f68872914e24837210513edea1d, type: 3}
       propertyPath: 'eventHandlers.Array.data[1]'
@@ -7220,7 +7220,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8309902628685535410, guid: 52571f68872914e24837210513edea1d, type: 3}
       propertyPath: startNode
-      value: M6_CONVENIENCE_START
+      value: M2_UI_START
       objectReference: {fileID: 0}
     - target: {fileID: 8309902628685535410, guid: 52571f68872914e24837210513edea1d, type: 3}
       propertyPath: yarnProject
@@ -7265,17 +7265,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1321607882}
   m_SourcePrefab: {fileID: 100100000, guid: 52571f68872914e24837210513edea1d, type: 3}
---- !u!114 &1321607878 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2958262985454349548, guid: 52571f68872914e24837210513edea1d, type: 3}
-  m_PrefabInstance: {fileID: 1321607877}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7dd50f871a60b4bbe88a71d308b2613f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1321607879 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3859336324316773512, guid: 52571f68872914e24837210513edea1d, type: 3}
@@ -7955,8 +7944,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectAllTime.VN.Dialogue.VNLineLifecyclePresenter
   sessionState: {fileID: 1444090794}
-  linePresenter: {fileID: 1321607878}
-  lifecycleMarkupHandler: {fileID: 0}
+  linePresenter: {fileID: 1374021206}
 --- !u!114 &1444090794
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7997,7 +7985,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectAllTime.VN.Dialogue.VNLineLifecycleMarkupHandler
   lifecyclePresenter: {fileID: 1444090793}
-  enableM6TechnicalDiagnostics: 1
+  enableM6TechnicalDiagnostics: 0
 --- !u!1 &1474110438
 GameObject:
   m_ObjectHideFlags: 0
@@ -11718,6 +11706,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2464599753535797199, guid: 3a0ef08201a89ac4895c101b5a3ffc2b, type: 3}
+      propertyPath: eventHandlers.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2464599753535797199, guid: 3a0ef08201a89ac4895c101b5a3ffc2b, type: 3}
+      propertyPath: 'eventHandlers.Array.data[0]'
+      value: 
+      objectReference: {fileID: 1444090796}
     - target: {fileID: 2766944388522886276, guid: 3a0ef08201a89ac4895c101b5a3ffc2b, type: 3}
       propertyPath: m_Name
       value: LineContainer

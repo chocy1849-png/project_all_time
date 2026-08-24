@@ -21,6 +21,7 @@ namespace ProjectAllTime.Tests.Editor
         private VNLineLifecycleMarkupHandler markupHandler;
         private LinePresenter linePresenter;
         private TextMeshProUGUI lineText;
+        private DialogueRunner dialogueRunner;
 
         [SetUp]
         public void SetUp()
@@ -31,11 +32,15 @@ namespace ProjectAllTime.Tests.Editor
             lifecyclePresenter = gameObject.AddComponent<VNLineLifecyclePresenter>();
             markupHandler = gameObject.AddComponent<VNLineLifecycleMarkupHandler>();
             linePresenter = gameObject.AddComponent<LinePresenter>();
+            dialogueRunner = gameObject.AddComponent<DialogueRunner>();
             var textObject = new GameObject("M6 Visual Text");
             ownedObjects.Add(textObject);
+            textObject.AddComponent<Canvas>();
             lineText = textObject.AddComponent<TextMeshProUGUI>();
+            lineText.font = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
             linePresenter.lineText = lineText;
             linePresenter.characterNameText = lineText;
+            dialogueRunner.DialoguePresenters = new DialoguePresenterBase[] { linePresenter };
             SetPrivateField(lifecyclePresenter, "sessionState", sessionState);
             SetPrivateField(lifecyclePresenter, "linePresenter", linePresenter);
             SetPrivateField(markupHandler, "lifecyclePresenter", lifecyclePresenter);
@@ -157,7 +162,7 @@ namespace ProjectAllTime.Tests.Editor
             Present(CreateLine("stale", "Eve", "This is interrupted."));
             sessionState.InvalidateTransientPresentation();
             lineText.text = "This is interrupted.";
-            lineText.maxVisibleCharacters = lineText.GetTextInfo(lineText.text).characterCount;
+            lineText.maxVisibleCharacters = int.MaxValue;
             InvokePrivateNoArguments(lifecyclePresenter, "LateUpdate");
 
             Assert.That(sessionState.Backlog.Count, Is.Zero);
@@ -208,6 +213,7 @@ namespace ProjectAllTime.Tests.Editor
 
         private void Present(LocalizedLine line, LineCancellationToken? token = null)
         {
+            line.Source = dialogueRunner;
             lifecyclePresenter.RunLineAsync(line, token ?? new LineCancellationToken
             {
                 NextContentToken = CancellationToken.None,
@@ -218,9 +224,7 @@ namespace ProjectAllTime.Tests.Editor
 
         private void CompleteDisplay()
         {
-            lineText.text = sessionState.CurrentText;
-            lineText.maxVisibleCharacters = lineText.GetTextInfo(lineText.text).characterCount;
-            InvokePrivateNoArguments(lifecyclePresenter, "LateUpdate");
+            markupHandler.OnLineDisplayComplete();
         }
 
         private void Dismiss() { }

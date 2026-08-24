@@ -20,6 +20,7 @@ namespace ProjectAllTime.Tests.Editor
         private VNLineLifecycleMarkupHandler markupHandler;
         private LinePresenter linePresenter;
         private TextMeshProUGUI lineText;
+        private DialogueRunner dialogueRunner;
         private VNInteractionGate gate;
         private VNLineAdvancerInputBridge bridge;
         private VNConvenienceController convenience;
@@ -42,10 +43,14 @@ namespace ProjectAllTime.Tests.Editor
             lifecycle = root.AddComponent<VNLineLifecyclePresenter>();
             markupHandler = root.AddComponent<VNLineLifecycleMarkupHandler>();
             linePresenter = root.AddComponent<LinePresenter>();
+            dialogueRunner = root.AddComponent<DialogueRunner>();
             var lineTextObject = NewObject("M6 Visual Text");
+            lineTextObject.AddComponent<Canvas>();
             lineText = lineTextObject.AddComponent<TextMeshProUGUI>();
+            lineText.font = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
             linePresenter.lineText = lineText;
             linePresenter.characterNameText = lineText;
+            dialogueRunner.DialoguePresenters = new DialoguePresenterBase[] { linePresenter };
             gate = root.AddComponent<VNInteractionGate>();
             bridge = root.AddComponent<VNLineAdvancerInputBridge>();
             visibility = root.AddComponent<VNUIVisibilityController>();
@@ -257,15 +262,15 @@ namespace ProjectAllTime.Tests.Editor
 
         private void Present(string lineId, string text, string speaker = null)
         {
-            lifecycle.RunLineAsync(CreateLine(lineId, text, speaker), Token());
+            var line = CreateLine(lineId, text, speaker);
+            line.Source = dialogueRunner;
+            lifecycle.RunLineAsync(line, Token());
             SetPrivateField(sessionState, "currentPresentationStartedFrame", -1);
         }
 
         private void CompleteDisplay()
         {
-            lineText.text = sessionState.CurrentText;
-            lineText.maxVisibleCharacters = lineText.GetTextInfo(lineText.text).characterCount;
-            InvokePrivateNoArguments(lifecycle, "LateUpdate");
+            markupHandler.OnLineDisplayComplete();
         }
 
         private static LineCancellationToken Token() => new()

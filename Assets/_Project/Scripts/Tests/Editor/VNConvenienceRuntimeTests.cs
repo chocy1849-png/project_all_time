@@ -20,6 +20,7 @@ namespace ProjectAllTime.Tests.Editor
         private VNLineLifecycleMarkupHandler markupHandler;
         private LinePresenter linePresenter;
         private TextMeshProUGUI lineText;
+        private DialogueRunner dialogueRunner;
         private VNInteractionGate gate;
         private VNLineAdvancerInputBridge bridge;
         private VNConvenienceController convenience;
@@ -41,11 +42,15 @@ namespace ProjectAllTime.Tests.Editor
             lifecycle = gameObject.AddComponent<VNLineLifecyclePresenter>();
             markupHandler = gameObject.AddComponent<VNLineLifecycleMarkupHandler>();
             linePresenter = gameObject.AddComponent<LinePresenter>();
+            dialogueRunner = gameObject.AddComponent<DialogueRunner>();
             var textObject = new GameObject("M6 Visual Text");
             ownedObjects.Add(textObject);
+            textObject.AddComponent<Canvas>();
             lineText = textObject.AddComponent<TextMeshProUGUI>();
+            lineText.font = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
             linePresenter.lineText = lineText;
             linePresenter.characterNameText = lineText;
+            dialogueRunner.DialoguePresenters = new DialoguePresenterBase[] { linePresenter };
             gate = gameObject.AddComponent<VNInteractionGate>();
             bridge = gameObject.AddComponent<VNLineAdvancerInputBridge>();
             convenience = gameObject.AddComponent<VNConvenienceController>();
@@ -315,15 +320,15 @@ namespace ProjectAllTime.Tests.Editor
 
         private void Present(string lineId, string text)
         {
-            lifecycle.RunLineAsync(CreateLine(lineId, text), default);
+            var line = CreateLine(lineId, text);
+            line.Source = dialogueRunner;
+            lifecycle.RunLineAsync(line, default);
             SetPrivateField(sessionState, "currentPresentationStartedFrame", -1);
         }
 
         private void CompleteDisplay()
         {
-            lineText.text = sessionState.CurrentText;
-            lineText.maxVisibleCharacters = lineText.GetTextInfo(lineText.text).characterCount;
-            InvokePrivateNoArguments(lifecycle, "LateUpdate");
+            markupHandler.OnLineDisplayComplete();
         }
 
         private void Tick(float time, int frame)

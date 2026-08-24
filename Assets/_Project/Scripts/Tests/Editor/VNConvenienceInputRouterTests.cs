@@ -21,6 +21,7 @@ namespace ProjectAllTime.Tests.Editor
         private VNLineLifecycleMarkupHandler markupHandler;
         private LinePresenter linePresenter;
         private TextMeshProUGUI lineText;
+        private DialogueRunner dialogueRunner;
         private VNInteractionGate gate;
         private VNLineAdvancerInputBridge bridge;
         private VNConvenienceController convenience;
@@ -38,11 +39,15 @@ namespace ProjectAllTime.Tests.Editor
             lifecycle = root.AddComponent<VNLineLifecyclePresenter>();
             markupHandler = root.AddComponent<VNLineLifecycleMarkupHandler>();
             linePresenter = root.AddComponent<LinePresenter>();
+            dialogueRunner = root.AddComponent<DialogueRunner>();
             var textObject = new GameObject("M6 Visual Text");
             ownedObjects.Add(textObject);
+            textObject.AddComponent<Canvas>();
             lineText = textObject.AddComponent<TextMeshProUGUI>();
+            lineText.font = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
             linePresenter.lineText = lineText;
             linePresenter.characterNameText = lineText;
+            dialogueRunner.DialoguePresenters = new DialoguePresenterBase[] { linePresenter };
             gate = root.AddComponent<VNInteractionGate>();
             bridge = root.AddComponent<VNLineAdvancerInputBridge>();
             convenience = root.AddComponent<VNConvenienceController>();
@@ -189,11 +194,13 @@ namespace ProjectAllTime.Tests.Editor
 
         private void Present(string lineId, string text)
         {
-            lifecycle.RunLineAsync(new LocalizedLine
+            var line = new LocalizedLine
             {
                 TextID = lineId,
                 Text = new MarkupParseResult(text, new List<MarkupAttribute>()),
-            }, new LineCancellationToken
+                Source = dialogueRunner,
+            };
+            lifecycle.RunLineAsync(line, new LineCancellationToken
             {
                 NextContentToken = System.Threading.CancellationToken.None,
                 HurryUpToken = System.Threading.CancellationToken.None,

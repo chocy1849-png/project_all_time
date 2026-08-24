@@ -6,6 +6,7 @@ using ProjectAllTime.VN.Dialogue;
 using ProjectAllTime.VN.SaveLoad;
 using TMPro;
 using UnityEngine;
+using UnityEngine.TestTools;
 using Yarn.Markup;
 using Yarn.Unity;
 
@@ -18,6 +19,7 @@ namespace ProjectAllTime.Tests.Editor
         private VNDialogueSessionState sessionState;
         private VNLineLifecyclePresenter lifecycle;
         private VNLineLifecycleMarkupHandler handler;
+        private DialogueRunner dialogueRunner;
         private LinePresenter linePresenter;
         private TextMeshProUGUI lineText;
         private VNInteractionGate gate;
@@ -31,6 +33,7 @@ namespace ProjectAllTime.Tests.Editor
             ownedObjects.Add(root);
             sessionState = root.AddComponent<VNDialogueSessionState>();
             linePresenter = root.AddComponent<LinePresenter>();
+            dialogueRunner = root.AddComponent<DialogueRunner>();
             lifecycle = root.AddComponent<VNLineLifecyclePresenter>();
             handler = root.AddComponent<VNLineLifecycleMarkupHandler>();
             root.AddComponent<LineAdvancer>().enabled = false;
@@ -39,9 +42,12 @@ namespace ProjectAllTime.Tests.Editor
             convenience = root.AddComponent<VNConvenienceController>();
             var textObject = new GameObject("M6 Line Text");
             ownedObjects.Add(textObject);
+            textObject.AddComponent<Canvas>();
             lineText = textObject.AddComponent<TextMeshProUGUI>();
+            lineText.font = Resources.Load<TMP_FontAsset>("Fonts & Materials/LiberationSans SDF");
             linePresenter.lineText = lineText;
             linePresenter.characterNameText = lineText;
+            dialogueRunner.DialoguePresenters = new DialoguePresenterBase[] { linePresenter };
 
             SetPrivateField(lifecycle, "sessionState", sessionState);
             SetPrivateField(lifecycle, "linePresenter", linePresenter);
@@ -66,6 +72,7 @@ namespace ProjectAllTime.Tests.Editor
         public void IncompleteMatchingVisualText_IsNotFullDisplayed_UntilVisibleCountReachesCharacterCount()
         {
             Present("line:visual-incomplete", "Visible state.");
+            SetPrivateField(sessionState, "currentPresentationStartedFrame", -1);
             SetVisual("Visible state.", 1);
             ObserveVisual();
             Assert.That(sessionState.IsCurrentLineFullyDisplayed, Is.False);
@@ -80,6 +87,7 @@ namespace ProjectAllTime.Tests.Editor
         public void MatchingVisualText_AtOrAboveCharacterCount_RecordsOncePerOccurrence()
         {
             Present("line:visual-full", "Fully visible.");
+            SetPrivateField(sessionState, "currentPresentationStartedFrame", -1);
             SetVisual("Fully visible.", CharacterCount("Fully visible.") + 2);
             ObserveVisual();
             ObserveVisual();
@@ -158,12 +166,13 @@ namespace ProjectAllTime.Tests.Editor
         }
 
         [Test]
-        public void MarkupHandler_IsAdvisoryOnly_AndLoadBarrierVisualStateStillPasses()
+        public void CallbackPrimaryAuthority_AndLoadBarrierVisualStateStillPasses()
         {
-            Present("line:handler-advisory", "Visual authority.");
+            Present("line:handler-primary", "Callback authority.");
             handler.OnLineDisplayBegin(default, null);
             handler.OnLineDisplayComplete();
-            Assert.That(sessionState.IsCurrentLineFullyDisplayed, Is.False);
+            Assert.That(sessionState.IsCurrentLineFullyDisplayed, Is.True);
+            Assert.That(sessionState.Backlog.Count, Is.EqualTo(1));
 
             var runnerObject = new GameObject("M6 Load Barrier Runner");
             ownedObjects.Add(runnerObject);
@@ -179,6 +188,43 @@ namespace ProjectAllTime.Tests.Editor
 
             Assert.That(VNLinePresenterLoadBarrier.TryResolveLinePresenter(runner, out _, out var diagnostic), Is.True, diagnostic);
             Assert.That(VNLinePresenterLoadBarrier.IsQuiescent(presenter, out diagnostic), Is.True, diagnostic);
+        }
+
+        [Test]
+        public void AuthoritativeRunnerPresenter_OverridesStaleSerializedPresenter()
+        {
+            var staleObject = new GameObject("Stale Serialized LinePresenter");
+            ownedObjects.Add(staleObject);
+            var stalePresenter = staleObject.AddComponent<LinePresenter>();
+            stalePresenter.lineText = staleObject.AddComponent<TextMeshProUGUI>();
+            SetPrivateField(lifecycle, "linePresenter", stalePresenter);
+
+            LogAssert.Expect(LogType.Error, new System.Text.RegularExpressions.Regex("Serialized LinePresenter .* differs from authoritative"));
+            Present("line:authoritative", "Active panel text.");
+            SetPrivateField(sessionState, "currentPresentationStartedFrame", -1);
+            SetVisual("Active panel text.", CharacterCount("Active panel text."));
+            ObserveVisual();
+
+            Assert.That(sessionState.IsCurrentLineFullyDisplayed, Is.True);
+            Assert.That(GetPrivateField<LinePresenter>(lifecycle, "authoritativeLinePresenter"), Is.SameAs(linePresenter));
+        }
+
+        [Test]
+        public void MultipleEnabledRunnerLinePresenters_RefuseFullDisplayAuthorization()
+        {
+            var secondObject = new GameObject("Second Runner LinePresenter");
+            ownedObjects.Add(secondObject);
+            var secondPresenter = secondObject.AddComponent<LinePresenter>();
+            secondPresenter.lineText = secondObject.AddComponent<TextMeshProUGUI>();
+            dialogueRunner.DialoguePresenters = new DialoguePresenterBase[] { linePresenter, secondPresenter };
+
+            LogAssert.Expect(LogType.Error, new System.Text.RegularExpressions.Regex("has 2 enabled distinct LinePresenters"));
+            Present("line:ambiguous", "Must not authorize.");
+            SetVisual("Must not authorize.", CharacterCount("Must not authorize."));
+            ObserveVisual();
+
+            Assert.That(sessionState.IsCurrentLineFullyDisplayed, Is.False);
+            Assert.That(sessionState.Backlog.Count, Is.Zero);
         }
 
         private void PresentAndVisuallyComplete(string lineId, string text)
@@ -202,6 +248,7 @@ namespace ProjectAllTime.Tests.Editor
         private void SetVisual(string text, int maxVisibleCharacters)
         {
             lineText.text = text;
+            lineText.ForceMeshUpdate();
             lineText.maxVisibleCharacters = maxVisibleCharacters;
         }
 
@@ -221,9 +268,10 @@ namespace ProjectAllTime.Tests.Editor
             method.Invoke(convenience, new object[] { time, frame });
         }
 
-        private static LocalizedLine CreateLine(string lineId, string text) => new()
+        private LocalizedLine CreateLine(string lineId, string text) => new()
         {
             TextID = lineId,
+            Source = dialogueRunner,
             Text = new MarkupParseResult(text, new List<MarkupAttribute>()),
         };
 
@@ -232,6 +280,13 @@ namespace ProjectAllTime.Tests.Editor
             var field = target.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.That(field, Is.Not.Null, fieldName);
             field.SetValue(target, value);
+        }
+
+        private static T GetPrivateField<T>(object target, string fieldName)
+        {
+            var field = target.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(field, Is.Not.Null, fieldName);
+            return (T)field.GetValue(target);
         }
     }
 }

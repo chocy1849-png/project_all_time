@@ -29,6 +29,26 @@
 - M1 Play Gate passed: narrator and named-speaker lines, three options, all branch transitions, path-dependent results, variable updates, Play Mode variable reset, and normal end-node completion were verified.
 - Console errors: 0.
 
+## M6 Core Convenience UX — COMPLETE
+
+### REPOSITORY-VERIFIED
+
+- M6 supplies session-only Backlog and Read History, Auto/Skip runtime, Next/Hide and M5 Save/Load bridges, QuickControlBar, Backlog modal, Settings shell, and Input System routing.
+- Full-display authority resolves the unique active LinePresenter from the delivering DialogueRunner. The VNDialoguePanel callback is primary and its TMP view is the defensive watchdog; both converge on one session transition.
+- M6 technical smoke, voice fixture, and checkpoint catalog entry remain non-canon fixtures. The normal `VN_Main` start node is `M2_UI_START`.
+
+### USER-VERIFIED
+
+- USER M6 PLAY GATE: PASS.
+- Backlog displays dialogue with speaker/narration handling; Auto progresses; ReadOnly Skip advances the repeated read line and stops at the following unread line.
+- QuickLoad no longer flashes a stale/resume line. The authoritative VNDialoguePanel LinePresenter and handler wiring were corrected.
+
+### DEFERRED
+
+- Persistent read IDs, gallery/archive/CG progress, and cloud/Steam saves remain M8/M9 or later work.
+- Settings contents/persistence, rebinding UI, final keyboard scheme, and a user-facing Skip All policy are M7 work.
+- Backlog voice replay, backlog persistence, choice history, rewind, auto/skip choice selection, Skip transition speed-up, and main menu remain later scope.
+
 ## M3 Presentation Runtime
 
 - Project-owned code contracts now define fixed-pose layered character definitions (`BackHair` + `Body` + expression `Head`), the presentation catalog, fixed-slot uGUI presentation, Yarn command registration, and speaker focus.
