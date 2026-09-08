@@ -49,6 +49,18 @@
 - Settings application/UI, rebinding UI, final keyboard scheme, and a user-facing Skip All policy remain later M7 work.
 - Backlog voice replay, backlog persistence, choice history, rewind, auto/skip choice selection, Skip transition speed-up, and main menu remain later scope.
 
+## M7-10 Settings Technical Validation — COMPLETE
+
+- Base: `1826476ab689096a0c669fb3001cccbe607d03c0`; branch: `feat/m7-10-settings-technical-validation`.
+- Protected M7-09 `VN_Main.unity` and `VNAudioMixer.mixer` changes are preserved. The TMP Dynamic font diff contained only generated glyph/character/packing/atlas data; only that font asset was restored under explicit user authorization.
+- M7-09 Unity wiring: TECHNICALLY VALIDATED. Read-only Unity audits pass for five Settings categories, six slider/commit pairs, six unique rebind targets, persistent event ownership, hidden active modal, 1920×1080 CanvasScaler at 0.5, single InputSystem EventSystem, normal `M2_UI_START`, and stable project input references. Actual Mixer APIs resolve all four groups and exact exposed parameter names.
+- `VNSettingsRuntimeBootstrap` production composition and focused tests are complete (DEC-025). After the user attached and wired the Bootstrap, final focused EditMode: total 30, passed 30, failed 0, skipped 0. The Bootstrap Scene gate is included. An initial audit expectation incorrectly treated the importer setting as the attribute value; the corrected audit checks both contracts separately, with no production or Scene change.
+- Final full EditMode: total 177, passed 177, failed 0, skipped 0, with no category or test filter, Unity 6000.3.21f1. Both final runs exit code 0. Artifacts remain outside the repository at `C:\Users\UserK\Documents\ChatGPT\M7-10-validation` (`final-focused-verified.xml`, `final-full.xml`, corresponding logs). No new PlayMode suite was needed. Live startup/window/audio interaction remains part of M7-11, not claimed as an automated Play Gate.
+- Batch import removed the inference package's `SENTIS_ANALYTICS_ENABLED` define automatically; that generated ProjectSettings-only noise was restored after testing. Protected Scene/Mixer SHA-256 hashes remained identical. Unity-authored empty `m_Name` entries cause four Mixer trailing-whitespace notices in `git diff --check`; those protected YAML lines are intentionally preserved.
+- Final Scene audit verifies exactly one active Bootstrap on existing `VNConvenienceRuntime`, with both M6 siblings and exact references: Dialogue Runner = `Dialogue System`; Settings Panel = `VNCanvas/ModalLayer/SettingsModal/Panel`; Audio Mixer = `Assets/_Project/Audio/VNAudioMixer.mixer`; Input Actions = `Assets/_Project/Settings/Input/VNInputActions.inputactions`.
+- M7-10 technical work is complete for PR review; merge is not authorized. Input enabled-state restoration passes without changing production rebinding code. Settings schema-v1, M5 SaveData, M6 semantics, M4 source/fade behavior, InputActions, authored Yarn, and the Yarn Writing Guide remain unchanged.
+- Existing M6/M4 smoke fixtures are reused; no new M7 Yarn fixture. M7 user Play Gate: PENDING (M7-11). Earlier phase-level deferred notes below describe those historical code phases; this section records current integration status.
+
 ## M7-02 Settings Persistence Kernel — COMPLETE
 
 ### REPOSITORY-VERIFIED
@@ -90,7 +102,7 @@
 
 - Settings UI, startup/scene wiring, text/Auto controls, other settings runtime application, and any current-line speed restart behavior remain out of scope.
 
-## M7-05 Audio Settings Runtime — COMPLETE (MIXER EXPOSURE PENDING)
+## M7-05 Audio Settings Runtime — COMPLETE (MIXER EXPOSURE VALIDATED IN M7-10)
 
 ### REPOSITORY-VERIFIED
 
@@ -98,9 +110,9 @@
 - Startup application validates all four parameters before touching the mixer, takes prior values for best-effort rollback after unexpected `SetFloat` failure, and performs no write. User changes validate first, persist one copied settings field first, then update only its matching parameter.
 - M4 `VNAudioController` source volume, crossfade, pause/resume, fade-stop, SFX, capture, and restore ownership are unchanged. Yarn voice playback/lifecycle and M6's voice gate are unchanged.
 
-### USER MIXER EXPOSURE PENDING
+### USER MIXER EXPOSURE TECHNICALLY VALIDATED
 
-- `VNAudioMixer.mixer` retains `Master → BGM/SFX/Voice` but has no exposed parameters. The four group attenuation controls must be exposed and named `MasterVolumeDb`, `BgmVolumeDb`, `SfxVolumeDb`, and `VoiceVolumeDb` in Unity before runtime scene integration.
+- The M7-09 user-authored `VNAudioMixer.mixer` retains `Master → BGM/SFX/Voice` and exposes `MasterVolumeDb`, `BgmVolumeDb`, `SfxVolumeDb`, and `VoiceVolumeDb`. M7-10 verifies group resolution and all four names through the actual AudioMixer API without mutating mixer values.
 
 ### DEFERRED
 

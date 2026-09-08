@@ -25,7 +25,7 @@ AudioMixerEffectController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name:
+  m_Name: 
   m_EffectID: 58f066d4951af2b4eb68158f977cc24a
   m_EffectName: Attenuation
   m_MixLevel: 100efb2828027d04382b6b09671bdb16
@@ -39,7 +39,7 @@ AudioMixerEffectController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name:
+  m_Name: 
   m_EffectID: fc5949b54f95f9c45acae0674107df11
   m_EffectName: Attenuation
   m_MixLevel: 8e40f08925345b8469832fe8808cbd21
@@ -62,7 +62,15 @@ AudioMixerController:
   m_SuspendThreshold: -80
   m_EnableSuspend: 1
   m_UpdateMode: 0
-  m_ExposedParameters: []
+  m_ExposedParameters:
+  - guid: 203b5d9aa2fe81c479eec9d05b4fec0c
+    name: BgmVolumeDb
+  - guid: 43a4d9d4aec3ae64cb0cb4e1411bbc04
+    name: MasterVolumeDb
+  - guid: 48865e01feaae3a45beb1c9dc0fab317
+    name: SfxVolumeDb
+  - guid: fcd59530a1f795c4ba15ee04b0dd54a0
+    name: VoiceVolumeDb
   m_AudioMixerGroupViews:
   - guids:
     - a5c7bdd5e71a94940ad030e008465155
@@ -100,7 +108,7 @@ AudioMixerEffectController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name:
+  m_Name: 
   m_EffectID: c935df2e3404d1c4f8f2b25b754454b6
   m_EffectName: Attenuation
   m_MixLevel: bd8babc450f2df14cb6656eb28805541
@@ -144,7 +152,7 @@ AudioMixerEffectController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name:
+  m_Name: 
   m_EffectID: e49d7376548bfdb41a335b1b5ead9313
   m_EffectName: Attenuation
   m_MixLevel: 389de4235e460614486953af40d8792e
