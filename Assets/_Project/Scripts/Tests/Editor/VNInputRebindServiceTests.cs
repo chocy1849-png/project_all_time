@@ -87,6 +87,35 @@ namespace ProjectAllTime.Tests.Editor
         }
 
         [Test]
+        public void StartupOverrides_WithRouterEnabledActions_PreserveEnablementWithoutCallbacks()
+        {
+            AddTestKeyboard();
+            var service = CreateService();
+            using var rebind = CreateServiceUnderTest(service, out var asset, out var router);
+            Override(asset, "40c4fd51-8e22-48d7-91dd-90a40c664f55", "cd8b1b2c-2f7e-4350-a613-b1a3a03e5b50", "<Keyboard>/k");
+            SaveOverrides(service, asset);
+            asset.RemoveAllBindingOverrides();
+            var controller = ConfigureRouterForInputCallbacks(router, asset);
+            asset.Enable();
+            InputSystem.Update();
+            var callbacks = 0;
+            foreach (var action in asset)
+            {
+                action.started += _ => callbacks++;
+                action.performed += _ => callbacks++;
+                action.canceled += _ => callbacks++;
+            }
+
+            Assert.That(rebind.TryApplyCurrentSettings(out var diagnostic), Is.True, diagnostic);
+            InputSystem.Update();
+            foreach (var action in asset) Assert.That(action.enabled, Is.True, action.name);
+            Assert.That(callbacks, Is.Zero);
+            Assert.That(controller.IsAutoEnabled, Is.False);
+            Assert.That(router.IsRebindCaptureSuspended, Is.False);
+            AssertEffective(asset, "40c4fd51-8e22-48d7-91dd-90a40c664f55", "cd8b1b2c-2f7e-4350-a613-b1a3a03e5b50", "<Keyboard>/k");
+        }
+
+        [Test]
         public void SkipHoldCustomReset_RestoresBothCtrlsAndPreservesOtherOverride()
         {
             var service = CreateService();
