@@ -249,4 +249,13 @@ Status: ACCEPTED
 - Category application failures are collected independently so recoverable input/audio/display failures do not prevent a valid panel from initializing. Missing required dependencies or invalid panel wiring are fatal. `IsInitialized` describes panel composition; `LastDiagnostic` reports load/application failures separately. Repeated initialization cannot create a second runtime set. Destruction disposes the owned rebind operation and releases its Router suspension.
 - Input System 1.20.0's official override restoration supports enabled actions. The focused startup regression confirms enabled actions remain enabled without shortcut callbacks; no production rebind-service change is needed. Future-schema startup uses effective defaults and a read-only panel without rewriting the protected file.
 - M7-09 Scene/Mixer validation uses read-only Unity Editor/component/serialized-reference APIs and actual Mixer `GetFloat`, not YAML as runtime authority. The user has completed the Bootstrap Inspector wiring; the final Scene audit includes its exact placement, four references, and both M6 siblings before PR creation.
-- Existing `M6_CONVENIENCE_SMOKE` supplies Text/Auto/Voice/Skip/choice states; `M4_AUDIO_TRANSITION_SMOKE` supplies volume checks over existing playback/crossfade/pause/resume/SFX/Voice behavior. No new M7 Yarn fixture is introduced. M7-11 remains the pending user Play Gate.
+- Existing `M6_CONVENIENCE_SMOKE` supplies Text/Auto/Voice/Skip/choice states; `M4_AUDIO_TRANSITION_SMOKE` supplies volume checks over existing playback/crossfade/pause/resume/SFX/Voice behavior. No new M7 Yarn fixture is introduced. M7-11 was the pending user Play Gate at this decision's acceptance; DEC-026 records its resulting Auto follow-up.
+
+## DEC-026 — M7 Auto Speed Effective Range
+
+Status: ACCEPTED
+
+- The M7 user Play Gate found that Auto Speed 0% and 100% did not produce a sufficiently perceptible timing difference. The cause was reuse of M6's `0.80..4.00` clamp after the M7 multiplier, which saturated slow long lines and fast short lines.
+- M6's base formula remains unchanged: `Clamp(0.50 + displayedText.Length * 0.035, 0.80, 4.00)`. Stored normalized Auto speed remains linear `0..1 → 1.5..0.5`; the default `0.5 → 1.0` preserves M6 timing exactly.
+- M7 now applies its multiplier after the M6 base clamp and bounds the resulting effective delay to runtime-only `0.40..6.00` seconds. These are not serialized Scene settings.
+- Full-display timing, Voice completion, choices, occurrence/read-history safety, Auto/Skip mutual exclusion, Settings schema-v1, and M5 SaveData isolation are unchanged. No Settings UI or Yarn change is required.

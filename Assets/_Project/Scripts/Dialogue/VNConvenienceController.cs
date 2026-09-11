@@ -9,6 +9,11 @@ namespace ProjectAllTime.VN.Dialogue
     [DisallowMultipleComponent]
     public sealed class VNConvenienceController : MonoBehaviour
     {
+        // M7 product bounds apply only after the preserved M6 base calculation.
+        // They are runtime constants, not Scene-authored timing configuration.
+        private const float MinimumEffectiveAutoDelaySeconds = 0.40f;
+        private const float MaximumEffectiveAutoDelaySeconds = 6.00f;
+
         [Header("M6 Runtime Dependencies")]
         [SerializeField] private VNDialogueSessionState sessionState;
         [SerializeField] private VNLineAdvancerInputBridge advanceBridge;
@@ -221,12 +226,12 @@ namespace ProjectAllTime.VN.Dialogue
             if (isSkipEnabled) TickSkip(occurrence, unscaledTime, frameCount);
         }
 
-        /// <summary>Returns the M6 base delay followed by the M7 runtime factor and final M6 bounds.</summary>
+        /// <summary>Returns the preserved M6 base delay adjusted within M7's effective runtime bounds.</summary>
         public float GetAutoDelaySeconds(string displayedText)
         {
             var length = displayedText?.Length ?? 0;
             var baseDelay = Mathf.Clamp(baseDelaySeconds + length * secondsPerCharacter, minimumDelaySeconds, maximumDelaySeconds);
-            return Mathf.Clamp(baseDelay * autoDelayMultiplier, minimumDelaySeconds, maximumDelaySeconds);
+            return Mathf.Clamp(baseDelay * autoDelayMultiplier, MinimumEffectiveAutoDelaySeconds, MaximumEffectiveAutoDelaySeconds);
         }
 
         private void TickAuto(long occurrence, float unscaledTime, int frameCount)

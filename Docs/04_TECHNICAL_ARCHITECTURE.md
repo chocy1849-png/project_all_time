@@ -143,7 +143,7 @@ Persistent variable integration is deferred to M5.
 
 - `VNAuthoritativeLinePresenterResolver` is the shared M6/M7 rule: a DialogueRunner must expose exactly one enabled distinct `LinePresenter`. `VNTextAutoSettingsController` refuses ambiguous/missing presenters and incompatible/null typewriters; it never falls back to a scene search or creates a replacement typewriter.
 - Yarn Spinner 3.2.7 creates a ByLetter `LetterTypewriter` in `LinePresenter.Awake` using the then-current `lettersPerSecond`. M7 therefore writes both `LinePresenter.lettersPerSecond` and the active `LetterTypewriter.CharactersPerSecond`. Runtime text speed clamps to 20–120 LPS; the default remains 60, and a current typing line is not restarted because its existing typewriter interval may already be sampled.
-- `VNConvenienceController` retains its serialized M6 base-delay constants and calculation. Its nonserialized Auto multiplier defaults to 1.0, rejects non-finite/non-positive values, resets only a pending Auto schedule when changed, then calculates `Clamp(Clamp(m6Base, min, max) * multiplier, min, max)`. M7 maps stored normalized Auto speed linearly from 0..1 to multiplier 1.5..0.5.
+- `VNConvenienceController` retains its serialized M6 base-delay constants and calculation: `Clamp(0.50 + length × 0.035, 0.80, 4.00)`. Its nonserialized Auto multiplier defaults to 1.0, rejects non-finite/non-positive values, and resets only a pending Auto schedule when changed. M7 maps stored normalized Auto speed linearly from 0..1 to multiplier 1.5..0.5, then calculates `Clamp(m6Base × multiplier, 0.40, 6.00)`. Normalized 0.5 maps to multiplier 1.0 and therefore preserves exact M6 timing.
 - User speed requests copy and persist `VNSettingsService.Current` before applying corresponding runtime values. Startup application writes nothing, so effective defaults can apply while future-schema settings stay protected. Full-display authority, voice gate, choices, Skip policy, and occurrence/read history remain owned by M6.
 - Settings UI, bootstrap/scene composition, text and Auto controls, and all other M7 settings application remain deferred.
 
@@ -188,3 +188,9 @@ Persistent variable integration is deferred to M5.
 - Execution-order auditing checks the `DefaultExecutionOrder(-1)` attribute separately from the default Editor setting (0): [MonoImporter.GetExecutionOrder](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/MonoImporter.GetExecutionOrder.html) reports the Settings-window value, while [DefaultExecutionOrder](https://docs.unity3d.com/6000.3/Documentation/ScriptReference/DefaultExecutionOrder.html) is not displayed there. The audit rejects a competing nonzero Editor override rather than mistaking the attribute for an importer setting.
 - Existing M6 and M4 Yarn smoke fixtures are reused for M7-11. No new authored Yarn or screen-shake consumer is needed. Final bootstrap Scene validation and M7-11 user Play Gate are separate gates.
 - Before Unity wiring, slider commit seams must be colocated with their Sliders and sync to controller-authoritative refresh values. Panel/view wiring validates required references before accepting initialization.
+
+## M7 final integration status
+
+- Historical M7-04 through M7-08 deferred notes above are phase-local; M7-08 through M7-12 supersede them for the current Settings UI, startup composition, and Mixer exposure state.
+- M7-11 user Play Gate passed all functional checks except the Auto-range perceptibility finding. M7-12 corrects only the final effective Auto delay range, with numeric regression coverage; the targeted user Auto re-test remains pending before final M7 closure.
+- Screen Shake remains intentionally a persisted preference and future-consumer gate, not an unfinished accidental omission.
