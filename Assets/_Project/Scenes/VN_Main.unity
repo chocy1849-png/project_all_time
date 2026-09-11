@@ -2106,7 +2106,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uB2E4\uC74C"
+  m_text: "\uC624\uD1A0 \uD65C\uC131\uD654"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 14df1fc36bd4506429dc2fc598fe1eab, type: 2}
   m_sharedMaterial: {fileID: -455579149878606871, guid: 14df1fc36bd4506429dc2fc598fe1eab, type: 2}
@@ -2133,8 +2133,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -6034,7 +6034,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uB2E4\uC74C"
+  m_text: "\uD035\uB85C\uB4DC"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 14df1fc36bd4506429dc2fc598fe1eab, type: 2}
   m_sharedMaterial: {fileID: -455579149878606871, guid: 14df1fc36bd4506429dc2fc598fe1eab, type: 2}
@@ -6061,8 +6061,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -8044,7 +8044,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uB2E4\uC74C"
+  m_text: "\uC2A4\uD0B5 \uD65C\uC131\uD654"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 14df1fc36bd4506429dc2fc598fe1eab, type: 2}
   m_sharedMaterial: {fileID: -455579149878606871, guid: 14df1fc36bd4506429dc2fc598fe1eab, type: 2}
@@ -8071,8 +8071,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -9903,7 +9903,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uB2E4\uC74C"
+  m_text: "\uB300\uD654\uCC3D \uC228\uAE30\uAE30"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 14df1fc36bd4506429dc2fc598fe1eab, type: 2}
   m_sharedMaterial: {fileID: -455579149878606871, guid: 14df1fc36bd4506429dc2fc598fe1eab, type: 2}
@@ -9930,8 +9930,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -18510,7 +18510,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uB2E4\uC74C"
+  m_text: "\uD035\uC138\uC774\uBE0C"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 14df1fc36bd4506429dc2fc598fe1eab, type: 2}
   m_sharedMaterial: {fileID: -455579149878606871, guid: 14df1fc36bd4506429dc2fc598fe1eab, type: 2}
@@ -18537,8 +18537,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -27785,8 +27785,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 30
+  m_fontSizeBase: 30
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
