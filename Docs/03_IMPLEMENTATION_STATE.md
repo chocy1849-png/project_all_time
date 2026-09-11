@@ -59,7 +59,24 @@
 - Batch import removed the inference package's `SENTIS_ANALYTICS_ENABLED` define automatically; that generated ProjectSettings-only noise was restored after testing. Protected Scene/Mixer SHA-256 hashes remained identical. Unity-authored empty `m_Name` entries cause four Mixer trailing-whitespace notices in `git diff --check`; those protected YAML lines are intentionally preserved.
 - Final Scene audit verifies exactly one active Bootstrap on existing `VNConvenienceRuntime`, with both M6 siblings and exact references: Dialogue Runner = `Dialogue System`; Settings Panel = `VNCanvas/ModalLayer/SettingsModal/Panel`; Audio Mixer = `Assets/_Project/Audio/VNAudioMixer.mixer`; Input Actions = `Assets/_Project/Settings/Input/VNInputActions.inputactions`.
 - M7-10 technical work is complete for PR review; merge is not authorized. Input enabled-state restoration passes without changing production rebinding code. Settings schema-v1, M5 SaveData, M6 semantics, M4 source/fade behavior, InputActions, authored Yarn, and the Yarn Writing Guide remain unchanged.
-- Existing M6/M4 smoke fixtures are reused; no new M7 Yarn fixture. M7 user Play Gate: PENDING (M7-11). Earlier phase-level deferred notes below describe those historical code phases; this section records current integration status.
+- Existing M6/M4 smoke fixtures are reused; no new M7 Yarn fixture. At M7-10 completion, M7-11 was the pending user Play Gate. Earlier phase-level deferred notes below describe those historical code phases; the current integration status is recorded next.
+
+## M7 Final Integration Status
+
+Earlier M7 phase-local DEFERRED notes below describe their original implementation stages. They are superseded for current startup composition, Settings UI, and Mixer exposure by M7-08 through M7-12 integration.
+
+- M7 technical implementation: COMPLETE.
+- M7-09 Unity wiring: COMPLETE.
+- M7-10 technical validation: COMPLETE.
+- M7-11 user Play Gate: all functional gates passed except the Auto 0%/100% perceptual-range finding.
+- M7-12: the Auto effective-range correction is implemented and technically validated (focused EditMode: 22 total, 22 passed, 0 failed, 0 skipped; unfiltered EditMode: 178 total, 178 passed, 0 failed, 0 skipped). Targeted user re-test remains required before final merge/closure.
+- Screen Shake is intentionally a persisted preference/future-consumer gate only. A consumer remains future work by design.
+
+### M7 USER PLAY GATE — PASS WITH ONE M7-12 AUTO TUNING FOLLOW-UP
+
+PASS: persistence; M5 Load isolation; display; Text Speed; Voice gate; Skip; choices; audio; rebinding; binding persistence; restart integration; and Screen Shake preference/gate.
+
+FOLLOW-UP: M7-12 widens only the post-multiplier Auto effective range. The targeted 0% / 50% / 100% Auto user recheck remains pending before M7 is marked complete.
 
 ## M7-02 Settings Persistence Kernel — COMPLETE
 
@@ -95,7 +112,7 @@
 
 - `VNTextAutoSettingsController` applies a persisted settings snapshot to the unique enabled LinePresenter owned by its DialogueRunner and to the existing `VNConvenienceController`. Yarn's active `LetterTypewriter.CharactersPerSecond` is updated together with `LinePresenter.lettersPerSecond`.
 - Text speed is runtime-clamped to 20–120 LPS (default 60) without changing schema-level positive-value validation or rewriting stored out-of-range positive values during startup application. Current lines are never restarted or cancelled for a speed change.
-- Auto speed maps normalized 0..1 to a 1.5..0.5 multiplier. M6's established clamped delay remains base authority; the multiplier is applied afterward and final 0.80..4.00 bounds remain in force. Changing the multiplier re-arms pending Auto timing without changing Auto/Skip state or policy.
+- Auto speed maps normalized 0..1 to a 1.5..0.5 multiplier. M6's established `Clamp(0.50 + length × 0.035, 0.80, 4.00)` delay remains base authority; the multiplier is applied afterward and M7 bounds the effective result to 0.40..6.00. At the default normalized 0.5 multiplier of 1.0, timing remains exactly M6 timing. Changing the multiplier re-arms pending Auto timing without changing Auto/Skip state or policy.
 - Full-display, voice-completion, choice, read-history, and occurrence ownership stay with M6. User changes persist first through `VNSettingsService`; failed persistence produces no corresponding speed mutation.
 
 ### DEFERRED

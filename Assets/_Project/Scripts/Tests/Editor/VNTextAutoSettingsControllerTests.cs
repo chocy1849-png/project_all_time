@@ -140,19 +140,58 @@ namespace ProjectAllTime.Tests.Editor
         }
 
         [Test]
-        public void ConvenienceAutoDelay_PreservesM6BaseThenAppliesMultiplierAndFinalBounds()
+        public void ConvenienceAutoDelay_PreservesM6BaseThenAppliesMultiplierAndEffectiveBounds()
         {
             var root = new GameObject("M7 Auto Delay Test");
             ownedObjects.Add(root);
             var convenience = root.AddComponent<VNConvenienceController>();
 
+            // The exact M6 baseline stays unchanged at the default M7 multiplier.
             Assert.That(convenience.GetAutoDelaySeconds(string.Empty), Is.EqualTo(0.8f));
             Assert.That(convenience.GetAutoDelaySeconds(new string('x', 1000)), Is.EqualTo(4f));
+
+            // M6 base 0.80: Slow / Default / Fast = 1.20 / 0.80 / 0.40.
             Assert.That(convenience.TrySetAutoDelayMultiplier(1.5f), Is.True);
-            Assert.That(convenience.GetAutoDelaySeconds(new string('x', 1000)), Is.EqualTo(4f));
+            Assert.That(convenience.GetAutoDelaySeconds(string.Empty), Is.EqualTo(1.2f).Within(0.0001f));
+            Assert.That(convenience.TrySetAutoDelayMultiplier(1f), Is.True);
+            Assert.That(convenience.GetAutoDelaySeconds(string.Empty), Is.EqualTo(0.8f).Within(0.0001f));
             Assert.That(convenience.TrySetAutoDelayMultiplier(0.5f), Is.True);
-            Assert.That(convenience.GetAutoDelaySeconds(string.Empty), Is.EqualTo(0.8f));
-            Assert.That(convenience.GetAutoDelaySeconds(new string('x', 50)), Is.EqualTo(1.125f));
+            Assert.That(convenience.GetAutoDelaySeconds(string.Empty), Is.EqualTo(0.4f).Within(0.0001f));
+
+            // M6 base approximately 2.00 (43 characters => 2.005 seconds).
+            var mediumLine = new string('x', 43);
+            Assert.That(convenience.TrySetAutoDelayMultiplier(1.5f), Is.True);
+            Assert.That(convenience.GetAutoDelaySeconds(mediumLine), Is.EqualTo(3.0075f).Within(0.0001f));
+            Assert.That(convenience.TrySetAutoDelayMultiplier(1f), Is.True);
+            Assert.That(convenience.GetAutoDelaySeconds(mediumLine), Is.EqualTo(2.005f).Within(0.0001f));
+            Assert.That(convenience.TrySetAutoDelayMultiplier(0.5f), Is.True);
+            Assert.That(convenience.GetAutoDelaySeconds(mediumLine), Is.EqualTo(1.0025f).Within(0.0001f));
+
+            // M6 base 4.00: Slow / Default / Fast = 6.00 / 4.00 / 2.00.
+            var longLine = new string('x', 1000);
+            Assert.That(convenience.TrySetAutoDelayMultiplier(1.5f), Is.True);
+            Assert.That(convenience.GetAutoDelaySeconds(longLine), Is.EqualTo(6f).Within(0.0001f));
+            Assert.That(convenience.TrySetAutoDelayMultiplier(1f), Is.True);
+            Assert.That(convenience.GetAutoDelaySeconds(longLine), Is.EqualTo(4f).Within(0.0001f));
+            Assert.That(convenience.TrySetAutoDelayMultiplier(0.5f), Is.True);
+            Assert.That(convenience.GetAutoDelaySeconds(longLine), Is.EqualTo(2f).Within(0.0001f));
+
+            // Product bounds are enforced after multiplication, without changing M6's base clamp.
+            Assert.That(convenience.TrySetAutoDelayMultiplier(100f), Is.True);
+            Assert.That(convenience.GetAutoDelaySeconds(longLine), Is.EqualTo(6f).Within(0.0001f));
+            Assert.That(convenience.TrySetAutoDelayMultiplier(0.01f), Is.True);
+            Assert.That(convenience.GetAutoDelaySeconds(string.Empty), Is.EqualTo(0.4f).Within(0.0001f));
+        }
+
+        [Test]
+        public void ConvenienceAutoDelay_ExtremesRemainPerceptiblyOrderedAtShortAndLongBaseDelays()
+        {
+            var root = new GameObject("M7 Auto Perceptibility Test");
+            ownedObjects.Add(root);
+            var convenience = root.AddComponent<VNConvenienceController>();
+
+            AssertPerceptibleOrdering(convenience, string.Empty);
+            AssertPerceptibleOrdering(convenience, new string('x', 1000));
         }
 
         [Test]
@@ -210,6 +249,19 @@ namespace ProjectAllTime.Tests.Editor
             var field = typeof(VNTextAutoSettingsController).GetField("dialogueRunner", BindingFlags.Instance | BindingFlags.NonPublic);
             Assert.That(field, Is.Not.Null);
             return (DialogueRunner)field.GetValue(controller);
+        }
+
+        private static void AssertPerceptibleOrdering(VNConvenienceController convenience, string displayedText)
+        {
+            Assert.That(convenience.TrySetAutoDelayMultiplier(1.5f), Is.True);
+            var slow = convenience.GetAutoDelaySeconds(displayedText);
+            Assert.That(convenience.TrySetAutoDelayMultiplier(1f), Is.True);
+            var standard = convenience.GetAutoDelaySeconds(displayedText);
+            Assert.That(convenience.TrySetAutoDelayMultiplier(0.5f), Is.True);
+            var fast = convenience.GetAutoDelaySeconds(displayedText);
+
+            Assert.That(slow, Is.GreaterThan(standard));
+            Assert.That(standard, Is.GreaterThan(fast));
         }
 
         private static void SaveTextSpeed(VNSettingsService service, int textSpeed)
