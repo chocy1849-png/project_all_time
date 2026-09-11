@@ -191,6 +191,6 @@ Persistent variable integration is deferred to M5.
 
 ## M7 final integration status
 
-- Historical M7-04 through M7-08 deferred notes above are phase-local; M7-08 through M7-12 supersede them for the current Settings UI, startup composition, and Mixer exposure state.
-- M7-11 user Play Gate passed all functional checks except the Auto-range perceptibility finding. M7-12 corrects only the final effective Auto delay range, with numeric regression coverage; the targeted user Auto re-test remains pending before final M7 closure.
+- Historical M7-04 through M7-08 deferred notes above are phase-local; M7-08 through M7-13 supersede them for the current Settings UI, startup composition, and Mixer exposure state.
+- M7-11 user Play Gate's only finding was the Auto-range perceptibility issue. M7-12 corrected only the final effective Auto delay range with numeric regression coverage, and the targeted user Auto re-test passed; M7 is complete.
 - Screen Shake remains intentionally a persisted preference and future-consumer gate, not an unfinished accidental omission.
