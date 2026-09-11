@@ -63,20 +63,21 @@
 
 ## M7 Final Integration Status
 
-Earlier M7 phase-local DEFERRED notes below describe their original implementation stages. They are superseded for current startup composition, Settings UI, and Mixer exposure by M7-08 through M7-12 integration.
+Earlier M7 phase-local DEFERRED notes below describe their original implementation stages. They are superseded for current startup composition, Settings UI, and Mixer exposure by M7-08 through M7-13 integration.
 
-- M7 technical implementation: COMPLETE.
+- M7 — COMPLETE.
 - M7-09 Unity wiring: COMPLETE.
 - M7-10 technical validation: COMPLETE.
-- M7-11 user Play Gate: all functional gates passed except the Auto 0%/100% perceptual-range finding.
-- M7-12: the Auto effective-range correction is implemented and technically validated (focused EditMode: 22 total, 22 passed, 0 failed, 0 skipped; unfiltered EditMode: 178 total, 178 passed, 0 failed, 0 skipped). Targeted user re-test remains required before final merge/closure.
+- M7-11 user Play Gate: PASS. The only finding, insufficient Auto 0%/100% perceptibility, was corrected in M7-12.
+- M7-12: the Auto effective-range correction is technically validated (focused EditMode: 22 total, 22 passed, 0 failed, 0 skipped; unfiltered EditMode: 178 total, 178 passed, 0 failed, 0 skipped).
+- M7-12 targeted Auto user retest: PASS. Auto 0% is clearly slowest, 50% retains the normal/default M6 pace, and 100% is clearly fastest.
 - Screen Shake is intentionally a persisted preference/future-consumer gate only. A consumer remains future work by design.
 
-### M7 USER PLAY GATE — PASS WITH ONE M7-12 AUTO TUNING FOLLOW-UP
+### M7 USER PLAY GATE — PASS
 
-PASS: persistence; M5 Load isolation; display; Text Speed; Voice gate; Skip; choices; audio; rebinding; binding persistence; restart integration; and Screen Shake preference/gate.
+Verified final user-facing behavior: Settings startup/modal interaction; persistence across restart; M5 SaveData isolation from global Settings; Display settings; Text Speed; Auto Speed; Voice gate; Skip ReadOnly / All; choice protection; Master/BGM/SFX/Voice audio settings; keyboard rebinding; Escape cancellation; duplicate rejection; SkipHold Ctrl behavior; Reset All Bindings; binding persistence; full restart integration; and Screen Shake preference persistence/gate.
 
-FOLLOW-UP: M7-12 widens only the post-multiplier Auto effective range. The targeted 0% / 50% / 100% Auto user recheck remains pending before M7 is marked complete.
+The original Auto perceptibility finding is resolved: M7-12 widened only the post-multiplier effective range, and the targeted 0% / 50% / 100% user re-test passed. No additional Auto tuning is required.
 
 ## M7-02 Settings Persistence Kernel — COMPLETE
 
