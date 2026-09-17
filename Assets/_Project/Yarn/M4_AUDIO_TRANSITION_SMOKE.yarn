@@ -1,106 +1,106 @@
 title: M4_AUDIO_TRANSITION_START
 ---
-M4 AUDIO / VOICE / TRANSITION SMOKE — Technical, non-canon test. Use normal click/Space advance after every visible checkpoint.
+M4 AUDIO / VOICE / TRANSITION SMOKE — Technical, non-canon test. Use normal click/Space advance after every visible checkpoint. #line:0ee619d
 
 <<vn_bg m3_bg_a>>
 <<vn_clear_cg>>
-CHECKPOINT SETUP-01 — Background A must be visible. No CG or character should be required for this first audio section.
+CHECKPOINT SETUP-01 — Background A must be visible. No CG or character should be required for this first audio section. #line:0f9eeb1
 
 <<bgm_play m4_bgm_a>>
-CHECKPOINT BGM-01 — BGM A must be audible now.
+CHECKPOINT BGM-01 — BGM A must be audible now. #line:048595e
 
-CHECKPOINT BGM-02 — BGM A must be configured to loop. Let it continue long enough to confirm it remains playing; it must not stop at its clip end.
+CHECKPOINT BGM-02 — BGM A must be configured to loop. Let it continue long enough to confirm it remains playing; it must not stop at its clip end. #line:064993a
 
-ANNOUNCEMENT BGM-03 — Next, BGM A crossfades to BGM B over two seconds. Listen for the overlap.
+ANNOUNCEMENT BGM-03 — Next, BGM A crossfades to BGM B over two seconds. Listen for the overlap. #line:02eabdd
 
 <<bgm_crossfade m4_bgm_b 2>>
-CHECKPOINT BGM-04 — BGM B alone must now be audible; BGM A must no longer be audible.
+CHECKPOINT BGM-04 — BGM B alone must now be audible; BGM A must no longer be audible. #line:071d523
 
-ANNOUNCEMENT BGM-05 — Identify BGM B's current musical position. On advance it will fade to silence and pause, preserving that position.
+ANNOUNCEMENT BGM-05 — Identify BGM B's current musical position. On advance it will fade to silence and pause, preserving that position. #line:0820338
 
 <<bgm_pause 1>>
-CHECKPOINT BGM-06 — BGM must be silent while paused. On advance it will resume from the identified position, not restart from the beginning.
+CHECKPOINT BGM-06 — BGM must be silent while paused. On advance it will resume from the identified position, not restart from the beginning. #line:0eca5fa
 
 <<bgm_resume 1>>
-CHECKPOINT BGM-07 — BGM B must resume from its paused position rather than from the start.
+CHECKPOINT BGM-07 — BGM B must resume from its paused position rather than from the start. #line:027b231
 
-ANNOUNCEMENT BGM-08 — On advance, BGM B will fade-stop over one second.
+ANNOUNCEMENT BGM-08 — On advance, BGM B will fade-stop over one second. #line:0585957
 
 <<bgm_stop 1>>
-CHECKPOINT BGM-09 — BGM must now be silent.
+CHECKPOINT BGM-09 — BGM must now be silent. #line:030e8d0
 
-ANNOUNCEMENT SFX-01 — On advance, one UI-confirm SFX will play.
-
-<<sfx_play ui_confirm>>
-CHECKPOINT SFX-02 — One UI-confirm SFX must have played.
-
-ANNOUNCEMENT SFX-03 — On advance, UI-confirm will be requested twice immediately. Hear two overlapping/repeated one-shots; the first must not be forcibly cancelled.
+ANNOUNCEMENT SFX-01 — On advance, one UI-confirm SFX will play. #line:02d8ec6
 
 <<sfx_play ui_confirm>>
-<<sfx_play ui_confirm>>
-CHECKPOINT SFX-04 — The quick double UI-confirm request must have produced two audible plays or a clearly overlapping double sound.
+CHECKPOINT SFX-02 — One UI-confirm SFX must have played. #line:017c9c1
 
-ANNOUNCEMENT SFX-05 — On advance, the door-close SFX will play.
+ANNOUNCEMENT SFX-03 — On advance, UI-confirm will be requested twice immediately. Hear two overlapping/repeated one-shots; the first must not be forcibly cancelled. #line:05b52cb
+
+<<sfx_play ui_confirm>>
+<<sfx_play ui_confirm>>
+CHECKPOINT SFX-04 — The quick double UI-confirm request must have produced two audible plays or a clearly overlapping double sound. #line:08f8e6d
+
+ANNOUNCEMENT SFX-05 — On advance, the door-close SFX will play. #line:0193e6c
 
 <<sfx_play door_close>>
-CHECKPOINT SFX-06 — The door-close SFX must have played.
+CHECKPOINT SFX-06 — The door-close SFX must have played. #line:0d78278
 
-CHECKPOINT VOICE-01 — The next named line uses the explicit M4 voice line ID. Listen for its voice clip.
+CHECKPOINT VOICE-01 — The next named line uses the explicit M4 voice line ID. Listen for its voice clip. #line:0f0acb7
 
 M3 A: VOICE TEST — This line must play the M4 test voice clip. When the clip finishes, this line must remain until you manually advance it. #line:m4_voice_test
 
-CHECKPOINT VOICE-02 — This following non-voice line must not play any stale voice audio.
+CHECKPOINT VOICE-02 — This following non-voice line must not play any stale voice audio. #line:01b3c39
 
-ANNOUNCEMENT SCREEN-01 — On advance, the screen will fade fully to black. The next checkpoint is intentionally behind the black overlay; after confirming black, press Advance to restore the screen.
+ANNOUNCEMENT SCREEN-01 — On advance, the screen will fade fully to black. The next checkpoint is intentionally behind the black overlay; after confirming black, press Advance to restore the screen. #line:0ff63a6
 
 <<vn_fade_to_black 1>>
-CHECKPOINT SCREEN-02 — The screen must now be fully black. After a manual verification pause, advance to fade back in.
+CHECKPOINT SCREEN-02 — The screen must now be fully black. After a manual verification pause, advance to fade back in. #line:0f07805
 
 <<vn_fade_from_black 1>>
-CHECKPOINT SCREEN-03 — The screen must be restored, with Background A still visible.
+CHECKPOINT SCREEN-03 — The screen must be restored, with Background A still visible. #line:0b96a94
 
 <<vn_bg m3_bg_a>>
-CHECKPOINT BG-01 — Background A is the baseline for the next crossfade.
+CHECKPOINT BG-01 — Background A is the baseline for the next crossfade. #line:01bb2a5
 
-ANNOUNCEMENT BG-02 — On advance, Background A will crossfade to Background B over two seconds.
+ANNOUNCEMENT BG-02 — On advance, Background A will crossfade to Background B over two seconds. #line:0775e3c
 
 <<vn_bg_crossfade m3_bg_b 2>>
-CHECKPOINT BG-03 — Background B alone must be visible after the crossfade; no stale Background A layer should remain.
+CHECKPOINT BG-03 — Background B alone must be visible after the crossfade; no stale Background A layer should remain. #line:0923a9c
 
 <<vn_show m3_a default left>>
-CHECKPOINT CHAR-01 — Character A must appear normally at Left with Body and default Head visible.
+CHECKPOINT CHAR-01 — Character A must appear normally at Left with Body and default Head visible. #line:042dbda
 
-ANNOUNCEMENT CHAR-02 — On advance, Character A will fade out. Watch the entire layered character, including Body and Head.
+ANNOUNCEMENT CHAR-02 — On advance, Character A will fade out. Watch the entire layered character, including Body and Head. #line:0d36734
 
 <<vn_hide_fade m3_a 1>>
-CHECKPOINT CHAR-03 — Character A must now be hidden.
+CHECKPOINT CHAR-03 — Character A must now be hidden. #line:061855c
 
-ANNOUNCEMENT CHAR-04 — On advance, Character A will fade back in. Body and Head must fade together.
+ANNOUNCEMENT CHAR-04 — On advance, Character A will fade back in. Body and Head must fade together. #line:0047bb8
 
 <<vn_show_fade m3_a default left 1>>
-CHECKPOINT CHAR-05 — Character A must be fully visible at Left. Body and Head must have faded together without Image RGB tint being overwritten.
+CHECKPOINT CHAR-05 — Character A must be fully visible at Left. Body and Head must have faded together without Image RGB tint being overwritten. #line:033f11a
 
 <<vn_show m3_b default right>>
-CHECKPOINT CHAR-06 — Character B must appear immediately at Right; this prepares the speaker-focus regression check.
+CHECKPOINT CHAR-06 — Character B must appear immediately at Right; this prepares the speaker-focus regression check. #line:0e8576a
 
-M3 A: CHECKPOINT CHAR-07 — A must be active RGB brightness and B dimmed by M3 speaker focus, while both characters remain fully opaque after their CanvasGroup fades.
+M3 A: CHECKPOINT CHAR-07 — A must be active RGB brightness and B dimmed by M3 speaker focus, while both characters remain fully opaque after their CanvasGroup fades. #line:085b0ac
 
-M3 B: CHECKPOINT CHAR-08 — B must be active RGB brightness and A dimmed. This confirms M3 speaker tint remains compatible with M4 alpha.
+M3 B: CHECKPOINT CHAR-08 — B must be active RGB brightness and A dimmed. This confirms M3 speaker tint remains compatible with M4 alpha. #line:03f1f83
 
-ANNOUNCEMENT CG-01 — On advance, the CG will fade in above Background B and both visible characters.
+ANNOUNCEMENT CG-01 — On advance, the CG will fade in above Background B and both visible characters. #line:01a30b6
 
 <<vn_cg_fade_in m3_cg 1>>
-CHECKPOINT CG-02 — The CG must be fully visible above the current presentation.
+CHECKPOINT CG-02 — The CG must be fully visible above the current presentation. #line:03b1381
 
-ANNOUNCEMENT CG-03 — On advance, the CG will fade out. Background B and both characters must survive underneath.
+ANNOUNCEMENT CG-03 — On advance, the CG will fade out. Background B and both characters must survive underneath. #line:053298d
 
 <<vn_cg_fade_out 1>>
-CHECKPOINT CG-04 — The CG must be gone. Background B and both characters must still be visible with their current M3 speaker-focus tint.
+CHECKPOINT CG-04 — The CG must be gone. Background B and both characters must still be visible with their current M3 speaker-focus tint. #line:0e2ce29
 
-ANNOUNCEMENT REGRESSION-01 — On advance, the established M3 immediate expression command will run. It must change immediately, without waiting for a fade.
+ANNOUNCEMENT REGRESSION-01 — On advance, the established M3 immediate expression command will run. It must change immediately, without waiting for a fade. #line:0b3fb45
 
 <<vn_expression m3_a smile>>
-CHECKPOINT REGRESSION-02 — Character A must show the smile Head immediately; Body, slot, and M3 speaker-focus behavior must remain intact.
+CHECKPOINT REGRESSION-02 — Character A must show the smile Head immediately; Body, slot, and M3 speaker-focus behavior must remain intact. #line:0bc611e
 
-M4 AUDIO / VOICE / TRANSITION SMOKE COMPLETE — Normal completion reached. No production story content is established by this node.
+M4 AUDIO / VOICE / TRANSITION SMOKE COMPLETE — Normal completion reached. No production story content is established by this node. #line:06f390a
 ===
