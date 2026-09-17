@@ -1,99 +1,99 @@
 title: M2_UI_START
 ---
-M2 technical UI smoke test: this narrator line has no character name.
-M2TestSpeaker: This named speaker line verifies the project-owned line presentation.
-M2TestSpeaker: This deliberately long technical line exists only to verify that the typewriter effect can be interrupted by the shared Advance input before every character has appeared on screen.
+M2 technical UI smoke test: this narrator line has no character name. #line:0607a33
+M2TestSpeaker: This named speaker line verifies the project-owned line presentation. #line:03b8bbf
+M2TestSpeaker: This deliberately long technical line exists only to verify that the typewriter effect can be interrupted by the shared Advance input before every character has appeared on screen. #line:0c57b0b
 <<jump M2_UI_TWO>>
 ===
 
 title: M2_UI_TWO
 ---
-M2TestSpeaker: Select one item from this two-option technical set.
--> Two-option selection A
+M2TestSpeaker: Select one item from this two-option technical set. #line:0d10e91
+-> Two-option selection A #line:08c177d
     <<jump M2_UI_TWO_A>>
--> Two-option selection B
+-> Two-option selection B #line:06c8708
     <<jump M2_UI_TWO_B>>
 ===
 
 title: M2_UI_TWO_A
 ---
-M2TestSpeaker: Technical result: two-option selection A.
+M2TestSpeaker: Technical result: two-option selection A. #line:09d5bc9
 <<jump M2_UI_THREE>>
 ===
 
 title: M2_UI_TWO_B
 ---
-M2TestSpeaker: Technical result: two-option selection B.
+M2TestSpeaker: Technical result: two-option selection B. #line:068e7da
 <<jump M2_UI_THREE>>
 ===
 
 title: M2_UI_THREE
 ---
-M2TestSpeaker: Select one item from this three-option technical set.
--> Three-option selection A
+M2TestSpeaker: Select one item from this three-option technical set. #line:037ac03
+-> Three-option selection A #line:0be7c25
     <<jump M2_UI_THREE_A>>
--> Three-option selection B
+-> Three-option selection B #line:009be40
     <<jump M2_UI_THREE_B>>
--> Three-option selection C
+-> Three-option selection C #line:0ad3e13
     <<jump M2_UI_THREE_C>>
 ===
 
 title: M2_UI_THREE_A
 ---
-M2TestSpeaker: Technical result: three-option selection A.
+M2TestSpeaker: Technical result: three-option selection A. #line:0b437bd
 <<jump M2_UI_FOUR>>
 ===
 
 title: M2_UI_THREE_B
 ---
-M2TestSpeaker: Technical result: three-option selection B.
+M2TestSpeaker: Technical result: three-option selection B. #line:01ac948
 <<jump M2_UI_FOUR>>
 ===
 
 title: M2_UI_THREE_C
 ---
-M2TestSpeaker: Technical result: three-option selection C.
+M2TestSpeaker: Technical result: three-option selection C. #line:044502e
 <<jump M2_UI_FOUR>>
 ===
 
 title: M2_UI_FOUR
 ---
-M2TestSpeaker: Select one item from this four-option technical set.
--> Four-option selection A
+M2TestSpeaker: Select one item from this four-option technical set. #line:011419d
+-> Four-option selection A #line:084c7e9
     <<jump M2_UI_FOUR_A>>
--> Four-option selection B
+-> Four-option selection B #line:0dca6ac
     <<jump M2_UI_FOUR_B>>
--> Four-option selection C
+-> Four-option selection C #line:04465f3
     <<jump M2_UI_FOUR_C>>
--> Four-option selection D
+-> Four-option selection D #line:0f016f8
     <<jump M2_UI_FOUR_D>>
 ===
 
 title: M2_UI_FOUR_A
 ---
-M2TestSpeaker: Technical result: four-option selection A.
+M2TestSpeaker: Technical result: four-option selection A. #line:0dbb9b3
 <<jump M2_UI_END>>
 ===
 
 title: M2_UI_FOUR_B
 ---
-M2TestSpeaker: Technical result: four-option selection B.
+M2TestSpeaker: Technical result: four-option selection B. #line:0fc4a67
 <<jump M2_UI_END>>
 ===
 
 title: M2_UI_FOUR_C
 ---
-M2TestSpeaker: Technical result: four-option selection C.
+M2TestSpeaker: Technical result: four-option selection C. #line:063e9da
 <<jump M2_UI_END>>
 ===
 
 title: M2_UI_FOUR_D
 ---
-M2TestSpeaker: Technical result: four-option selection D.
+M2TestSpeaker: Technical result: four-option selection D. #line:0e633e6
 <<jump M2_UI_END>>
 ===
 
 title: M2_UI_END
 ---
-M2 technical UI smoke test complete.
+M2 technical UI smoke test complete. #line:0e2acf3
 ===
