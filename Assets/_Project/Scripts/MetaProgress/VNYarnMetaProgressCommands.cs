@@ -1,4 +1,8 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using UnityEngine;
 using Yarn.Unity;
 
@@ -21,6 +25,7 @@ namespace ProjectAllTime.VN.MetaProgress
 
         private readonly DialogueRunner dialogueRunner;
         private readonly VNMetaProgressService metaProgressService;
+        private readonly HashSet<string> ownedCommandNames = new(StringComparer.Ordinal);
         private bool handlersRegistered;
         private bool disposed;
 
@@ -36,24 +41,63 @@ namespace ProjectAllTime.VN.MetaProgress
         {
             if (disposed || handlersRegistered) return;
 
-            dialogueRunner.AddCommandHandler<string>("vn_unlock_cg", UnlockCG);
-            dialogueRunner.AddCommandHandler<string>("vn_unlock_chapter", UnlockChapter);
-            dialogueRunner.AddCommandHandler<string>("vn_unlock_archive", UnlockArchive);
-            dialogueRunner.AddCommandHandler<string>("vn_unlock_achievement", UnlockAchievement);
-            dialogueRunner.AddCommandHandler<string>("vn_complete_ending", CompleteEnding);
-            handlersRegistered = true;
+            try
+            {
+                // Yarn 3.2.7 reports a duplicate handler with Debug.LogError
+                // rather than throwing. Detect collisions before any M8 handler
+                // is added so registration is all-or-none.
+                foreach (var commandName in CommandNames)
+                {
+                    if (IsCommandRegistered(commandName))
+                        throw new InvalidOperationException("Yarn command '" + commandName + "' is already registered.");
+                }
+
+                Register("vn_unlock_cg", UnlockCG);
+                Register("vn_unlock_chapter", UnlockChapter);
+                Register("vn_unlock_archive", UnlockArchive);
+                Register("vn_unlock_achievement", UnlockAchievement);
+                Register("vn_complete_ending", CompleteEnding);
+                handlersRegistered = true;
+            }
+            catch
+            {
+                UnregisterOwnedHandlers();
+                throw;
+            }
         }
 
         public void Dispose()
         {
             if (disposed) return;
-            if (handlersRegistered)
-            {
-                foreach (var commandName in CommandNames) dialogueRunner.RemoveCommandHandler(commandName);
-                handlersRegistered = false;
-            }
+            UnregisterOwnedHandlers();
 
             disposed = true;
+        }
+
+        private void Register(string commandName, Action<string> handler)
+        {
+            dialogueRunner.AddCommandHandler(commandName, handler);
+            if (!IsCommandRegistered(commandName))
+                throw new InvalidOperationException("Yarn command '" + commandName + "' could not be registered.");
+            ownedCommandNames.Add(commandName);
+        }
+
+        private void UnregisterOwnedHandlers()
+        {
+            foreach (var commandName in ownedCommandNames) dialogueRunner.RemoveCommandHandler(commandName);
+            ownedCommandNames.Clear();
+            handlersRegistered = false;
+        }
+
+        private bool IsCommandRegistered(string commandName)
+        {
+            var dispatcherProperty = typeof(DialogueRunner).GetProperty("CommandDispatcher", BindingFlags.Instance | BindingFlags.NonPublic);
+            if (dispatcherProperty == null) throw new InvalidOperationException("Yarn DialogueRunner command dispatcher is unavailable.");
+            var dispatcher = dispatcherProperty.GetValue(dialogueRunner);
+            var commandsProperty = dispatcher?.GetType().GetProperty("Commands", BindingFlags.Instance | BindingFlags.Public);
+            if (commandsProperty?.GetValue(dispatcher) is not IEnumerable commands)
+                throw new InvalidOperationException("Yarn DialogueRunner command registry is unavailable.");
+            return commands.Cast<ICommand>().Any(command => string.Equals(command.Name, commandName, StringComparison.Ordinal));
         }
 
         private void UnlockCG(string id) => TryMutate("vn_unlock_cg", "CG", id, metaProgressService.TryUnlockCG);
