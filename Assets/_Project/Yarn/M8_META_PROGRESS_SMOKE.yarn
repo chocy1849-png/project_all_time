@@ -1,0 +1,20 @@
+title: M8_META_PROGRESS_START
+---
+M8 META PROGRESS SMOKE — TECHNICAL / NON-CANON. Advance this line normally; its stable line ID is the persistent read-history fixture. #line:m8_meta_read_01
+
+<<vn_unlock_cg m8_smoke_cg_01>>
+<<vn_unlock_chapter m8_smoke_chapter_01>>
+<<vn_unlock_archive m8_smoke_archive_01>>
+<<vn_unlock_achievement m8_smoke_achievement_01>>
+<<vn_complete_ending m8_smoke_ending_01>>
+
+M8 META PROGRESS SMOKE — First unlock pass completed. The same five IDs will now be submitted again to verify idempotent behavior. #line:m8_meta_first_pass_01
+
+<<vn_unlock_cg m8_smoke_cg_01>>
+<<vn_unlock_chapter m8_smoke_chapter_01>>
+<<vn_unlock_archive m8_smoke_archive_01>>
+<<vn_unlock_achievement m8_smoke_achievement_01>>
+<<vn_complete_ending m8_smoke_ending_01>>
+
+M8 META PROGRESS SMOKE COMPLETE — TECHNICAL / NON-CANON. No production story state is defined by this node. #line:m8_meta_complete_01
+===
