@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using ProjectAllTime.VN.Dialogue;
+using ProjectAllTime.VN.MetaProgress;
 using ProjectAllTime.VN.Settings;
 using TMPro;
 using UnityEditor;
@@ -193,6 +194,36 @@ namespace ProjectAllTime.Tests.Editor
             Assert.That(order, Is.Not.Null);
             Assert.That(order.order, Is.EqualTo(-1));
             Assert.That(MonoImporter.GetExecutionOrder(MonoScript.FromMonoBehaviour(bootstrap)), Is.Zero);
+        }
+
+        [Test, Category("M8SceneWiring")]
+        public void MetaProgressBootstrap_IsWiredOnceToTheAuthoritativeRuntimeComposition()
+        {
+            var bootstrap = Single<VNMetaProgressRuntimeBootstrap>();
+            var sessionState = Single<VNDialogueSessionState>();
+            var runner = Single<DialogueRunner>();
+            var convenienceController = Single<VNConvenienceController>();
+            var inputRouter = Single<VNConvenienceInputRouter>();
+            var settingsBootstrap = Single<VNSettingsRuntimeBootstrap>();
+
+            Assert.That(bootstrap.gameObject, Is.SameAs(sessionState.gameObject));
+            Assert.That(bootstrap.gameObject, Is.SameAs(convenienceController.gameObject));
+            Assert.That(bootstrap.gameObject, Is.SameAs(inputRouter.gameObject));
+            Assert.That(bootstrap.gameObject, Is.SameAs(settingsBootstrap.gameObject));
+            Assert.That(bootstrap.name, Is.EqualTo("VNConvenienceRuntime"));
+            Assert.That(Ref<DialogueRunner>(bootstrap, "dialogueRunner"), Is.SameAs(runner));
+            Assert.That(bootstrap.TryValidateWiring(out var diagnostic), Is.True, diagnostic);
+            Assert.That(bootstrap.isActiveAndEnabled, Is.True);
+
+            var runnerProperties = new SerializedObject(runner);
+            Assert.That(runnerProperties.FindProperty("autoStart").boolValue, Is.True);
+            Assert.That(runnerProperties.FindProperty("startNode").stringValue, Is.EqualTo("M2_UI_START"));
+            Assert.That(MonoImporter.GetExecutionOrder(MonoScript.FromMonoBehaviour(bootstrap)), Is.Zero);
+            Assert.That(MonoImporter.GetExecutionOrder(MonoScript.FromMonoBehaviour(settingsBootstrap)), Is.Zero);
+
+            foreach (var component in bootstrap.GetComponents<Component>())
+                Assert.That(component, Is.Not.Null, "VNConvenienceRuntime has a missing script.");
+            Assert.That(Single<EventSystem>(), Is.Not.Null);
         }
 
         private static Slider CheckSlider(Component view, string sliderField, string commitField, float min, float max, bool whole)
