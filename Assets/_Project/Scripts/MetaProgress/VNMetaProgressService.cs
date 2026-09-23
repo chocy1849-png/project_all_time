@@ -47,6 +47,13 @@ namespace ProjectAllTime.VN.MetaProgress
         public bool TryUnlockAchievement(string id) => TryAdd(id, Collection.UnlockedAchievements);
         public bool TryCompleteEnding(string id) => TryAdd(id, Collection.CompletedEndings);
 
+        public bool IsLineRead(string id) => ContainsCurrent(Collection.ReadLineIds, id);
+        public bool IsCGUnlocked(string id) => ContainsCurrent(Collection.UnlockedCGs, id);
+        public bool IsChapterUnlocked(string id) => ContainsCurrent(Collection.UnlockedChapters, id);
+        public bool IsArchiveEntryUnlocked(string id) => ContainsCurrent(Collection.UnlockedArchiveEntries, id);
+        public bool IsAchievementUnlocked(string id) => ContainsCurrent(Collection.UnlockedAchievements, id);
+        public bool IsEndingCompleted(string id) => ContainsCurrent(Collection.CompletedEndings, id);
+
         private bool TryAdd(string id, Collection collection)
         {
             if (isWriteProtected)
@@ -98,6 +105,11 @@ namespace ProjectAllTime.VN.MetaProgress
             }
 
             return false;
+        }
+
+        private bool ContainsCurrent(Collection collection, string id)
+        {
+            return VNMetaProgressValidation.IsValidId(id) && ContainsOrdinal(GetCollection(current, collection), id);
         }
 
         private static string[] Add(string[] values, string value)
