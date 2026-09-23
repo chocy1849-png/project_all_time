@@ -47,12 +47,19 @@ namespace ProjectAllTime.Tests.Editor
         public void StableInventoryAndDefaultDisplays_UseFrozenIdsAndFixedControlsStayOutsideTargets()
         {
             var service = CreateService();
-            var rebind = CreateServiceUnderTest(service, out _);
+            var rebind = CreateServiceUnderTest(service, out var asset);
 
             Assert.That(rebind.TryValidateInputContract(out _), Is.True);
             AssertDisplay(rebind, VNRebindTarget.Advance, "<Keyboard>/space", "Space", true);
             AssertDisplay(rebind, VNRebindTarget.ToggleAuto, "<Keyboard>/a", "A", true);
-            AssertDisplay(rebind, VNRebindTarget.SkipHold, "<Keyboard>/leftCtrl | <Keyboard>/rightCtrl", "Left Control / Right Control", true);
+            var skipHoldAction = asset.FindAction(new Guid("12575a0b-46d0-45af-98a6-4ae535125107"));
+            var skipHoldPrimaryIndex = BindingIndex(skipHoldAction, "2078a088-1d2d-4bb1-abbd-7dbcd1f86a45");
+            var skipHoldCompanionIndex = BindingIndex(skipHoldAction, "e92a13d9-0445-4866-b4ff-8cf1c84d84ca");
+            var skipHoldDisplay = string.Concat(
+                skipHoldAction.GetBindingDisplayString(skipHoldPrimaryIndex),
+                " / ",
+                skipHoldAction.GetBindingDisplayString(skipHoldCompanionIndex));
+            AssertDisplay(rebind, VNRebindTarget.SkipHold, "<Keyboard>/leftCtrl | <Keyboard>/rightCtrl", skipHoldDisplay, true);
             AssertDisplay(rebind, VNRebindTarget.ToggleHide, "<Keyboard>/h", "H", true);
             AssertDisplay(rebind, VNRebindTarget.QuickSave, "<Keyboard>/f1", "F1", true);
             AssertDisplay(rebind, VNRebindTarget.QuickLoad, "<Keyboard>/f2", "F2", true);
