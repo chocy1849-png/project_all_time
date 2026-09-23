@@ -43,9 +43,9 @@
 - Backlog displays dialogue with speaker/narration handling; Auto progresses; ReadOnly Skip advances the repeated read line and stops at the following unread line.
 - QuickLoad no longer flashes a stale/resume line. The authoritative VNDialoguePanel LinePresenter and handler wiring were corrected.
 
-### DEFERRED
+### M6 PHASE-HISTORICAL DEFERRED ITEMS
 
-- Persistent read IDs, gallery/archive/CG progress, and cloud/Steam saves remain M8/M9 or later work.
+- At the M6 phase boundary, persistent read IDs and gallery/archive/CG progress were later M8/M9 work. M8 now supplies the persistent MetaProgress foundation for reads and unlock state; gallery/archive/CG interfaces remain future work. Cloud/Steam saves remain deferred.
 - Settings application/UI, rebinding UI, final keyboard scheme, and a user-facing Skip All policy remain later M7 work.
 - Backlog voice replay, backlog persistence, choice history, rewind, auto/skip choice selection, Skip transition speed-up, and main menu remain later scope.
 
@@ -78,6 +78,27 @@ Earlier M7 phase-local DEFERRED notes below describe their original implementati
 Verified final user-facing behavior: Settings startup/modal interaction; persistence across restart; M5 SaveData isolation from global Settings; Display settings; Text Speed; Auto Speed; Voice gate; Skip ReadOnly / All; choice protection; Master/BGM/SFX/Voice audio settings; keyboard rebinding; Escape cancellation; duplicate rejection; SkipHold Ctrl behavior; Reset All Bindings; binding persistence; full restart integration; and Screen Shake preference persistence/gate.
 
 The original Auto perceptibility finding is resolved: M7-12 widened only the post-multiplier effective range, and the targeted 0% / 50% / 100% user re-test passed. No additional Auto tuning is required.
+
+## M8 — Meta Progress Foundation — COMPLETE
+
+### Implementation
+
+- `Assets/_Project/Scripts/MetaProgress/` contains `VNMetaProgressData`, `VNMetaProgressDefaults`, `VNMetaProgressValidation`, `VNMetaProgressRepository`, `VNMetaProgressService`, `VNPersistentReadHistoryBridge`, `VNYarnMetaProgressCommands`, and `VNMetaProgressRuntimeBootstrap`.
+- Schema v1 is stored independently at `Application.persistentDataPath/MetaProgress/meta_progress.json`; it is separate from M5 `SaveData` and M7 `Settings/settings.json`. Its six ordinal set collections are `readLineIds`, `unlockedCGs`, `unlockedChapters`, `unlockedArchiveEntries`, `unlockedAchievements`, and `completedEndings`.
+- Persistence preserves missing-file defaults, quarantines malformed/invalid supported data before use, write-protects on quarantine failure or future-schema data, and performs deterministic persistence-first atomic writes. M5 Load/delete, Settings changes/reset, and New Game/session reset do not mutate MetaProgress.
+
+### Yarn Identity, Read History, and Commands
+
+- M8-02 assigned explicit stable `#line:<id>` tags to all project-localizable lines and options. The permanent compiler regression reports implicit line IDs = 0, duplicate line IDs = 0, and prevents untagged localizable lines/options in this project. This is the project authoring contract, not a limitation of Yarn itself.
+- Durable read identity is the exact runtime `LocalizedLine.TextID`. M6's session-only `VNReadHistoryService` now combines a persistent baseline with a session overlay; successful authorized line consume persists and promotes the ID. ReadOnly Skip sees that union via `VNReadHistoryService.IsRead`. Backlog remains session-only; there is no Yarn command to mark a line read.
+- The five commands `vn_unlock_cg`, `vn_unlock_chapter`, `vn_unlock_archive`, `vn_unlock_achievement`, and `vn_complete_ending` write their independent sets idempotently. No command directly mutates `readLineIds`.
+
+### Runtime Composition and Validation
+
+- The user-wired `VNMetaProgressRuntimeBootstrap` is on `VNConvenienceRuntime` with the production DialogueRunner reference and resolves sibling `VNDialogueSessionState` locally. Startup order is MetaProgress -2, Settings -1, then Yarn's default-order Start. Production start remains `M2_UI_START`; `M8_META_PROGRESS_START` is technical/non-canon smoke content.
+- Yarn Spinner `dev.yarnspinner.unity` 3.2.7 is the verified runtime package. MetaProgress command collision handling was validated against 3.2.7; a future Yarn upgrade must revalidate this contract.
+- M8-09 USER PLAY GATE — PASS. Authorized line consume persisted and restart reseeded reads; ReadOnly Skip crossed persisted lines and stopped at unread content; all five unlock categories persisted and repeated commands remained idempotent; ClearSession retained durable reads while clearing transient state; M5 Quick Save Load and `VNSaveRepository.Delete` did not alter MetaProgress; fresh restart retained all state; production M2 startup and both bootstraps remained healthy; physical Left Ctrl and Right Ctrl SkipHold checks passed.
+- Fresh unfiltered EditMode: 236 total, 236 passed, 0 failed, 0 skipped. New Game and Save Delete UIs are future consumers; their underlying runtime/repository isolation contracts were verified. Gallery, Chapter Select, Archive, Achievement, Ending, completion-percentage, platform, cloud, and Meta reset interfaces are not implemented by M8.
 
 ## M7-02 Settings Persistence Kernel — COMPLETE
 

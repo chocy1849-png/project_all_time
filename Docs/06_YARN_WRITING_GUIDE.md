@@ -1,6 +1,8 @@
-# M1 Yarn Writing Guide
+# Yarn Writing Guide
 
-This guide records only the M1 technical rules established with Yarn Spinner 3.2.7.
+This is the current project guide for authoring Yarn with the verified Yarn Spinner 3.2.7 runtime. The established M1–M7 conventions below remain in force; the M8 stable-identity and MetaProgress rules extend them.
+
+## M1 authoring foundations
 
 - Yarn files are plain `.yarn` text assets.
 - All variables must be explicitly declared.
@@ -52,8 +54,47 @@ This guide records only the M1 technical rules established with Yarn Spinner 3.2
 
 ## M6 convenience authoring
 
-- Visible lines retain stable, unique explicit line IDs. Changing an ID changes its session ReadHistory identity.
+- Visible lines retain stable, unique explicit line IDs. Changing an ID changes its ReadHistory identity, including durable M8 history.
 - A repeatedly executed authored line keeps the same stable ID; do not duplicate one explicit ID across separate authored source lines.
 - Choices are never Auto-selected or Skip-selected.
-- ReadHistory is session-only and is not persisted by M6.
+- M6 originally kept ReadHistory session-only. M8 adds a persistent baseline with a session overlay; Backlog remains session-only.
 - `M6_CONVENIENCE_SMOKE` and its voice/checkpoint fixtures are non-canon technical regression content.
+
+## Stable line IDs for durable Read History
+
+- Every localizable production line and option must have an explicit, unique `#line:<stable_id>` tag. Do not deliberately rely on an implicit compiler-generated ID for durable read history; implicit IDs are prohibited by this project's authoring contract.
+- Once an authored ID is committed and used as durable identity, preserve it when visible text, speaker wording, node position, or source file changes. Copying a line to create a new authored line requires a new unique ID. Never reuse one ID for independent lines or options.
+- Visible or localized dialogue text is never read-history identity. Runtime identity is Yarn's exact `LocalizedLine.TextID`. For example, author `Hello. #line:prologue_hello_01`; use the exact runtime `TextID` as delivered. Do not manually strip, add, or reconstruct a runtime prefix.
+- Preserve existing IDs during script edits. The project compiler regression requires zero implicit localizable IDs and zero duplicate IDs; this project rule does not mean Yarn itself cannot generate implicit IDs.
+
+## M8 MetaProgress commands
+
+Use stable internal IDs, never localized display labels or descriptions:
+
+- `<<vn_unlock_cg stable_id>>`
+- `<<vn_unlock_chapter stable_id>>`
+- `<<vn_unlock_archive stable_id>>`
+- `<<vn_unlock_achievement stable_id>>`
+- `<<vn_complete_ending stable_id>>`
+
+Each command is idempotent. Reuse the same stable ID for the same content instead of inventing another ID for duplicate awards. These commands persist only their game-internal ID state; they do not persist display names or descriptions.
+
+### CG unlocks
+
+Displaying a CG does not permanently unlock it. Use `vn_cg` or another presentation command to show it. Use `vn_unlock_cg` only at the authored point where the permanent MetaProgress unlock should occur.
+
+### Ending completion
+
+Place `vn_complete_ending` only at the definitive ending-completion point. Do not mark an ending complete merely because its node begins.
+
+### Achievements
+
+`vn_unlock_achievement` records game-internal MetaProgress only. It does not integrate with Steam, Epic, or another platform achievement service.
+
+### Read History
+
+Authors do not call a Yarn command to mark dialogue read. The authorized line-consume runtime path records the exact `LocalizedLine.TextID`; full display or choice presentation alone does not. There is no `vn_mark_read` command.
+
+## M8 technical smoke
+
+`M8_META_PROGRESS_START` and its M8 IDs are reserved technical/non-canon verification content. The production `VN_Main` Start Node remains `M2_UI_START`. M8 provides the persistence foundation; Gallery, Chapter Select, Archive, Achievement, Ending, and completion-percentage UIs, platform achievements, cloud sync, Meta reset, New Game, and Save Delete UIs remain future consumers.

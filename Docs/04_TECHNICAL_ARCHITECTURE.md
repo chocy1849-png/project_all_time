@@ -194,3 +194,61 @@ Persistent variable integration is deferred to M5.
 - Historical M7-04 through M7-08 deferred notes above are phase-local; M7-08 through M7-13 supersede them for the current Settings UI, startup composition, and Mixer exposure state.
 - M7-11 user Play Gate's only finding was the Auto-range perceptibility issue. M7-12 corrected only the final effective Auto delay range with numeric regression coverage, and the targeted user Auto re-test passed; M7 is complete.
 - Screen Shake remains intentionally a persisted preference and future-consumer gate, not an unfinished accidental omission.
+
+## M8 MetaProgress architecture
+
+### Independent authorities
+
+The three persistence roots share the platform's `Application.persistentDataPath` but are separate authorities:
+
+```text
+Application.persistentDataPath
+├── SaveData/
+├── Settings/settings.json
+└── MetaProgress/meta_progress.json
+```
+
+M5 save load/deletion, M7 settings mutation/reset, and New Game or dialogue-session reset do not roll back, delete, mutate, or clear MetaProgress.
+
+### Read-history flow
+
+```text
+Yarn LocalizedLine.TextID
+→ VNDialogueSessionState
+→ authorized fully-displayed line consume
+→ VNReadHistoryService session overlay
+→ ReadStateChanged
+→ VNPersistentReadHistoryBridge
+→ VNMetaProgressService.TryRecordReadLine
+→ successful durable write
+→ promote ID into persistent read baseline
+```
+
+Only the authorized consume path records a new read. Full display and choice presentation alone do not. On startup, `meta_progress.json` is loaded through `VNMetaProgressService.Load`; `readLineIds` seed the `VNReadHistoryService` persistent baseline. Effective Read History is that baseline plus the session overlay. `ClearSession` clears transient reads and Backlog while persistent reads remain effective. `VNConvenienceController` continues to use `VNReadHistoryService.IsRead` for ReadOnly Skip; it does not query JSON or `VNMetaProgressRepository` directly.
+
+Durable line identity is Yarn's exact runtime `LocalizedLine.TextID`, sourced from explicit authored `#line:<id>` tags. The project does not strip or add a `line:` prefix; an observed authored `#line:m8_meta_read_01` arrives at runtime as `line:m8_meta_read_01`.
+
+### Unlock flow and service surface
+
+```text
+Yarn command
+→ VNYarnMetaProgressCommands
+→ VNMetaProgressService
+→ VNMetaProgressRepository
+```
+
+The registered commands are `vn_unlock_cg`, `vn_unlock_chapter`, `vn_unlock_archive`, `vn_unlock_achievement`, and `vn_complete_ending`. They accept stable internal IDs. Unlock registration has no implicit UI, catalog, or presentation side effect; CG presentation and permanent CG unlock remain separate operations.
+
+The service exposes queries `IsLineRead`, `IsCGUnlocked`, `IsChapterUnlocked`, `IsArchiveEntryUnlocked`, `IsAchievementUnlocked`, and `IsEndingCompleted`; mutations are `TryRecordReadLine`, `TryUnlockCG`, `TryUnlockChapter`, `TryUnlockArchiveEntry`, `TryUnlockAchievement`, and `TryCompleteEnding`. Duplicate set mutations succeed without a second durable mutation.
+
+### Persistence semantics
+
+Schema v1 stores six ordinal set-semantic collections: `readLineIds`, `unlockedCGs`, `unlockedChapters`, `unlockedArchiveEntries`, `unlockedAchievements`, and `completedEndings`. Null, empty, and whitespace-only IDs are invalid. Canonical writes sort collection values with ordinal ordering and use UTF-8 without BOM, a unique same-directory temporary file, `Flush(true)`, `File.Move` for first write, and `File.Replace` for replacement. The candidate state becomes current only after persistence succeeds. Malformed/invalid supported-schema files use preservation-first `.corrupt` quarantine; quarantine failure and unsupported future schemas protect writes. Future-schema bytes are not quarantined, downgraded, or overwritten.
+
+M5 SaveData, M7 Settings, and M8 MetaProgress remain independent subsystems; no shared repository or common state authority is introduced.
+
+### Runtime composition and version constraint
+
+`VNConvenienceRuntime` contains `VNDialogueSessionState`, `VNConvenienceController`, `VNConvenienceInputRouter`, `VNSettingsRuntimeBootstrap`, and `VNMetaProgressRuntimeBootstrap`. The MetaProgress bootstrap owns plain repository/service/bridge/command objects for the scene session. It resolves the sibling dialogue state, loads MetaProgress, seeds and subscribes the persistent-read bridge, then registers Yarn commands. Its execution order is -2; Settings is -1; Yarn DialogueRunner uses default-order Start. There is no global singleton or `DontDestroyOnLoad` MetaProgress owner.
+
+The verified runtime is Yarn Spinner `dev.yarnspinner.unity` 3.2.7. Command collision handling depends on the installed 3.2.7 command-dispatcher behavior; any Yarn package upgrade must revalidate MetaProgress handler collision/registration behavior before adoption. M8 supplies a persistence foundation only; Gallery, Chapter Select, Archive, Achievement, Ending, completion percentage, platform achievement, cloud-sync, Meta reset, New Game, and Save Delete interfaces remain future consumers.
