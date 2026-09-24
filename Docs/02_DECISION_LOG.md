@@ -166,6 +166,7 @@ Status: ACCEPTED
 - M2's VNDialoguePanel LinePresenter is authoritative. M6 resolves it from the delivering DialogueRunner's unique enabled LinePresenter rather than trusting duplicate scene presenter components. The official ActionMarkupHandler callback is primary; TMP visual observation is an idempotent defensive watchdog.
 - QuickLoad retains the M5 stop → LinePresenter visual-quiescence barrier → restore → StartDialogue ordering.
 - M6 technical smoke, checkpoint, and voice assets are non-canon regression fixtures. The normal start node remains `M2_UI_START`.
+- M8 DEC-027 supersedes the session-only Read History limit with a durable persistent baseline; Backlog remains session-only. This records the later M8 change without rewriting M6's original behavior.
 
 ## DEC-018 — M7 settings persistence kernel
 
@@ -259,3 +260,16 @@ Status: ACCEPTED
 - M6's base formula remains unchanged: `Clamp(0.50 + displayedText.Length * 0.035, 0.80, 4.00)`. Stored normalized Auto speed remains linear `0..1 → 1.5..0.5`; the default `0.5 → 1.0` preserves M6 timing exactly.
 - M7 now applies its multiplier after the M6 base clamp and bounds the resulting effective delay to runtime-only `0.40..6.00` seconds. These are not serialized Scene settings.
 - Full-display timing, Voice completion, choices, occurrence/read-history safety, Auto/Skip mutual exclusion, Settings schema-v1, and M5 SaveData isolation are unchanged. No Settings UI or Yarn change is required.
+
+## DEC-027 — M8 MetaProgress persistence and stable identity
+
+Status: ACCEPTED
+
+- MetaProgress is a third independent persistence authority at `Application.persistentDataPath/MetaProgress/meta_progress.json`, separate from M5 `Application.persistentDataPath/SaveData` and M7 `Application.persistentDataPath/Settings/settings.json`. M5 Load never rolls MetaProgress backward; M5 save deletion, Settings reset/change, and New Game/dialogue-session reset never mutate or clear it.
+- Schema v1 contains six set-semantic collections: `readLineIds`, `unlockedCGs`, `unlockedChapters`, `unlockedArchiveEntries`, `unlockedAchievements`, and `completedEndings`. IDs use ordinal string identity; null, empty, and whitespace-only IDs are invalid. Display/localized names are not identity.
+- A missing file supplies defaults without creating a file on Load. Malformed/invalid supported data is quarantined as `.corrupt` before use; quarantine failure protects the file from writes. Future-schema bytes are preserved without quarantine, downgrade, or overwrite. Writes use canonical deterministic collection ordering, UTF-8 without BOM, a unique same-directory temporary file, `Flush(true)`, `Move` for first write, and `Replace` for overwrite. Failed persistence does not commit a candidate in-memory mutation.
+- Backlog remains session-only. Read History is the union of a persistent baseline and a session overlay. Only an authorized consume of a fully displayed Yarn line records a read; full display and choice presentation alone do not. `ClearSession` clears transient/session read state and Backlog while durable reads remain effective. ReadOnly Skip still queries `VNReadHistoryService`, not MetaProgress directly.
+- Durable line identity is the exact runtime `LocalizedLine.TextID` supplied by Yarn, authored with an explicit stable `#line:<id>` tag. Implicit generated IDs are prohibited by this project's durable authoring contract. Do not strip or manufacture the `line:` prefix; for example, M8 observed runtime `line:m8_meta_read_01` from authored `#line:m8_meta_read_01`.
+- The five internal-ID commands are `vn_unlock_cg`, `vn_unlock_chapter`, `vn_unlock_archive`, `vn_unlock_achievement`, and `vn_complete_ending`. Repeated unlock/completion is a successful no-op with no duplicate logical state or second durable mutation. CG unlock is separate from CG presentation; ending completion is authored only at definitive completion. Achievements are game-internal; there is no Steam/Epic/platform SDK integration.
+- `VNMetaProgressRuntimeBootstrap` runs at execution order -2 before `VNSettingsRuntimeBootstrap` (-1) and Yarn DialogueRunner's default-order Start. Composition is Repository → Service → Load → persistent-read baseline/bridge → Yarn command registration. There is no singleton or `DontDestroyOnLoad` MetaProgress authority.
+- M8 delivers the persistence foundation only. CG Gallery, Chapter Select, Archive, Achievement and Ending Gallery UIs, completion percentages, platform achievement adapters, cloud/cross-device sync, and Meta reset UI remain future consumers.
