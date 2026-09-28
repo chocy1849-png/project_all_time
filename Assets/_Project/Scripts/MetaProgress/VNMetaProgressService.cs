@@ -28,6 +28,8 @@ namespace ProjectAllTime.VN.MetaProgress
         public bool CanWrite => !isWriteProtected;
         public string LastDiagnostic => lastDiagnostic;
 
+        public event Action<VNMetaProgressChange> ProgressChanged;
+
         public VNMetaProgressData Load()
         {
             var result = repository.Read();
@@ -40,12 +42,12 @@ namespace ProjectAllTime.VN.MetaProgress
             return Current;
         }
 
-        public bool TryRecordReadLine(string id) => TryAdd(id, Collection.ReadLineIds);
-        public bool TryUnlockCG(string id) => TryAdd(id, Collection.UnlockedCGs);
-        public bool TryUnlockChapter(string id) => TryAdd(id, Collection.UnlockedChapters);
-        public bool TryUnlockArchiveEntry(string id) => TryAdd(id, Collection.UnlockedArchiveEntries);
-        public bool TryUnlockAchievement(string id) => TryAdd(id, Collection.UnlockedAchievements);
-        public bool TryCompleteEnding(string id) => TryAdd(id, Collection.CompletedEndings);
+        public bool TryRecordReadLine(string id) => TryAdd(id, Collection.ReadLineIds, VNMetaProgressChangeKind.ReadLine);
+        public bool TryUnlockCG(string id) => TryAdd(id, Collection.UnlockedCGs, VNMetaProgressChangeKind.CG);
+        public bool TryUnlockChapter(string id) => TryAdd(id, Collection.UnlockedChapters, VNMetaProgressChangeKind.Chapter);
+        public bool TryUnlockArchiveEntry(string id) => TryAdd(id, Collection.UnlockedArchiveEntries, VNMetaProgressChangeKind.ArchiveEntry);
+        public bool TryUnlockAchievement(string id) => TryAdd(id, Collection.UnlockedAchievements, VNMetaProgressChangeKind.Achievement);
+        public bool TryCompleteEnding(string id) => TryAdd(id, Collection.CompletedEndings, VNMetaProgressChangeKind.Ending);
 
         public bool IsLineRead(string id) => ContainsCurrent(Collection.ReadLineIds, id);
         public bool IsCGUnlocked(string id) => ContainsCurrent(Collection.UnlockedCGs, id);
@@ -54,7 +56,7 @@ namespace ProjectAllTime.VN.MetaProgress
         public bool IsAchievementUnlocked(string id) => ContainsCurrent(Collection.UnlockedAchievements, id);
         public bool IsEndingCompleted(string id) => ContainsCurrent(Collection.CompletedEndings, id);
 
-        private bool TryAdd(string id, Collection collection)
+        private bool TryAdd(string id, Collection collection, VNMetaProgressChangeKind changeKind)
         {
             if (isWriteProtected)
             {
@@ -94,7 +96,26 @@ namespace ProjectAllTime.VN.MetaProgress
 
             current = canonical;
             isWriteProtected = false;
+            NotifyProgressChanged(new VNMetaProgressChange(changeKind, id));
             return true;
+        }
+
+        private void NotifyProgressChanged(VNMetaProgressChange change)
+        {
+            var handlers = ProgressChanged;
+            if (handlers == null) return;
+
+            foreach (Action<VNMetaProgressChange> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(change);
+                }
+                catch (Exception exception)
+                {
+                    lastDiagnostic = "A MetaProgress change observer failed after the committed mutation: " + exception.Message;
+                }
+            }
         }
 
         private static bool ContainsOrdinal(string[] values, string value)
