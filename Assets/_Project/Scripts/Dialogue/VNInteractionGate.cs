@@ -34,7 +34,7 @@ namespace ProjectAllTime.VN.Dialogue
         /// <summary>Future M6 hide UI calls this without owning any visual implementation here.</summary>
         public void SetUiHidden(bool hidden) => isUiHidden = hidden;
 
-        /// <summary>Owned exclusively by the compact M6 Backlog/Settings coordinator.</summary>
+        /// <summary>Owned exclusively by the convenience modal coordinator.</summary>
         public void SetConvenienceModalActive(bool active) => convenienceModalActive = active;
     }
 }

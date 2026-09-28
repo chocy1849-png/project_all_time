@@ -5,5 +5,6 @@ namespace ProjectAllTime.VN.Dialogue
         None,
         Backlog,
         Settings,
+        Records,
     }
 }
