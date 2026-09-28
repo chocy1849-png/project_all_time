@@ -46,7 +46,7 @@ namespace ProjectAllTime.VN.Dialogue
         public event Action<bool> AutoStateChanged;
         public event Action<bool> SkipStateChanged;
         public event Action<VNSkipPolicy> SkipPolicyChanged;
-        /// <summary>Future Backlog/Settings modal owners close in response to a real M5 Load start.</summary>
+        /// <summary>Convenience modal owners close in response to a real M5 Load start.</summary>
         public event Action SafeManualStateRequested;
 
         public bool IsAutoEnabled => isAutoEnabled;

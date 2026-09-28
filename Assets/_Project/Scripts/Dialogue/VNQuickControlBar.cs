@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace ProjectAllTime.VN.Dialogue
 {
-    /// <summary>Runtime listener owner for the eight M6 QuickControl actions.</summary>
+    /// <summary>Runtime listener owner for QuickControl actions.</summary>
     [DisallowMultipleComponent]
     public sealed class VNQuickControlBar : MonoBehaviour
     {
@@ -17,6 +17,7 @@ namespace ProjectAllTime.VN.Dialogue
         [SerializeField] private Button saveButton;
         [SerializeField] private Button loadButton;
         [SerializeField] private Button settingsButton;
+        [SerializeField] private Button recordsButton;
         [SerializeField] private GameObject skipSelectedIndicator;
         [SerializeField] private GameObject autoSelectedIndicator;
 
@@ -51,6 +52,7 @@ namespace ProjectAllTime.VN.Dialogue
             saveButton?.onClick.AddListener(HandleSaveClicked);
             loadButton?.onClick.AddListener(HandleLoadClicked);
             settingsButton?.onClick.AddListener(HandleSettingsClicked);
+            recordsButton?.onClick.AddListener(HandleRecordsClicked);
         }
 
         private void UnregisterListeners()
@@ -63,6 +65,7 @@ namespace ProjectAllTime.VN.Dialogue
             saveButton?.onClick.RemoveListener(HandleSaveClicked);
             loadButton?.onClick.RemoveListener(HandleLoadClicked);
             settingsButton?.onClick.RemoveListener(HandleSettingsClicked);
+            recordsButton?.onClick.RemoveListener(HandleRecordsClicked);
         }
 
         private void HandleNextClicked() => convenienceController?.HandleManualAdvance();
@@ -73,6 +76,7 @@ namespace ProjectAllTime.VN.Dialogue
         private void HandleSaveClicked() => convenienceController?.OpenSave();
         private void HandleLoadClicked() => convenienceController?.OpenLoad();
         private void HandleSettingsClicked() => modalController?.TryOpenSettings();
+        private void HandleRecordsClicked() => modalController?.TryOpenRecords();
 
         private void HandleAutoStateChanged(bool enabled) => SetActive(autoSelectedIndicator, enabled);
         private void HandleSkipStateChanged(bool enabled) => SetActive(skipSelectedIndicator, enabled);
