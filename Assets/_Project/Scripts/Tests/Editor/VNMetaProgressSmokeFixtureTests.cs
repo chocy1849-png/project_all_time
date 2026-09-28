@@ -43,7 +43,7 @@ namespace ProjectAllTime.Tests.Editor
             var entries = result.StringTable.ToArray();
             Assert.That(entries.Count(entry => entry.Value.isImplicitTag), Is.Zero, "String table entries must not use implicit IDs.");
             Assert.That(entries.Select(entry => entry.Key).Distinct(StringComparer.Ordinal).Count(), Is.EqualTo(entries.Length), "Compiled line IDs must be unique.");
-            Assert.That(entries.Length, Is.EqualTo(138), "The M8-02 inventory of 135 plus three smoke lines should total 138.");
+            Assert.That(entries.Length, Is.EqualTo(151), "The M8-02 inventory of 135 plus three smoke lines and thirteen M9-04 fixture lines should total 151.");
         }
 
         [Test]
