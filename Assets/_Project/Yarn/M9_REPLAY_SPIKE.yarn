@@ -1,0 +1,96 @@
+title: M9_REPLAY_SAFE_START
+---
+<<declare $replay_probe = 0>>
+Replay probe is {$replay_probe}. #line:m9_replay_safe_01
+<<vn_bg replay_background>>
+Replay background is set. #line:m9_replay_safe_02
+<<vn_cg m3_cg>>
+Replay CG is set. #line:m9_replay_safe_03
+<<vn_clear_cg>>
+Replay CG is clear. #line:m9_replay_safe_04
+<<vn_show m9_replay_character default center>>
+<<vn_expression m9_replay_character replay_expression>>
+<<vn_move m9_replay_character left>>
+<<vn_facing m9_replay_character left>>
+<<vn_scale m9_replay_character 1.25>>
+Replay character presentation is set. #line:m9_replay_safe_05
+<<vn_hide m9_replay_character>>
+Replay character presentation is clear. #line:m9_replay_safe_06
+===
+
+title: M9_REPLAY_PRODUCTION_WAIT
+---
+Production probe is {$replay_probe}. #line:m9_replay_prod_01
+Production runner resumed normally. #line:m9_replay_prod_02
+===
+
+title: M9_REPLAY_CANCEL
+---
+<<vn_bg replay_background>>
+<<vn_cg m3_cg>>
+Replay cancellation fixture. #line:m9_replay_cancel_01
+===
+
+title: M9_REPLAY_UNSAFE_OPTIONS
+---
+Replay options are forbidden. #line:m9_replay_option_prompt
+-> Unsafe option #line:m9_replay_option_01
+    <<jump M9_REPLAY_SAFE_START>>
+===
+
+title: M9_REPLAY_UNSAFE_CHECKPOINT
+---
+<<vn_checkpoint m9_replay_unsafe_checkpoint>>
+===
+
+title: M9_REPLAY_UNSAFE_UNLOCK_CG
+---
+<<vn_unlock_cg m9_replay_unsafe_cg>>
+===
+
+title: M9_REPLAY_UNSAFE_UNLOCK_CHAPTER
+---
+<<vn_unlock_chapter m9_replay_unsafe_chapter>>
+===
+
+title: M9_REPLAY_UNSAFE_UNLOCK_ARCHIVE
+---
+<<vn_unlock_archive m9_replay_unsafe_archive>>
+===
+
+title: M9_REPLAY_UNSAFE_UNLOCK_ACHIEVEMENT
+---
+<<vn_unlock_achievement m9_replay_unsafe_achievement>>
+===
+
+title: M9_REPLAY_UNSAFE_COMPLETE_ENDING
+---
+<<vn_complete_ending m9_replay_unsafe_ending>>
+===
+
+title: M9_REPLAY_UNSAFE_BGM
+---
+<<bgm_play m9_replay_unsafe_bgm>>
+===
+
+title: M9_REPLAY_UNSAFE_SFX
+---
+<<sfx_play m9_replay_unsafe_sfx>>
+===
+
+title: M9_REPLAY_UNSAFE_UNKNOWN
+---
+<<vn_bg replay_background>>
+Unknown-command failure fixture. #line:m9_replay_unsafe_unknown_01
+<<m9_replay_unknown_command>>
+===
+
+title: M9_REPLAY_UNSAFE_JUMP
+---
+<<jump M9_REPLAY_UNSAFE_TARGET>>
+===
+
+title: M9_REPLAY_UNSAFE_TARGET
+---
+Unsafe target reached. #line:m9_replay_unsafe_target_01
+===
