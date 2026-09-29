@@ -75,7 +75,8 @@ namespace ProjectAllTime.VN.Records.Replay
             YarnProject project,
             VNReplayContentPolicy contentPolicy,
             Func<Transform, VNPresentationController> presentationFactory,
-            Func<Transform, DialoguePresenterBase> presenterFactory)
+            Func<Transform, DialoguePresenterBase> presenterFactory,
+            Transform parent = null)
         {
             if (project == null) throw new ArgumentNullException(nameof(project));
             if (contentPolicy == null) throw new ArgumentNullException(nameof(contentPolicy));
@@ -84,6 +85,7 @@ namespace ProjectAllTime.VN.Records.Replay
 
             var root = new GameObject("VN Replay Session");
             root.SetActive(false);
+            if (parent != null) root.transform.SetParent(parent, false);
             try
             {
                 var storage = root.AddComponent<InMemoryVariableStorage>();
