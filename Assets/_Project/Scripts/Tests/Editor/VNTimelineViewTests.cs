@@ -6,6 +6,7 @@ using System.Reflection;
 using NUnit.Framework;
 using ProjectAllTime.VN.MetaProgress;
 using ProjectAllTime.VN.Records.Gallery;
+using ProjectAllTime.VN.Records.Replay.UI;
 using ProjectAllTime.VN.Records.Timeline;
 using ProjectAllTime.VN.Records.Timeline.UI;
 using TMPro;
@@ -419,15 +420,77 @@ namespace ProjectAllTime.Tests.Editor
             var title = GetField<TMP_Text>(item, "titleText");
             var state = GetField<TMP_Text>(item, "stateText");
             var childButton = item.GetComponent<Button>();
-            Assert.That(item.Bind("Visible", VNTimelineEntryState.Completed, 3), Is.True);
+            var replayButton = GetField<Button>(item, "replayButton");
+            var invokedEntryId = string.Empty;
+            Assert.That(replayButton.gameObject.activeSelf, Is.False,
+                "A pooled Timeline row starts with Replay hidden until an eligible Bind.");
+            Assert.That(item.Bind("entry_visible", "Visible", VNTimelineEntryState.Completed, 3, true,
+                entryId => invokedEntryId = entryId), Is.True);
             Assert.That(title.text, Is.EqualTo("Visible"));
             Assert.That(state.text, Is.EqualTo("Completed"));
             Assert.That(childButton.interactable, Is.False);
+            Assert.That(replayButton.gameObject.activeSelf, Is.True);
+            Assert.That(replayButton.interactable, Is.True);
+            replayButton.onClick.Invoke();
+            Assert.That(invokedEntryId, Is.EqualTo("entry_visible"));
 
             Assert.That(item.Bind("SECRET", VNTimelineEntryState.Hidden, 0), Is.False);
             Assert.That(title.text, Is.Empty);
             Assert.That(state.text, Is.Empty);
             Assert.That(childButton.interactable, Is.False);
+            Assert.That(replayButton.gameObject.activeSelf, Is.False);
+            Assert.That(replayButton.interactable, Is.False);
+        }
+
+        [Test]
+        public void ReplayButton_RequiresCompletedVisibleSafeEntryAndRebindingKeepsOneListener()
+        {
+            var catalog = CreateCatalog(
+                Chapter("chapter_replay", "Replay", 0),
+                Entry("entry_safe", "chapter_replay", "Safe completed", "line:safe_discovery", "line:safe_complete", 0,
+                    replayNode: "M9_REPLAY_SAFE_START"),
+                Entry("entry_discovered", "chapter_replay", "Discovered", "line:discovered", "line:discovered_complete", 1,
+                    replayNode: "M9_REPLAY_SAFE_START"),
+                Entry("entry_no_node", "chapter_replay", "No node", "line:no_node_discovery", "line:no_node_complete", 2),
+                Entry("entry_unsafe", "chapter_replay", "Unsafe", "line:unsafe_discovery", "line:unsafe_complete", 3,
+                    replayNode: "M9_REPLAY_UNSAFE_CHECKPOINT"));
+            SeedChapter("chapter_replay");
+            foreach (var lineId in new[] { "line:safe_complete", "line:no_node_complete", "line:unsafe_complete", "line:discovered" })
+                SeedLine(lineId);
+
+            var runtime = Runtime(catalog);
+            var replayControllerObject = NewObject("Replay Eligibility Controller");
+            var replayController = replayControllerObject.AddComponent<VNReplayController>();
+            var yarnProject = AssetDatabase.LoadAssetAtPath<YarnProject>("Assets/_Project/Yarn/GameNarrative.yarnproject");
+            Assert.That(yarnProject, Is.Not.Null);
+            Assert.That(replayController.Initialize(runtime, catalog, yarnProject), Is.True, replayController.LastDiagnostic);
+            var writesBeforeBind = writes;
+            var bytesBeforeBind = File.ReadAllBytes(repository.CanonicalFilePath);
+
+            Assert.That(view.Initialize(runtime), Is.True);
+            Assert.That(view.InitializeReplay(replayController), Is.True, view.LastDiagnostic);
+            var rows = EntryRows().ToDictionary(item => GetField<string>(item, "entryId"), StringComparer.Ordinal);
+            var safeButton = GetField<Button>(rows["entry_safe"], "replayButton");
+            var discoveredButton = GetField<Button>(rows["entry_discovered"], "replayButton");
+            var noNodeButton = GetField<Button>(rows["entry_no_node"], "replayButton");
+            var unsafeButton = GetField<Button>(rows["entry_unsafe"], "replayButton");
+
+            Assert.That(safeButton.gameObject.activeSelf && safeButton.interactable, Is.True);
+            Assert.That(discoveredButton.gameObject.activeSelf, Is.False);
+            Assert.That(noNodeButton.gameObject.activeSelf, Is.False);
+            Assert.That(unsafeButton.gameObject.activeSelf, Is.False);
+            Assert.That(rows["entry_safe"].GetComponent<Button>().interactable, Is.False,
+                "Only the dedicated Replay button is interactive; the row stays inert.");
+            Assert.That(AllRenderedText(), Does.Not.Contain("M9_REPLAY_SAFE_START"));
+            Assert.That(writes, Is.EqualTo(writesBeforeBind));
+            CollectionAssert.AreEqual(bytesBeforeBind, File.ReadAllBytes(repository.CanonicalFilePath));
+
+            var clicks = 0;
+            var row = entryItemPrefab;
+            for (var index = 0; index < 10; index++)
+                Assert.That(row.Bind("entry_rebind", "Rebind", VNTimelineEntryState.Completed, 0, true, _ => clicks++), Is.True);
+            GetField<Button>(row, "replayButton").onClick.Invoke();
+            Assert.That(clicks, Is.EqualTo(1));
         }
 
         [Test]
@@ -438,7 +501,7 @@ namespace ProjectAllTime.Tests.Editor
             {
                 var memberNames = type.GetMembers(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
                     .Select(member => member.Name);
-                Assert.That(memberNames.Any(name => name.IndexOf("Replay", StringComparison.OrdinalIgnoreCase) >= 0), Is.False);
+                Assert.That(memberNames.Any(name => string.Equals(name, "ReplayNode", StringComparison.Ordinal)), Is.False);
                 Assert.That(memberNames.Any(name => name.IndexOf("RelatedCgId", StringComparison.OrdinalIgnoreCase) >= 0), Is.False);
             }
 
@@ -446,6 +509,7 @@ namespace ProjectAllTime.Tests.Editor
                 .GetFields(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
                 .Select(field => field.FieldType).ToArray();
             Assert.That(viewFieldTypes.Any(type => type == typeof(VNTimelineCatalog)), Is.False);
+            Assert.That(viewFieldTypes.Any(type => type == typeof(VNReplayController)), Is.True);
             Assert.That(viewFieldTypes.Any(type => type == typeof(VNMetaProgressService)), Is.False);
             Assert.That(viewFieldTypes.Any(type => type == typeof(VNCGGalleryService)), Is.False);
             Assert.That(typeof(VNTimelineChapterItem).GetFields(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic)
@@ -530,11 +594,15 @@ namespace ProjectAllTime.Tests.Editor
             var state = NewChildText(prefabObject.transform, "Entry State");
             var indentation = NewChildObject(prefabObject.transform, "Indentation Spacer").AddComponent<LayoutElement>();
             var completed = NewChildObject(prefabObject.transform, "Entry Completed Indicator");
+            var replayButtonObject = NewChildObject(prefabObject.transform, "Replay Button");
+            replayButtonObject.SetActive(false);
+            var replayButton = replayButtonObject.AddComponent<Button>();
             var item = prefabObject.AddComponent<VNTimelineEntryItem>();
             SetField(item, "titleText", title);
             SetField(item, "stateText", state);
             SetField(item, "indentationSpacer", indentation);
             SetField(item, "completedIndicator", completed);
+            SetField(item, "replayButton", replayButton);
             SetField(item, "indentationPerLevel", 24f);
             return item;
         }
@@ -579,11 +647,11 @@ namespace ProjectAllTime.Tests.Editor
 
         private static VNTimelineEntryDefinition Entry(string id, string chapterId, string title,
             string discoveryLine, string completionLine, int sortOrder, string parent = null,
-            string relatedCgId = null, IEnumerable<string> milestones = null)
+            string relatedCgId = null, IEnumerable<string> milestones = null, string replayNode = null)
         {
             return new VNTimelineEntryDefinition(id, chapterId, title, sortOrder,
                 discoveryLine, completionLine, milestones ?? new[] { discoveryLine, completionLine },
-                parent, null, relatedCgId);
+                parent, replayNode, relatedCgId);
         }
 
         private void AssertStateRoots(bool globalEmpty, bool locked, bool empty, bool content)

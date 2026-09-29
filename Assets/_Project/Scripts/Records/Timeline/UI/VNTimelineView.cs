@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using ProjectAllTime.VN.Records.Replay;
+using ProjectAllTime.VN.Records.Replay.UI;
 using ProjectAllTime.VN.Records.Timeline;
 using TMPro;
 using UnityEngine;
@@ -27,6 +29,7 @@ namespace ProjectAllTime.VN.Records.Timeline.UI
         private readonly List<VNTimelineEntryItem> entryItems = new();
         private readonly List<FlattenedEntry> flattenedEntries = new();
         private VNTimelineRuntime runtime;
+        private VNReplayController replayController;
         private VNTimelineSnapshot currentSnapshot;
         private string selectedChapterId;
         private bool initialized;
@@ -43,6 +46,11 @@ namespace ProjectAllTime.VN.Records.Timeline.UI
         private void OnEnable()
         {
             if (initialized) Refresh();
+        }
+
+        private void OnDestroy()
+        {
+            if (replayController != null) replayController.ReplayEnded -= HandleReplayEnded;
         }
 
         public bool Initialize(VNTimelineRuntime timelineRuntime)
@@ -71,6 +79,19 @@ namespace ProjectAllTime.VN.Records.Timeline.UI
             LastDiagnostic = null;
             if (isActiveAndEnabled) Refresh();
             return true;
+        }
+
+        /// <summary>Optionally enables Replay for completed entries without exposing authored Replay node names.</summary>
+        public bool InitializeReplay(VNReplayController controller)
+        {
+            if (!ReferenceEquals(replayController, controller))
+            {
+                if (replayController != null) replayController.ReplayEnded -= HandleReplayEnded;
+                replayController = controller;
+                if (replayController != null) replayController.ReplayEnded += HandleReplayEnded;
+            }
+            LastDiagnostic = null;
+            return !initialized || !isActiveAndEnabled || Refresh();
         }
 
         public bool TryValidateWiring(out string diagnostic)
@@ -233,7 +254,8 @@ namespace ProjectAllTime.VN.Records.Timeline.UI
                 if (index < flattenedEntries.Count)
                 {
                     var entry = flattenedEntries[index];
-                    if (!item.Bind(entry.DisplayTitle, entry.State, entry.Depth))
+                    var canReplay = replayController != null && replayController.CanReplay(entry.EntryId);
+                    if (!item.Bind(entry.EntryId, entry.DisplayTitle, entry.State, entry.Depth, canReplay, HandleReplayRequested))
                     {
                         DeactivateEntryItems();
                         LastDiagnostic = "Timeline runtime exposed an unsupported entry state.";
@@ -272,7 +294,7 @@ namespace ProjectAllTime.VN.Records.Timeline.UI
                 return false;
             }
 
-            flattenedEntries.Add(new FlattenedEntry(entry.DisplayTitle, entry.State, Mathf.Max(0, depth)));
+            flattenedEntries.Add(new FlattenedEntry(entry.EntryId, entry.DisplayTitle, entry.State, Mathf.Max(0, depth)));
             foreach (var child in entry.Children)
             {
                 if (child == null) continue;
@@ -331,6 +353,19 @@ namespace ProjectAllTime.VN.Records.Timeline.UI
         }
 
         private void HandleChapterSelected(string chapterId) => TrySelectChapter(chapterId);
+
+        private void HandleReplayRequested(string entryId)
+        {
+            if (replayController != null) replayController.TryStartReplay(entryId);
+        }
+
+        private void HandleReplayEnded()
+        {
+            if (!initialized || !isActiveAndEnabled) return;
+            var previousScroll = entryScrollRect == null ? 1f : entryScrollRect.verticalNormalizedPosition;
+            if (!Refresh()) return;
+            if (entryScrollRect != null) entryScrollRect.verticalNormalizedPosition = previousScroll;
+        }
 
         private void ClearSelectedChapterText()
         {
@@ -407,12 +442,14 @@ namespace ProjectAllTime.VN.Records.Timeline.UI
 
         private readonly struct FlattenedEntry
         {
+            public readonly string EntryId;
             public readonly string DisplayTitle;
             public readonly VNTimelineEntryState State;
             public readonly int Depth;
 
-            public FlattenedEntry(string displayTitle, VNTimelineEntryState state, int depth)
+            public FlattenedEntry(string entryId, string displayTitle, VNTimelineEntryState state, int depth)
             {
+                EntryId = entryId;
                 DisplayTitle = displayTitle;
                 State = state;
                 Depth = depth;
