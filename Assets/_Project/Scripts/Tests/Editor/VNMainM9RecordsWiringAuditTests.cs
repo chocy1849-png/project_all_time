@@ -81,6 +81,15 @@ namespace ProjectAllTime.Tests.Editor
                 Assert.That(root.transform.IsChildOf(modal.transform), Is.True);
                 Assert.That(root.activeSelf, Is.False);
             }
+            var selectedIndicators = new[]
+            {
+                Ref<GameObject>(modal,"timelineSelectedIndicator"),
+                Ref<GameObject>(modal,"gallerySelectedIndicator"),
+                Ref<GameObject>(modal,"archiveSelectedIndicator"),
+                Ref<GameObject>(modal,"achievementsSelectedIndicator"),
+            };
+            Assert.That(selectedIndicators.All(indicator => indicator != null), Is.True);
+            Assert.That(selectedIndicators.Distinct().Count(), Is.EqualTo(4));
             Assert.That(modal.GetComponentsInChildren<Image>(true).Any(i=>i.name=="Dimmer" && i.raycastTarget && i.transform.parent==modal.transform), Is.True);
             Assert.That(Ref<VNRecordsModal>(Single<VNConvenienceModalController>(),"recordsModal"), Is.SameAs(modal));
             foreach (var button in modal.GetComponentsInChildren<Button>(true)) Empty(button);
