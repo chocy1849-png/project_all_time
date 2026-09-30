@@ -108,3 +108,9 @@ InitTestScene*.unity*
 
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
+
+# Unity / IDE generated local tooling metadata
+/.vsconfig
+
+# Yarn Spinner generated language-server metadata
+/ProjectSettings/Packages/dev.yarnspinner/*-generated.ysls.json
