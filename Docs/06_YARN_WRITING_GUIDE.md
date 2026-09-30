@@ -1,6 +1,6 @@
 # Yarn Writing Guide
 
-This is the current project guide for authoring Yarn with the verified Yarn Spinner 3.2.7 runtime. The established M1–M7 conventions below remain in force; the M8 stable-identity and MetaProgress rules extend them.
+This is the current project guide for authoring Yarn with the verified Yarn Spinner 3.2.7 runtime. The established M1–M8 conventions below remain in force; M9 adds the Records and Replay authoring rules at the end.
 
 ## M1 authoring foundations
 
@@ -97,4 +97,50 @@ Authors do not call a Yarn command to mark dialogue read. The authorized line-co
 
 ## M8 technical smoke
 
-`M8_META_PROGRESS_START` and its M8 IDs are reserved technical/non-canon verification content. The production `VN_Main` Start Node remains `M2_UI_START`. M8 provides the persistence foundation; Gallery, Chapter Select, Archive, Achievement, Ending, and completion-percentage UIs, platform achievements, cloud sync, Meta reset, New Game, and Save Delete UIs remain future consumers.
+`M8_META_PROGRESS_START` and its M8 IDs are reserved technical/non-canon verification content. The production `VN_Main` Start Node remains `M2_UI_START`. The M8 phase-boundary statement that Gallery, Archive, and Achievement UIs remained future consumers is superseded by M9 below; M8 remains the sole durable MetaProgress authority.
+
+M9 implements the Records shell, Timeline, CG Gallery, Archive, Achievements UI, and isolated Replay v1. The production catalogs are intentionally empty, so real populated-content UX remains deferred. Chapter Select as gameplay navigation, Ending Gallery, a general completion-percentage UI, platform achievements, cloud sync, Meta reset, and New Game / Save Delete UI where still unimplemented remain future work.
+
+## M9 Records / Replay authoring
+
+### Timeline catalogs
+
+- Use stable lowercase ASCII snake_case IDs for Timeline chapter and entry IDs. Use the same M8 stable line identity for discovery and completion; do not derive identity from localized or display text.
+- Author discovery and completion references as exact compiled Yarn line IDs. Every discovery, completion, and milestone line ID must exist in the assigned YarnProject.
+- Include both the entry's discovery and completion line IDs in its milestone list. Milestones do not replace those identity references.
+- A parent entry ID must resolve to an existing entry in the same chapter. Keep parent relationships acyclic.
+- An optional Replay node must be an exact node name in the compiled YarnProject.
+- An optional related CG must resolve to an entry in the CG Gallery catalog; Gallery artwork still resolves through VNPresentationCatalog.
+- Do not expect a Timeline entry to appear before its authored discovery line has been recorded as read. A read completion line makes it Completed; discovery/completion identity is never inferred from display text.
+
+### Replay v1 content
+
+Treat Replay as isolated visual/history playback, not another production story path. It has its own DialogueRunner, fresh variable storage, presenter, and presentation hierarchy. It does not read or mutate production variables, presentation state, Backlog, Read History, SaveData, or MetaProgress.
+
+Replay v1 permits only these immediate visual commands:
+
+- `<<vn_bg background_id>>`
+- `<<vn_show character_id expression_id slot_id>>`
+- `<<vn_expression character_id expression_id>>`
+- `<<vn_move character_id slot_id>>`
+- `<<vn_facing character_id left|right>>`
+- `<<vn_scale character_id scale>>`
+- `<<vn_hide character_id>>`
+- `<<vn_cg cg_id>>`
+- `<<vn_clear_cg>>`
+
+Replay content must not depend on:
+
+- Interactive options or branching Replay gameplay.
+- Checkpoint commands, MetaProgress commands, or save/load mutation.
+- BGM, SFX, Voice, or transition commands.
+- Production Backlog or Read History side effects.
+- Unsupported Yarn instructions or commands, backward/invalid control flow, or any reachable node outside the explicit compiled-node approval policy.
+
+The content validator checks the compiled root and its reachable node closure and fails closed. The production controller currently approves the catalog Replay root for an entry; any reachable node jump outside the approval is rejected. Do not assume arbitrary Yarn content is Replay-safe. Replay eligibility is rechecked at start and requires a visible Completed Timeline entry, an authored Replay node, and successful validation.
+
+### Technical content and future content
+
+M9 technical Replay fixtures are non-canon. Keep production story start at `M2_UI_START`; do not change it to an M9 smoke or Replay node.
+
+The M9 Records framework is complete, but production catalogs are intentionally empty. Populated Records entries and their player-facing UX remain deferred until real story content is authored. Later work may still add Chapter Select gameplay navigation, Ending Gallery, a general completion-percentage UI, platform achievements, cloud sync, Meta reset, and New Game / Save Delete UI where those remain unimplemented. Re-run the relevant human UX checks when those production records are populated.
