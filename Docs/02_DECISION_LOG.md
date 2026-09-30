@@ -273,3 +273,43 @@ Status: ACCEPTED
 - The five internal-ID commands are `vn_unlock_cg`, `vn_unlock_chapter`, `vn_unlock_archive`, `vn_unlock_achievement`, and `vn_complete_ending`. Repeated unlock/completion is a successful no-op with no duplicate logical state or second durable mutation. CG unlock is separate from CG presentation; ending completion is authored only at definitive completion. Achievements are game-internal; there is no Steam/Epic/platform SDK integration.
 - `VNMetaProgressRuntimeBootstrap` runs at execution order -2 before `VNSettingsRuntimeBootstrap` (-1) and Yarn DialogueRunner's default-order Start. Composition is Repository → Service → Load → persistent-read baseline/bridge → Yarn command registration. There is no singleton or `DontDestroyOnLoad` MetaProgress authority.
 - M8 delivers the persistence foundation only. CG Gallery, Chapter Select, Archive, Achievement and Ending Gallery UIs, completion percentages, platform achievement adapters, cloud/cross-device sync, and Meta reset UI remain future consumers.
+
+## DEC-028 — M9 Records catalogs and projection authority
+
+Status: ACCEPTED
+
+- M9 uses four authored ScriptableObject catalogs: Timeline, CG Gallery, Archive, and Achievements. Catalogs define content; they are not player-progress storage.
+- Stable Records content IDs use lowercase ASCII snake_case. Central Records validation checks IDs and cross-domain references, checks Yarn line and node references against the assigned YarnProject, and resolves Gallery CG references through `VNPresentationCatalog`.
+- M8 `VNMetaProgressService` remains the sole durable Records progress authority. M9 adds no fourth persistence root or Records progress store.
+- Records views consume spoiler-safe service projections, not raw catalog or MetaProgress internals. Authored disclosure policy controls locked metadata exposure.
+- Historical scope note: DEC-027's final bullet records the M8 boundary. M9 supersedes its Gallery, Archive, and Achievement UI future-consumer claims; the M9 system is implemented while the production catalogs remain intentionally empty. The other listed future consumers remain future work.
+
+## DEC-029 — M9 Timeline and isolated Replay contract
+
+Status: ACCEPTED
+
+- Timeline chapter unlock state comes from MetaProgress chapter state. Entry discovery and completion come from exact durable Yarn line IDs. Undiscovered entries are omitted, and visible parent relationships are built only from visible entries so hidden topology and completion detail do not leak.
+- Timeline is a Records/history view. It does not save, load, rewind, or resume production story execution.
+- Replay is an isolated presentation/history playback, not production story rewind. It uses a secondary `DialogueRunner`, fresh `InMemoryVariableStorage` per session, its own presenter and presentation hierarchy, and disposable session state. It leaves production variables, presentation, Backlog, Read History, SaveData, and MetaProgress untouched.
+- Replay eligibility requires a currently visible Completed Timeline entry, an authored Replay node, and successful fail-closed content validation. Completion and cancellation dispose the Replay-owned runtime.
+- Replay v1 allows only these immediate visual Yarn commands: `vn_bg`, `vn_show`, `vn_expression`, `vn_move`, `vn_facing`, `vn_scale`, `vn_hide`, `vn_cg`, and `vn_clear_cg`.
+- Replay rejects interactive options, reachable nodes outside the explicit approval policy, backward or invalid control flow, checkpoint and MetaProgress commands, BGM, SFX, Voice, transitions, and unsupported commands or instructions. It is not an interactive or branching gameplay path.
+
+## DEC-030 — M9 Records UI and Achievement authority
+
+Status: ACCEPTED
+
+- Records is one modal with Timeline, Gallery, Archive, and Achievements tabs. Existing convenience modal arbitration remains the owner of Backlog, Settings, Records, and Save/Load interaction. Records does not take independent ownership of global input or story persistence.
+- Gallery unlock truth comes from MetaProgress; `VNPresentationCatalog` remains the CG Sprite authority. Locked Gallery projections expose no Sprite and disclose titles only under authored policy.
+- Archive catalogs own authored categories and entry title, summary, body, and optional image. MetaProgress owns entry unlock state; locked projections expose only explicitly permitted spoiler-safe metadata.
+- Achievement unlock truth remains persisted in MetaProgress. `VNAchievementEvaluator` deterministically derives eligible unlocks and writes only through `VNMetaProgressService`. Manual achievements are not automatically evaluated. Achievement UI projects persisted state only.
+- Secret-locked Achievements hide title, description, icon, internal condition data, threshold, and prerequisites.
+
+## DEC-031 — M9 production composition and milestone closure
+
+Status: ACCEPTED
+
+- `VNRecordsRuntimeBootstrap` composes Records from the existing M8 MetaProgress runtime. MetaProgress remains at execution order `-2`; Records uses `-1`. Settings also uses `-1` but is independent of Records; no ordering between those two components is assumed. The production DialogueRunner remains default-order Start and `VN_Main` starts at `M2_UI_START`.
+- `VN_Main` contains the production Records wiring and four intentionally empty production catalogs. M9-13 Scene/Prefab wiring was authored through Unity Editor operations, not manual YAML edits.
+- M9-14 Technical Validation passed, and M9-15 User Play Gate passed. M9 is recorded COMPLETE by the M9-16 reconciliation.
+- `DEFERRED_CONTENT_POPULATION` means the M9 framework and runtime are complete while the production catalogs contain no actual story Records content. This is not unfinished M9 architecture. Human UX rechecks are required when real Records content is authored.

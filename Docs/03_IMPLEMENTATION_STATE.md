@@ -46,6 +46,7 @@
 ### M6 PHASE-HISTORICAL DEFERRED ITEMS
 
 - At the M6 phase boundary, persistent read IDs and gallery/archive/CG progress were later M8/M9 work. M8 now supplies the persistent MetaProgress foundation for reads and unlock state; gallery/archive/CG interfaces remain future work. Cloud/Steam saves remain deferred.
+- M9 supersedes the M6-era Gallery/Archive/CG interface future-work statement: the Records Gallery and Archive interfaces now exist, while production content remains intentionally unpopulated. M8 still owns persistence.
 - Settings application/UI, rebinding UI, final keyboard scheme, and a user-facing Skip All policy remain later M7 work.
 - Backlog voice replay, backlog persistence, choice history, rewind, auto/skip choice selection, Skip transition speed-up, and main menu remain later scope.
 
@@ -99,6 +100,50 @@ The original Auto perceptibility finding is resolved: M7-12 widened only the pos
 - Yarn Spinner `dev.yarnspinner.unity` 3.2.7 is the verified runtime package. MetaProgress command collision handling was validated against 3.2.7; a future Yarn upgrade must revalidate this contract.
 - M8-09 USER PLAY GATE — PASS. Authorized line consume persisted and restart reseeded reads; ReadOnly Skip crossed persisted lines and stopped at unread content; all five unlock categories persisted and repeated commands remained idempotent; ClearSession retained durable reads while clearing transient state; M5 Quick Save Load and `VNSaveRepository.Delete` did not alter MetaProgress; fresh restart retained all state; production M2 startup and both bootstraps remained healthy; physical Left Ctrl and Right Ctrl SkipHold checks passed.
 - Fresh unfiltered EditMode: 236 total, 236 passed, 0 failed, 0 skipped. New Game and Save Delete UIs are future consumers; their underlying runtime/repository isolation contracts were verified. Gallery, Chapter Select, Archive, Achievement, Ending, completion-percentage, platform, cloud, and Meta reset interfaces are not implemented by M8.
+
+### M8 phase-history note
+
+The preceding future-consumer statement describes the M8 phase boundary and remains historical evidence. M9 later adds the Records catalog, projection, Timeline, Replay, Gallery, Archive, Achievement, and production UI/runtime composition described below. M8 MetaProgress remains the sole durable progress authority; M9 production catalogs are intentionally empty.
+
+## M9 — Records / Replay — COMPLETE
+
+### Implemented chain
+
+- M9-02 / PR #31 added the four authored content catalogs and centralized ID/reference validation.
+- M9-03 / PR #32 added read-only, spoiler-safe projections over M8 MetaProgress.
+- M9-04 / PR #37 proved isolated Replay runtime behavior. The earlier M9-04 Replay NO-GO record was superseded by this successful proof and the integration in PR #38; Replay is not currently NO-GO.
+- M9-05 / PR #33 added the qualitative Timeline runtime model; M9-06 / PR #34 added derived Achievement evaluation.
+- M9-07 / PR #35 added the Records modal and tab navigation; M9-08 / PR #36 added the Timeline UI; M9-09 / PR #38 integrated isolated Timeline Replay.
+- M9-10 / PR #39 added the CG Gallery UI; M9-11 / PR #40 added the Archive UI; M9-12 / PR #41 added the Achievements UI.
+- M9-13 / PR #43 wired the production Records runtime and intentionally empty catalogs into `VN_Main`.
+
+### M9-14 TECHNICAL VALIDATION — PASS
+
+- Focused EditMode: 312 passed / 0 failed / 0 skipped.
+- Full unfiltered EditMode: 433 passed / 0 failed / 0 errors / 0 skipped.
+- Yarn validation: 151 explicit IDs, 0 implicit IDs, 0 duplicates, and 0 compiler errors.
+- Unity Scene scan: 0 missing components. Console: 0 errors / 0 compile failures.
+- The production `VN_Main` scene was entered and exited in Play. Records bootstrap initialized, the modal was hidden before user interaction, and the recorded persistence hashes remained unchanged.
+- The automated PlayMode runner discovered 0 tests. This technical Play smoke is not an automated PlayMode test-suite pass.
+- No M9 implementation fix was required. The worktree remained clean.
+
+### M9-15 USER PLAY GATE — PASS
+
+- The user verified normal startup, Records open/close, Timeline/Gallery/Archive/Achievements empty states, tab navigation, modal stability on reopen, and normal story input after close.
+- Story input remained blocked while Records owned modal input. Backlog / Settings / Records arbitration passed, and MCP runtime state agreed with the user's visual checks.
+- The Console remained clean. A dialogue occurrence change during the checks was explicitly attributed by the user to their own manual Space press, not a tab or Close input leak.
+
+### DEFERRED_CONTENT_POPULATION
+
+The four production catalogs are intentionally empty. The following populated-content states therefore have automated M9 coverage but were not human-verified with production content:
+
+- Discovered/completed Timeline entries and populated Timeline topology.
+- Replay button, start, Next, and Close with authored Replay content.
+- Gallery locked/unlocked entries and fullscreen viewer.
+- Archive locked/unlocked entries and populated detail content.
+- Achievement visible-locked, secret-locked, and unlocked content states.
+
+This is a content-population limitation, not unfinished M9 implementation. Repeat user-facing UX checks when real production Records content is authored in M10/M11 or later.
 
 ## M7-02 Settings Persistence Kernel — COMPLETE
 
@@ -265,6 +310,7 @@ The original Auto perceptibility finding is resolved: M7-12 widened only the pos
 ## DEFERRED BEYOND M5
 
 - Cloud/cross-device save, encryption, compression, migrations beyond the v1 extension point, unlimited pages, save search/filter, advanced save UI animation, final keyboard Quick Save/Load UX, settings application/UI and rebinding, M8 meta-progress, and M9 gallery/archive/achievement persistence.
+- This is the M5 phase-boundary deferral record. M9 later adds Records catalogs, projections, and UIs; durable unlock/read progress is supplied by M8 MetaProgress rather than a separate M9 persistence store.
 
 ## REPOSITORY-VERIFIED
 
