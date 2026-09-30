@@ -1,7 +1,6 @@
-
 [mcp_servers.unity]
-command = "C:\\Users\\UserK\\AppData\\Local\\Unity\\bin\\unity.exe"
-args = ["mcp","--project-path","C:\\Dev\\project_all_time"]
+command = "unity"
+args = ["mcp", "--project-path", "C:\\Dev\\project_all_time"]
 
 [sandbox_workspace_write]
 network_access = true
