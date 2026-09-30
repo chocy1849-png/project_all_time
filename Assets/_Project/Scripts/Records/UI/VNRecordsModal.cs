@@ -71,6 +71,11 @@ namespace ProjectAllTime.VN.Records.UI
             if (archiveRoot == null) return Fail("Archive root reference is missing.", out diagnostic);
             if (achievementsRoot == null) return Fail("Achievements root reference is missing.", out diagnostic);
             if (HasDuplicateRoots()) return Fail("Each Records tab must have a distinct root GameObject.", out diagnostic);
+            if (timelineSelectedIndicator == null) return Fail("Timeline selected indicator reference is missing.", out diagnostic);
+            if (gallerySelectedIndicator == null) return Fail("Gallery selected indicator reference is missing.", out diagnostic);
+            if (archiveSelectedIndicator == null) return Fail("Archive selected indicator reference is missing.", out diagnostic);
+            if (achievementsSelectedIndicator == null) return Fail("Achievements selected indicator reference is missing.", out diagnostic);
+            if (HasDuplicateIndicators()) return Fail("Each Records tab must have a distinct selected indicator GameObject.", out diagnostic);
 
             diagnostic = null;
             return true;
@@ -170,6 +175,26 @@ namespace ProjectAllTime.VN.Records.UI
                 for (var j = i + 1; j < roots.Length; j++)
                 {
                     if (roots[i] == roots[j]) return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool HasDuplicateIndicators()
+        {
+            var indicators = new[]
+            {
+                timelineSelectedIndicator,
+                gallerySelectedIndicator,
+                archiveSelectedIndicator,
+                achievementsSelectedIndicator,
+            };
+            for (var i = 0; i < indicators.Length; i++)
+            {
+                for (var j = i + 1; j < indicators.Length; j++)
+                {
+                    if (indicators[i] == indicators[j]) return true;
                 }
             }
 

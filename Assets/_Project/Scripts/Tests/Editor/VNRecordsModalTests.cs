@@ -249,6 +249,41 @@ namespace ProjectAllTime.Tests.Editor
             Assert.That(recordsModal.TryOpen(), Is.False);
         }
 
+        [TestCase("timelineSelectedIndicator", "Timeline")]
+        [TestCase("gallerySelectedIndicator", "Gallery")]
+        [TestCase("archiveSelectedIndicator", "Archive")]
+        [TestCase("achievementsSelectedIndicator", "Achievements")]
+        public void WiringValidation_RejectsEachMissingSelectedIndicator(string fieldName, string tabName)
+        {
+            SetField(recordsModal, fieldName, null);
+
+            Assert.That(recordsModal.TryValidateWiring(out var diagnostic), Is.False);
+            Assert.That(diagnostic, Is.EqualTo(tabName + " selected indicator reference is missing."));
+            Assert.That(recordsModal.TryOpen(), Is.False);
+        }
+
+        [TestCase(0, 1)]
+        [TestCase(0, 2)]
+        [TestCase(0, 3)]
+        [TestCase(1, 2)]
+        [TestCase(1, 3)]
+        [TestCase(2, 3)]
+        public void WiringValidation_RejectsEveryDuplicateSelectedIndicatorPair(int first, int second)
+        {
+            var fieldNames = new[]
+            {
+                "timelineSelectedIndicator",
+                "gallerySelectedIndicator",
+                "archiveSelectedIndicator",
+                "achievementsSelectedIndicator",
+            };
+            SetField(recordsModal, fieldNames[second], indicators[first]);
+
+            Assert.That(recordsModal.TryValidateWiring(out var diagnostic), Is.False);
+            Assert.That(diagnostic, Is.EqualTo("Each Records tab must have a distinct selected indicator GameObject."));
+            Assert.That(recordsModal.TryOpen(), Is.False);
+        }
+
         [Test]
         public void Controller_ArbitratesRecordsWithBacklogAndSettingsAndUsesTheExistingGate()
         {
