@@ -1,9 +1,11 @@
 # Prologue Vertical Slice
 
-Status: DEFINED / CANON SOURCE IMPORTED
+Status: DEFINED / CANON SOURCE IMPORTED / PRESENTATION REQUIREMENTS MAPPED
 Story Canon: READY
-Presentation Mapping: PENDING M10-02
-Asset/ID Freeze: PENDING M10-03
+Presentation Mapping: READY
+Master Asset Requirements: READY
+Asset Inventory / Stable-ID Freeze: PENDING M10-03
+Technical Presentation Spikes: PENDING M10-04
 Yarn Implementation: NOT STARTED
 Implementation Ready: NO — story authority is ready; production implementation prerequisites remain pending.
 
@@ -47,7 +49,7 @@ The authored cast is **지훈, 진희, 민석, 나래, 준호, 로프, 이도경
 | `지훈·독백` | Jihun's internal monologue, distinct from spoken `지훈` dialogue |
 | `로프·내부` / `지훈·내부` | Private connection exchange heard by Jihun, distinct from spoken dialogue, monologue, and later publicly spoken `로프` |
 | Normal named dialogue | Spoken dialogue using the exact authored speaker identity; preserve off-screen qualifiers where authored |
-| Authored information blocks | Player-facing information at its directed reveal, not automatically character speech. Presentation mapping remains pending |
+| Authored information blocks | Player-facing information at its directed reveal, not automatically character speech. Presentation mapping is ready in the linked M10-02 plan |
 
 Each authored dialogue paragraph maps conceptually to a separate textbox. Long narration may later be split by sentence for readability, preserving wording, order, and meaning. Dialogue paragraphs must not be arbitrarily rewritten to fit UI. Production/continuity commentary explaining a character's thoughts is not narration and must not be read aloud. No Yarn line IDs are assigned in M10-01; later runtime adaptation must retain these semantic distinctions while following the [Yarn Writing Guide](06_YARN_WRITING_GUIDE.md).
 
@@ -99,8 +101,10 @@ Consistency review covered `Docs/00_PROJECT_BRIEF.md`, `Docs/01_CONCEPT_DRAFT.md
 
 ## Milestone boundary and validation
 
-M10-01 establishes story authority only. Presentation mapping awaits M10-02; asset inventory comparison and the Asset Gap Tracker/ID freeze await M10-03. No production BGM/SFX/BG/character/expression/CG/overlay IDs or asset requests are created. The user's paid Suno BGM workflow is later production work, not part of this import. Yarn and presentation implementation have not started; the next step remains M10-02 and requires its own task.
+M10-01 established story authority. M10-02 completes the [S001–S008 Presentation Map](Production/M10_PROLOGUE_PRESENTATION_MAP.md) and [Master Asset Gap List / Requirements](Production/M10_MASTER_ASSET_GAP_LIST.md). Asset requirements are mapped, but actual repository inventory has not been compared; inventory comparison and stable-ID freeze await M10-03. Technical presentation spikes await M10-04. No production BGM/SFX/BG/character/expression/CG/overlay IDs or user asset requests are created. All final M10 BGM remains new-production work; previous Suno Free-workflow tracks are reference-only. Yarn and presentation implementation have not started; Implementation Ready remains NO.
 
-Only this scope document and the preserved story source change. No C#, tests, Unity Scene/Prefab/ScriptableObject, Yarn, catalogs, assets, packages, ProjectSettings, input actions, configuration, or persistence schema changes are authorized. Unity is not launched for this documentation task. The entering-M10 443 passed / 0 failed / 0 skipped baseline remains prior technical evidence, not a new test run.
+M10-02 changes only this readiness/state record and the two linked planning documents. The preserved canonical story source remains unchanged. No C#, tests, Unity Scene/Prefab/ScriptableObject, Yarn, catalogs, assets, packages, ProjectSettings, input actions, configuration, or persistence schema changes are authorized. Unity is not launched for this documentation task. The entering-M10 443 passed / 0 failed / 0 skipped baseline remains prior technical evidence, not a new test run.
 
-Validation for this revision: external hash matches the expected M10-00 fingerprint; the copied working-tree file matches byte-for-byte; Git's normalized blob differs only in CRLF-to-LF representation; full two-file diff reviewed; `git diff --check` and staged whitespace validation pass; exact two-path allowlist enforced before commit. Commit/PR identities and final worktree status are recorded in the review handoff.
+M10-01 import validation (historical): external hash matched the expected M10-00 fingerprint; the copied working-tree file matched byte-for-byte; Git's normalized blob differed only in CRLF-to-LF representation; full two-file diff and whitespace checks passed with the exact two-path allowlist.
+
+M10-02 readiness validation: 103 presentation beats cover S001–S008; all 59 bracketed scene directions are mapped, with all 385 player-content blocks accounted for and production/continuity notes explicitly not player-visible. All 84 requirement rows have presentation references; every existing-asset match remains pending M10-03. Source fingerprint remains unchanged. Full three-document diff, cross-references, field coverage and `git diff --check` are reviewed before commit; commit/PR identities and final worktree status are recorded in the review handoff.
