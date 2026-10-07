@@ -222,6 +222,13 @@ namespace ProjectAllTime.Tests.Editor
             Assert.That(coordinator.TryWriteCompleteSave(key, out _).Succeeded, Is.False);
             Assert.That(repository.Read(key).State, Is.EqualTo(VNSaveSlotState.Valid), "An unstable complete snapshot must not replace the authoritative JSON.");
             SetPrivate(presentation.Transition, "activeTransitionOperations", 0);
+            var localEffect = CreateCanvasGroup("Technical localized door");
+            localEffect.alpha = 1f;
+            SetPrivate(presentation.Transition, "localizedEffectCanvasGroup", localEffect);
+            Assert.That(coordinator.TryComposeCompleteSave(key, out _, out var localDiagnostic), Is.False, localDiagnostic);
+            presentation.Transition.NormalizeForLoad();
+            Assert.That(localEffect.alpha, Is.Zero);
+            Assert.That(coordinator.TryComposeCompleteSave(key, out _, out _), Is.True);
             SetPrivate(audio.Controller, "activeBgmTransitionOperations", 1);
             Assert.That(coordinator.TryComposeTechnicalSave(key, out _, out _), Is.False);
         }
@@ -261,6 +268,36 @@ namespace ProjectAllTime.Tests.Editor
             Assert.That(presentation.Controller.CurrentBackgroundId, Is.EqualTo("bg_b"));
             Assert.That(audio.Controller.CurrentBgmId, Is.EqualTo("bgm_a"));
             Assert.That(runner.IsDialogueRunning, Is.False);
+        }
+
+        [Test]
+        public void SemanticSpeakerAliases_SharePhysicalIdentity_AndThoughtsNeverShowHiddenCharacters()
+        {
+            var presentation = CreatePresentationHarness();
+            var catalog = (VNPresentationCatalog)typeof(VNPresentationController)
+                .GetField("catalog", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(presentation.Controller);
+            var definitions = (List<VNCharacterDefinition>)typeof(VNPresentationCatalog)
+                .GetField("characterDefinitions", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(catalog);
+            SetPrivate(definitions[0], "speakerAliases", new List<string> { "지훈", "지훈·독백", "지훈·내부" });
+            SetPrivate(definitions[1], "speakerAliases", new List<string> { "로프·내부" });
+            foreach (var label in new[] { "지훈", "지훈·독백", "지훈·내부" })
+            {
+                Assert.That(catalog.TryResolveSpeakerAlias(label, out var id), Is.True);
+                Assert.That(id, Is.EqualTo("char_a"));
+            }
+            Assert.That(presentation.Controller.ShowCharacter("char_a", "default", VNCharacterSlot.Left), Is.True);
+            SetPrivate(presentation.Controller, "speakerHighlightDuration", 0f);
+            foreach (var label in new[] { "지훈·독백", "지훈·내부", "로프·내부", "지훈·화면 밖" })
+            {
+                presentation.Controller.FocusSpeaker(VNSpeakerFocusPresenter.ShouldFocusSpeaker(label) ? label : string.Empty);
+                Assert.That(presentation.Controller.VisibleCharacters.Count, Is.EqualTo(1));
+                Assert.That(presentation.Controller.VisibleCharacters.ContainsKey("char_b"), Is.False);
+                Assert.That(presentation.Controller.VisibleCharacters["char_a"].SpeakerActive, Is.True);
+            }
+            Assert.That(presentation.Controller.ShowCharacter("char_b", "default", VNCharacterSlot.Right), Is.True);
+            presentation.Controller.FocusSpeaker("지훈");
+            Assert.That(presentation.Controller.VisibleCharacters["char_a"].SpeakerActive, Is.True);
+            Assert.That(presentation.Controller.VisibleCharacters["char_b"].SpeakerActive, Is.False);
         }
 
         private PresentationHarness CreatePresentationHarness()

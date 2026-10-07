@@ -85,6 +85,30 @@ namespace ProjectAllTime.Tests.Editor
             Assert.That(sessionState.Backlog.Entries[0].IsNarration, Is.True);
         }
 
+        [TestCase(null, false)]
+        [TestCase("지훈", true)]
+        [TestCase("지훈·독백", false)]
+        [TestCase("로프·내부", false)]
+        [TestCase("지훈·내부", false)]
+        [TestCase("지훈·화면 밖", false)]
+        public void SemanticLabels_PreserveExactBacklogAndStableReadId_WithoutCompetingLinePresenter(string speaker, bool focus)
+        {
+            const string id = "technical_modes";
+            Present(CreateLine(id, speaker, "Technical text."));
+            Assert.That(sessionState.TryAuthorizeCurrentLineConsume(), Is.False);
+            CompleteDisplay(); CompleteDisplay();
+            Assert.That(sessionState.Backlog.Count, Is.EqualTo(1));
+            var entry = sessionState.Backlog.Entries[0];
+            Assert.That(entry.SpeakerName, Is.EqualTo(speaker ?? string.Empty));
+            Assert.That(entry.Text, Is.EqualTo("Technical text."));
+            Assert.That(entry.LineId, Is.EqualTo(id));
+            Assert.That(sessionState.ReadHistory.IsRead(id), Is.False);
+            Assert.That(sessionState.TryAuthorizeCurrentLineConsume(), Is.True);
+            Assert.That(sessionState.ReadHistory.IsRead(id), Is.True);
+            Assert.That(dialogueRunner.DialoguePresenters, Has.Count.EqualTo(1));
+            Assert.That(ProjectAllTime.VN.Presentation.VNSpeakerFocusPresenter.ShouldFocusSpeaker(speaker), Is.EqualTo(focus));
+        }
+
         [Test]
         public void FullDisplay_AppendsOncePerOccurrence_ButLaterOccurrencesRemainDistinct()
         {

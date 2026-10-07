@@ -1,0 +1,33 @@
+// TECHNICAL / NON-CANON. MCP registers m104_* handlers only for a temporary Play session.
+// Never use this node as the production Start Node; no production asset IDs or meta unlocks.
+title: M10_PRESENTATION_SPIKE
+---
+Technical narration. #line:m104_narration
+지훈: Technical spoken dialogue. #line:m104_spoken
+지훈·독백: Technical monologue. #line:m104_monologue
+로프·내부: Technical Rope channel. #line:m104_rope_internal
+지훈·내부: Technical Jihun channel. #line:m104_jihun_internal
+<<m104_hold>>
+<<m104_facts_show>>
+Technical manual-only hold and exact facts. #line:m104_hold_facts
+<<m104_facts_hide>>
+<<m104_door_on>>
+Technical localized door beside the ordinary exit. #line:m104_local_door
+<<m104_door_off>>
+Technical ordinary entrance restored. #line:m104_door_restored
+===
+
+title: M10_PROFILE_SEONJU_TEST
+---
+지훈·독백: Technical first-review thought for Seonju. #line:m104_seonju_review
+===
+
+title: M10_PROFILE_HAEJIN_TEST
+---
+지훈·독백: Technical first-review thought for Haejin. #line:m104_haejin_review
+===
+
+title: M10_PROFILE_RETURN_TEST
+---
+Technical neutral story continuation, with no route selected. #line:m104_profile_return
+===

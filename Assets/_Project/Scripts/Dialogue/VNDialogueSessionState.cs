@@ -39,6 +39,12 @@ namespace ProjectAllTime.VN.Dialogue
         public string CurrentText => currentText;
         public bool IsCurrentLineFullyDisplayed => isCurrentLineFullyDisplayed;
         public bool OptionsActive => optionsActive;
+        public bool IsManualAdvanceRequired { get; private set; }
+
+        /// <summary>Authored, session-only hold for the next fully displayed manual consume.</summary>
+        public void RequireManualAdvance() => IsManualAdvanceRequired = true;
+
+        internal void AcceptManualConsume() => IsManualAdvanceRequired = false;
 
         public event Action CurrentLineChanged;
         public event Action<bool> CurrentLineFullDisplayChanged;
@@ -71,6 +77,7 @@ namespace ProjectAllTime.VN.Dialogue
         public void InvalidateTransientPresentation()
         {
             currentOccurrence++;
+            IsManualAdvanceRequired = false;
             SetOptionsActive(false);
             ClearCurrentLine();
         }

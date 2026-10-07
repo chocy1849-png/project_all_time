@@ -46,10 +46,14 @@ namespace ProjectAllTime.Tests.Editor
         private bool playModeOptionsCaptured;
         private bool previousEnterPlayModeOptionsEnabled;
         private EnterPlayModeOptions previousEnterPlayModeOptions;
+        private bool backgroundSettingCaptured;
+        private bool previousRunInBackground;
 
         [TearDown]
         public void TearDown()
         {
+            if (backgroundSettingCaptured) Application.runInBackground = previousRunInBackground;
+            backgroundSettingCaptured = false;
             RestorePlayModeOptions();
             for (var index = ownedObjects.Count - 1; index >= 0; index--)
                 if (ownedObjects[index] != null) UnityEngine.Object.DestroyImmediate(ownedObjects[index]);
@@ -189,6 +193,9 @@ namespace ProjectAllTime.Tests.Editor
         {
             EnablePlayModeWithoutDomainReload();
             yield return new EnterPlayMode(expectDomainReload: false);
+            previousRunInBackground = Application.runInBackground;
+            backgroundSettingCaptured = true;
+            Application.runInBackground = true; // MCP may run with the Editor unfocused; keep the awaited player loop alive.
             CreateHarness();
 
             Assert.That(recordsModal.IsOpen, Is.True);
