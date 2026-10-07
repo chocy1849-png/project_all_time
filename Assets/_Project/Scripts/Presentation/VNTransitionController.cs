@@ -12,11 +12,17 @@ namespace ProjectAllTime.VN.Presentation
         [SerializeField] private Image backgroundIncomingImage;
         [SerializeField] private CanvasGroup backgroundIncomingCanvasGroup;
         [SerializeField] private CanvasGroup cgCanvasGroup;
+        [SerializeField] private CanvasGroup localizedEffectCanvasGroup;
 
         private int activeTransitionOperations;
+        private long transitionGeneration;
 
         /// <summary>True while an awaited M4 presentation operation is active.</summary>
-        public bool IsTransitionActive => activeTransitionOperations > 0;
+        public bool IsTransitionActive => activeTransitionOperations > 0 ||
+            localizedEffectCanvasGroup != null && localizedEffectCanvasGroup.alpha > 0f;
+
+        /// <summary>Localized presentation effect; the visible interval is transient and not saveable.</summary>
+        public IEnumerator FadeLocalizedEffect(bool visible, float duration) => TrackTransition(LocalEffectRoutine(visible, duration));
 
         public IEnumerator FadeToBlack(float duration) => TrackTransition(FadeToBlackRoutine(duration));
 
@@ -39,8 +45,10 @@ namespace ProjectAllTime.VN.Presentation
         /// </summary>
         public void NormalizeForLoad()
         {
+            transitionGeneration++;
             StopAllCoroutines();
             activeTransitionOperations = 0;
+            if (localizedEffectCanvasGroup != null) localizedEffectCanvasGroup.alpha = 0f;
 
             if (screenFadeCanvasGroup != null) screenFadeCanvasGroup.alpha = 0f;
             if (backgroundCurrentCanvasGroup != null)
@@ -207,15 +215,35 @@ namespace ProjectAllTime.VN.Presentation
 
         private IEnumerator TrackTransition(IEnumerator operation)
         {
+            var generation = transitionGeneration;
             activeTransitionOperations++;
             try
             {
-                while (operation != null && operation.MoveNext()) yield return operation.Current;
+                while (generation == transitionGeneration && operation != null && operation.MoveNext()) yield return operation.Current;
             }
             finally
             {
-                activeTransitionOperations = Mathf.Max(0, activeTransitionOperations - 1);
+                (operation as System.IDisposable)?.Dispose();
+                if (generation == transitionGeneration) activeTransitionOperations = Mathf.Max(0, activeTransitionOperations - 1);
             }
+        }
+
+        private IEnumerator LocalEffectRoutine(bool visible, float duration)
+        {
+            if (!IsValidDuration(duration, "Localized effect")) yield break;
+            if (localizedEffectCanvasGroup == null) { LogMissingReference("Localized Effect CanvasGroup"); yield break; }
+            var generation = transitionGeneration;
+            var start = localizedEffectCanvasGroup.alpha;
+            var target = visible ? 1f : 0f;
+            localizedEffectCanvasGroup.interactable = false;
+            localizedEffectCanvasGroup.blocksRaycasts = false;
+            for (var elapsed = 0f; elapsed < duration; elapsed += Time.unscaledDeltaTime)
+            {
+                if (generation != transitionGeneration) yield break;
+                localizedEffectCanvasGroup.alpha = Mathf.Lerp(start, target, elapsed / duration);
+                yield return null;
+            }
+            if (generation == transitionGeneration) localizedEffectCanvasGroup.alpha = target;
         }
 
         private static IEnumerator FadePair(CanvasGroup first, float firstStart, float firstTarget, CanvasGroup second, float secondStart, float secondTarget, float duration)

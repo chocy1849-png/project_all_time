@@ -50,17 +50,24 @@ namespace ProjectAllTime.VN.Dialogue
                 return false;
             }
 
-            if (sessionState == null || interactionGate == null || !interactionGate.CanAdvanceStory || sessionState.OptionsActive)
+            if (sessionState == null || interactionGate == null || !interactionGate.CanAdvanceStoryFrom(source) || sessionState.OptionsActive)
                 return false;
 
             if (!sessionState.IsLineActive) return false;
+            if (source != VNAdvanceSource.Manual && sessionState.IsManualAdvanceRequired) return false;
 
             if (frameCount == sessionState.CurrentPresentationStartedFrame) return false;
 
             if (sessionState.IsCurrentLineFullyDisplayed && !sessionState.TryAuthorizeCurrentLineConsume())
                 return false;
 
+            var manualConsume = source == VNAdvanceSource.Manual && sessionState.IsCurrentLineFullyDisplayed;
             resolvedLineAdvancer.OnInputHurryUpLines();
+            if (manualConsume)
+            {
+                sessionState.AcceptManualConsume();
+                interactionGate.AcceptStoryManualConsume();
+            }
             AdvanceForwarded?.Invoke(source);
             return true;
         }

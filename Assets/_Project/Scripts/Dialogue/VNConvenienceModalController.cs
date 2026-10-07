@@ -94,6 +94,7 @@ namespace ProjectAllTime.VN.Dialogue
         private bool CanOpenModal()
         {
             return interactionGate != null && !IsConvenienceModalOpen &&
+                !interactionGate.IsStoryInteractionActive &&
                 !interactionGate.IsUiHidden && !interactionGate.IsBlockingModalActive && !interactionGate.IsLoadInProgress;
         }
 

@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using NUnit.Framework;
 using ProjectAllTime.VN.Dialogue;
 using ProjectAllTime.VN.SaveLoad;
+using ProjectAllTime.VN.Presentation;
 using UnityEngine;
 using UnityEngine.TestTools;
 using TMPro;
@@ -225,6 +226,190 @@ namespace ProjectAllTime.Tests.Editor
             InvokePrivate(convenience, "HandleLoadStateChanged", false);
             Assert.That(convenience.IsAutoEnabled, Is.False);
             Assert.That(convenience.IsSkipEnabled, Is.False);
+        }
+
+        [TestCase(false, VNSkipPolicy.ReadOnly)]
+        [TestCase(false, VNSkipPolicy.All)]
+        [TestCase(true, VNSkipPolicy.ReadOnly)]
+        public void AuthoredHold_BlocksAutomationWithoutChangingModes_ThenResumesOnNextOccurrence(bool auto, VNSkipPolicy policy)
+        {
+            Present("held", "An authored manual beat.");
+            sessionState.RequireManualAdvance();
+            convenience.SetSkipPolicy(policy);
+            if (auto) convenience.SetAutoEnabled(true); else convenience.SetSkipEnabled(true);
+            Tick(0, 100); Tick(20, 101);
+            Assert.That(forwardedCount, Is.Zero);
+            Assert.That(auto ? convenience.IsAutoEnabled : convenience.IsSkipEnabled, Is.True);
+            Assert.That(bridge.TryAdvance(VNAdvanceSource.Auto), Is.False);
+            Assert.That(bridge.TryAdvance(VNAdvanceSource.Skip), Is.False);
+            Assert.That(convenience.HandleManualAdvance(), Is.True, "Manual hurry remains available.");
+            Assert.That(sessionState.IsManualAdvanceRequired, Is.True, "Hurry does not consume the hold.");
+            CompleteDisplay();
+            Assert.That(convenience.HandleManualAdvance(), Is.True);
+            Assert.That(sessionState.IsManualAdvanceRequired, Is.False);
+            Assert.That(sessionState.ReadHistory.IsRead("held"), Is.True);
+            Present("held", "Same stable TextID, new occurrence."); CompleteDisplay();
+            Tick(21, 102); Tick(22, 103); Tick(40, 104);
+            Assert.That(forwardedCount, Is.EqualTo(3), "Exactly one automated consume follows the two manual requests.");
+        }
+
+        [Test]
+        public void AuthoredHold_HiddenRestoreAndModalCannotConsume_LoadClearsAndReentryRearms()
+        {
+            Present("held-hidden", "Hold."); CompleteDisplay(); sessionState.RequireManualAdvance();
+            Assert.That(visibility.TryHideUi(), Is.True);
+            Assert.That(convenience.HandleManualAdvance(), Is.True);
+            Assert.That(forwardedCount, Is.Zero);
+            Assert.That(sessionState.IsManualAdvanceRequired, Is.True);
+            gate.SetConvenienceModalActive(true);
+            Assert.That(convenience.HandleManualAdvance(), Is.False);
+            gate.SetConvenienceModalActive(false);
+            Assert.That(sessionState.IsManualAdvanceRequired, Is.True);
+            InvokePrivate(convenience, "HandleLoadStateChanged", true);
+            Assert.That(sessionState.IsManualAdvanceRequired, Is.False);
+            Present("held-hidden", "Hold."); sessionState.RequireManualAdvance(); CompleteDisplay();
+            Assert.That(convenience.HandleManualAdvance(), Is.True);
+            Assert.That(sessionState.IsManualAdvanceRequired, Is.False);
+        }
+
+        private void Tick(float time, int frame) => typeof(VNConvenienceController)
+            .GetMethod("Tick", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(convenience, new object[] { time, frame });
+
+        [Test]
+        public void InformationOverlay_HideModalAndLoadReentry_LeaveDialogueHistoryUntouched()
+        {
+            var save = CreateSaveLoadController();
+            var panel = new GameObject("Technical facts"); ownedObjects.Add(panel); panel.SetActive(false);
+            var group = panel.AddComponent<CanvasGroup>();
+            var title = new GameObject("Title", typeof(RectTransform), typeof(TextMeshProUGUI)); ownedObjects.Add(title);
+            var body = new GameObject("Facts", typeof(RectTransform), typeof(TextMeshProUGUI)); ownedObjects.Add(body);
+            var overlay = panel.AddComponent<VNInformationOverlay>();
+            SetPrivateField(overlay, "root", group); SetPrivateField(overlay, "titleText", title.GetComponent<TMP_Text>());
+            SetPrivateField(overlay, "bodyText", body.GetComponent<TMP_Text>());
+            SetPrivateField(overlay, "visibility", visibility); SetPrivateField(overlay, "saveLoad", save);
+            panel.SetActive(true);
+            InvokePrivateNoArguments(overlay, "OnEnable");
+            Present("under-facts", "Underlying line.");
+            Assert.That(overlay.Show("Technical", "Exact authored facts."), Is.True);
+            Assert.That(body.GetComponent<TMP_Text>().text, Is.EqualTo("Exact authored facts."));
+            Assert.That(group.blocksRaycasts, Is.False);
+            Assert.That(gate.CanAdvanceStory, Is.True);
+            visibility.TryHideUi(); Assert.That(group.alpha, Is.Zero);
+            visibility.ShowUi(); Assert.That(group.alpha, Is.EqualTo(1));
+            gate.SetConvenienceModalActive(true); Assert.That(overlay.IsShown, Is.True);
+            gate.SetConvenienceModalActive(false);
+            overlay.Show("Update", "Updated exact facts.");
+            Assert.That(body.GetComponent<TMP_Text>().text, Is.EqualTo("Updated exact facts."));
+            Assert.That(sessionState.Backlog.Count, Is.Zero); Assert.That(sessionState.ReadHistory.Count, Is.Zero);
+            Assert.That(forwardedCount, Is.Zero);
+            typeof(VNSaveLoadController).GetMethod("SetLoadInProgress", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(save, new object[] { true });
+            Assert.That(overlay.IsShown, Is.False); Assert.That(group.alpha, Is.Zero);
+            Assert.That(overlay.Show("Stale", "Must reject while loading."), Is.False);
+            typeof(VNSaveLoadController).GetMethod("SetLoadInProgress", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(save, new object[] { false });
+            Assert.That(overlay.Show("Reentry", "Reconstructed authored facts."), Is.True);
+            Assert.That(body.GetComponent<TMP_Text>().text, Is.EqualTo("Reconstructed authored facts."));
+            overlay.Hide(); Assert.That(group.alpha, Is.Zero);
+            Assert.That(sessionState.Backlog.Count, Is.Zero); Assert.That(sessionState.ReadHistory.Count, Is.Zero);
+        }
+
+        [TestCase(2, 0, 1)]
+        [TestCase(1, 2, 0)]
+        public void ProfileBrowse_ArbitraryOrder_OneShotThoughts_SharedManualLine_AndSingleNeutralContinuation(int first, int second, int third)
+        {
+            var browser = CreateProfileBrowser(out _);
+            var reviews = new List<int>(); var completed = 0;
+            browser.ReviewRequested += reviews.Add; browser.Completed += () => completed++;
+            Present("under-browser", "Must not leak."); CompleteDisplay();
+            Assert.That(browser.BeginBrowse(Profiles()), Is.True);
+            Assert.That(browser.IsOverview, Is.True);
+            for (var index = 0; index < 3; index++) Assert.That(browser.HasReviewed(index), Is.False);
+            Assert.That(browser.TryContinue(), Is.False);
+            Assert.That(convenience.HandleManualAdvance(), Is.False);
+            Assert.That(bridge.TryAdvance(VNAdvanceSource.Auto), Is.False);
+            Assert.That(bridge.TryAdvance(VNAdvanceSource.Skip), Is.False);
+            Assert.That(convenience.ToggleAuto(), Is.False); Assert.That(convenience.ToggleSkip(), Is.False);
+            Assert.That(visibility.TryHideUi(), Is.False); Assert.That(gate.CanUseSaveLoad, Is.False);
+            foreach (var index in new[] { first, second, third })
+            {
+                Assert.That(browser.Inspect(index), Is.True);
+                if (index != 2)
+                {
+                    Assert.That(browser.IsReviewPending, Is.True);
+                    Assert.That(convenience.HandleManualAdvance(), Is.False, "Pending review cannot consume the previous underlying occurrence.");
+                    Assert.That(browser.Back(), Is.False, "Do not abandon an ordinary first-review thought mid-line.");
+                    Present("technical-profile-" + index, "Technical first-review thought."); CompleteDisplay();
+                    Assert.That(bridge.TryAdvance(VNAdvanceSource.Auto), Is.False);
+                    Assert.That(convenience.HandleManualAdvance(), Is.True, "Owned ordinary LinePresenter reading is manual only.");
+                    Assert.That(convenience.HandleManualAdvance(), Is.False, "The review window closes on accepted consume.");
+                    Assert.That(browser.CompleteReview(index), Is.True);
+                    Assert.That(browser.CompleteReview(index), Is.False);
+                }
+                else Assert.That(browser.IsReviewPending, Is.False, "Hana has no immediate review thought.");
+                Assert.That(browser.HasReviewed(index), Is.True);
+                Assert.That(convenience.HandleCancel(), Is.True, "Esc belongs to browser Back.");
+                Assert.That(browser.IsOverview, Is.True);
+                Assert.That(browser.Inspect(index), Is.True); Assert.That(browser.IsReviewPending, Is.False);
+                Assert.That(browser.Back(), Is.True);
+            }
+            Assert.That(reviews.Count, Is.EqualTo(2));
+            Assert.That(forwardedCount, Is.EqualTo(2));
+            Assert.That(browser.TryContinue(), Is.True); Assert.That(browser.TryContinue(), Is.False);
+            Assert.That(completed, Is.EqualTo(1)); Assert.That(gate.IsStoryInteractionActive, Is.False);
+            Assert.That(gate.CanUseSaveLoad, Is.True);
+        }
+
+        [Test]
+        public void ProfileBrowse_LoadAndDisableClearTransientState_AndCannotStealAnotherOwner()
+        {
+            var browser = CreateProfileBrowser(out var save);
+            Assert.That(browser.BeginBrowse(Profiles()), Is.True);
+            var other = CreateProfileBrowser(out _);
+            Assert.That(other.BeginBrowse(Profiles()), Is.False);
+            other.CancelBrowse(); Assert.That(gate.IsStoryInteractionActive, Is.True);
+            browser.Inspect(2);
+            typeof(VNSaveLoadController).GetMethod("SetLoadInProgress", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(save, new object[] { true });
+            Assert.That(browser.IsBrowsing, Is.False); Assert.That(browser.HasReviewed(2), Is.False);
+            Assert.That(gate.IsStoryInteractionActive, Is.False);
+            Assert.That(browser.BeginBrowse(Profiles()), Is.False);
+            typeof(VNSaveLoadController).GetMethod("SetLoadInProgress", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(save, new object[] { false });
+            Assert.That(browser.BeginBrowse(Profiles()), Is.True);
+            InvokePrivateNoArguments(browser, "OnDisable");
+            Assert.That(browser.IsBrowsing, Is.False); Assert.That(gate.IsStoryInteractionActive, Is.False);
+        }
+
+        private static VNProfileContent[] Profiles() => new[]
+        {
+            new VNProfileContent("선주", "Technical first facts", true),
+            new VNProfileContent("해진", "Technical second facts", true),
+            new VNProfileContent("하나", "Technical third facts", false),
+        };
+
+        private VNProfileBrowser CreateProfileBrowser(out VNSaveLoadController save)
+        {
+            save = CreateSaveLoadController();
+            var panel = new GameObject("Technical profiles"); ownedObjects.Add(panel); panel.SetActive(false);
+            var browser = panel.AddComponent<VNProfileBrowser>(); var group = panel.AddComponent<CanvasGroup>();
+            GameObject Child(string name, params Type[] types)
+            {
+                var child = new GameObject(name, types); child.transform.SetParent(panel.transform, false); return child;
+            }
+            var buttons = new UnityEngine.UI.Button[3]; var labels = new TMP_Text[3]; var reviewed = new TMP_Text[3];
+            for (var i = 0; i < 3; i++)
+            {
+                buttons[i] = Child("Equal card", typeof(RectTransform), typeof(UnityEngine.UI.Button)).GetComponent<UnityEngine.UI.Button>();
+                labels[i] = Child("Name", typeof(RectTransform), typeof(TextMeshProUGUI)).GetComponent<TMP_Text>();
+                reviewed[i] = Child("Reviewed", typeof(RectTransform), typeof(TextMeshProUGUI)).GetComponent<TMP_Text>();
+            }
+            SetPrivateField(browser, "root", group); SetPrivateField(browser, "overview", Child("Overview"));
+            SetPrivateField(browser, "detail", Child("Detail")); SetPrivateField(browser, "profileButtons", buttons);
+            SetPrivateField(browser, "profileNames", labels); SetPrivateField(browser, "reviewedLabels", reviewed);
+            SetPrivateField(browser, "detailName", Child("Detail name", typeof(RectTransform), typeof(TextMeshProUGUI)).GetComponent<TMP_Text>());
+            SetPrivateField(browser, "detailFacts", Child("Detail facts", typeof(RectTransform), typeof(TextMeshProUGUI)).GetComponent<TMP_Text>());
+            SetPrivateField(browser, "backButton", Child("Back", typeof(RectTransform), typeof(UnityEngine.UI.Button)).GetComponent<UnityEngine.UI.Button>());
+            SetPrivateField(browser, "continueButton", Child("Continue", typeof(RectTransform), typeof(UnityEngine.UI.Button)).GetComponent<UnityEngine.UI.Button>());
+            SetPrivateField(browser, "interactionGate", gate); SetPrivateField(browser, "saveLoad", save);
+            panel.SetActive(true); InvokePrivateNoArguments(browser, "OnEnable");
+            return browser;
         }
 
         private VNSaveLoadController CreateSaveLoadController()

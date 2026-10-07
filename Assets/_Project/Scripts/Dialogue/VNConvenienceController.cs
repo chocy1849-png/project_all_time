@@ -132,6 +132,9 @@ namespace ProjectAllTime.VN.Dialogue
                 return true;
             }
 
+            if (interactionGate != null && interactionGate.IsStoryInteractionActive)
+                return interactionGate.TryCancelStoryInteraction();
+
             if (convenienceModalController != null && convenienceModalController.IsConvenienceModalOpen)
                 return convenienceModalController.CloseActiveModal();
 
