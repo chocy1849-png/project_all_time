@@ -1,13 +1,15 @@
 # Prologue Vertical Slice
 
-Status: DEFINED / CANON SOURCE IMPORTED / PRESENTATION REQUIREMENTS MAPPED
+Status: DEFINED / CANON SOURCE IMPORTED / PRESENTATION MAPPED / ASSETS AUDITED / PRODUCTION IDs FROZEN
 Story Canon: READY
 Presentation Mapping: READY
 Master Asset Requirements: READY
-Asset Inventory / Stable-ID Freeze: PENDING M10-03
+Current Asset Inventory: READY
+Temporary Mapping: READY
+Production Stable IDs: FROZEN
 Technical Presentation Spikes: PENDING M10-04
 Yarn Implementation: NOT STARTED
-Implementation Ready: NO — story authority is ready; production implementation prerequisites remain pending.
+Production Implementation Ready: NO — M10-04 technical spikes and production media/integration remain pending.
 
 ## Story authority and source fidelity
 
@@ -101,10 +103,16 @@ Consistency review covered `Docs/00_PROJECT_BRIEF.md`, `Docs/01_CONCEPT_DRAFT.md
 
 ## Milestone boundary and validation
 
-M10-01 established story authority. M10-02 completes the [S001–S008 Presentation Map](Production/M10_PROLOGUE_PRESENTATION_MAP.md) and [Master Asset Gap List / Requirements](Production/M10_MASTER_ASSET_GAP_LIST.md). Asset requirements are mapped, but actual repository inventory has not been compared; inventory comparison and stable-ID freeze await M10-03. Technical presentation spikes await M10-04. No production BGM/SFX/BG/character/expression/CG/overlay IDs or user asset requests are created. All final M10 BGM remains new-production work; previous Suno Free-workflow tracks are reference-only. Yarn and presentation implementation have not started; Implementation Ready remains NO.
+M10-01 established story authority; M10-02 completed the frozen [S001–S008 Presentation Map](Production/M10_PROLOGUE_PRESENTATION_MAP.md). M10-03 now completes [Current Asset Inventory](Production/M10_CURRENT_ASSET_INVENTORY.md), [Temporary Mapping / first production briefs](Production/M10_TEMPORARY_ASSET_MAPPING.md), [Production ID Map](Production/M10_PRODUCTION_ID_MAP.md), [84 reconciled Master requirements](Production/M10_MASTER_ASSET_GAP_LIST.md), and the [43-row PLANNED manifest](07_ASSET_MANIFEST.md). The focused 32-asset Unity inventory register shows 0 compatible existing M10 story-media resources, 10 reusable framework assets, 18 technical fixtures, 2 reference-only BGM files and 2 Korean font provenance checks. All 84 requirements retain their refs: 50 new production, 10 no independent asset, 16 M10-04 reviews, 8 optional/deferred; 0 matched production, temporary-only or provenance-blocked story requirements. Neutral mappings do not erase final production gaps.
 
-M10-02 changes only this readiness/state record and the two linked planning documents. The preserved canonical story source remains unchanged. No C#, tests, Unity Scene/Prefab/ScriptableObject, Yarn, catalogs, assets, packages, ProjectSettings, input actions, configuration, or persistence schema changes are authorized. Unity is not launched for this documentation task. The entering-M10 443 passed / 0 failed / 0 skipped baseline remains prior technical evidence, not a new test run.
+Production stable lookup identities are FROZEN: 9 Character, 19 character-scoped Expression, 12 BG, 6 CG, 2 BGM and 14 SFX keys (43 globally addressable resources plus 19 scoped child states). Ordinary and actual Rope use two presentation definitions for one identity because the current fixed-Body contract cannot swap body through an expression; aliases and S006 L924 reveal stay distinct. Structured overlays, memo/paper text, diagram and profiles remain planned component-owned content without manufactured IDs. S001/S005 group views use occupied morning/sunset BG tableaux and visible-family doorway staging, with two/three relevant foreground sprites elsewhere; preserve all five humans and ordinary Rope, clear duplicate foreground figures, no sixth/free slot. Dedicated production Presentation/Audio catalogs are an M10-04/M10-05 implementation requirement; current VN_Main still references M3/M4 and starts M2_UI_START. No catalog or consumer is rewired here.
+
+First user REQUEST_NOW wave is limited to S001–S003: 14 image bundles, 1 ordinary-morning BGM and 4 SFX briefs (19 global resources, 20 new semantic rows). Review-time P2/ordinary-dog expression work and M10-06/07/polish resources retain explicit timing. Both final BGMs remain new eligible paid-workflow production; all old Free-workflow tracks remain REFERENCE_ONLY. Unknown provenance is never READY. Technical presentation spikes are still PENDING M10-04; Yarn is NOT STARTED; Production Implementation Ready remains NO. Requests do not start generation or M10-04 automatically.
+
+M10-03 changes only the six linked readiness/inventory/planning Markdown documents. Base `e2dec902c3c99ae9c0222cdb3bfbe44197d60f1f` includes merged PR #48. Canonical story source and Presentation Map remain unchanged. Unity 6000.3.21f1 was opened and inspected through MCP in Edit Mode: healthy, no compile blockage, 0 console errors; VN_Main remained dirty=false. No Play Mode, C#, tests, Yarn, Scene/Prefab/ScriptableObject, media, .meta/import settings, packages, ProjectSettings, input or persistence changes. The entering 443 passed / 0 failed / 0 skipped baseline remains prior evidence; the full suite was not rerun for documentation.
 
 M10-01 import validation (historical): external hash matched the expected M10-00 fingerprint; the copied working-tree file matched byte-for-byte; Git's normalized blob differed only in CRLF-to-LF representation; full two-file diff and whitespace checks passed with the exact two-path allowlist.
 
-M10-02 readiness validation: 103 presentation beats cover S001–S008; all 59 bracketed scene directions are mapped, with all 385 player-content blocks accounted for and production/continuity notes explicitly not player-visible. All 84 requirement rows have presentation references; every existing-asset match remains pending M10-03. Source fingerprint remains unchanged. Full three-document diff, cross-references, field coverage and `git diff --check` are reviewed before commit; commit/PR identities and final worktree status are recorded in the review handoff.
+M10-02 readiness validation (historical): 103 presentation beats cover S001–S008; all 59 bracketed scene directions are mapped, with all 385 player-content blocks accounted for and production/continuity notes explicitly not player-visible. All 84 requirement rows have presentation references; every existing-asset match was then pending M10-03. Source fingerprint remains unchanged. Full three-document diff, cross-references, field coverage and `git diff --check` are reviewed before commit; commit/PR identities and final worktree status are recorded in the review handoff.
+
+M10-03 readiness validation: all 84 original definition/constraint refs and 103 presentation beats remain traceable; actual inventory/dispositions, 62 scoped/unscoped lookup keys and collision checks, 43 PLANNED manifest rows, P0 timing and first-wave brief fields are checked. Canonical authoring fingerprint and unchanged Presentation Map are verified; six-path diff and whitespace checks precede explicit staging/commit, with final commit/PR/worktree state in the review handoff.

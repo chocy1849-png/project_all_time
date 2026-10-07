@@ -1,3 +1,53 @@
+# M10 production asset manifest
+
+M10-03 freezes **43 real resource identities**, all **PLANNED**; no final files exist. `—` means not yet created, consistently for both sourceFile and runtimeFile. Nineteen character-scoped expression keys are child states of the nine character bundles, documented in [Production ID Map](Production/M10_PRODUCTION_ID_MAP.md), not invented global asset IDs. Body/Head/optional BackHair source layout awaits art delivery; this row does not promise one file per character. No fixture, UI layout, transition or persistent progress identity is added. Timing and semantic acceptance are in the [Master Gap List](Production/M10_MASTER_ASSET_GAP_LIST.md).
+
 | assetId | type | sourceFile | runtimeFile | owner | status | notes |
 | --- | --- | --- | --- | --- | --- | --- |
-<!-- Allowed status values: PLANNED, IN_PROGRESS, READY, INTEGRATED, DEPRECATED. No asset rows are added in Phase 0. -->
+| jihun | Character visual/definition bundle | — | — | User production → Unity integration | PLANNED | REQ-CHAR-001; REQUEST_NOW; Procedural composed human; internal and thought labels are reading modes, never separate people. Scoped expressions: default, uneasy. |
+| jinhee | Character visual/definition bundle | — | — | User production → Unity integration | PLANNED | REQ-CHAR-002; REQUEST_NOW; Agency remains hers; tears can continue through firm return response; no promised recovery. Scoped expressions: default, smile, uneasy, crying, firm. |
+| minseok | Character visual/definition bundle | — | — | User production → Unity integration | PLANNED | REQ-CHAR-003; REQUEST_NOW; Ordinary husband/father; never threatening or grabbing; retain visible household presence. Scoped expressions: default, quiet. |
+| narae | Character visual/definition bundle | — | — | User production → Unity integration | PLANNED | REQ-CHAR-004; REQUEST_NOW; Ordinary daughter; off-screen alias does not summon a sprite. Scoped expressions: default. |
+| junho | Character visual/definition bundle | — | — | User production → Unity integration | PLANNED | REQ-CHAR-005; REQUEST_NOW; Ordinary son; old shoe and new unused shoe must differ. Scoped expressions: default, pout, eager. |
+| rope_memory | Character visual/definition bundle | — | — | User production → Unity integration | PLANNED | REQ-CHAR-006; REQUEST_NOW; Ordinary small white dog in the connection; no machinery before S006 L924. Scoped expressions: default, alert. |
+| rope | Character visual/definition bundle | — | — | User production → Unity integration | PLANNED | REQ-CHAR-007; REQUEST_M10_06; Same Rope identity, actual cyber-dog representation after L924; shoulder/ankle joints only now. Scoped expressions: default, alert. |
+| dokyung | Character visual/definition bundle | — | — | User production → Unity integration | PLANNED | REQ-CHAR-008; REQUEST_M10_07; Serious attentive clinician; no ridicule or premature cause diagnosis. Scoped expressions: default. |
+| eunjung | Character visual/definition bundle | — | — | User production → Unity integration | PLANNED | REQ-CHAR-009; REQUEST_M10_07; Neutral professional guide; no hidden helper identity or flirtatious treatment. Scoped expressions: default. |
+| bg_family_kitchen_morning | BG | — | — | User production → Unity integration | PLANNED | REQ-BG-001; REQ-INS-001; REQUEST_NOW; Pan-first kitchen/staging plate; five eggs readable in crop, then four household people in wider occupied framing; no visitor or clinical reveal. |
+| bg_family_table_morning | BG | — | — | User production → Unity integration | PLANNED | REQ-BG-001; REQ-CG-001; REQUEST_NOW; Occupied tableau only after arrival; exactly Jihun, Jinhee, Minseok, Narae, Junho plus ordinary Rope at Jihun foot; no empty chair. |
+| bg_family_entrance | BG | — | — | User production → Unity integration | PLANNED | REQ-BG-002; REQUEST_NOW; Ordinary entry; normal exit on screen right and adjacent wall retained for S006 localized outline. |
+| bg_family_living_room | BG | — | — | User production → Unity integration | PLANNED | REQ-BG-003; REQUEST_NOW; Home photos and visibly linked hall/table; no accident records or clue marks. |
+| bg_family_hall | BG | — | — | User production → Unity integration | PLANNED | REQ-BG-004; REQUEST_NOW; Narrow domestic hall, readable closed handle, visibly connected living/table; no threatening architecture. |
+| bg_family_storage | BG | — | — | User production → Unity integration | PLANNED | REQ-BG-005; REQUEST_M10_06; Box, returned bag, belongings envelopes; record contents unreadable in wide frame. |
+| bg_family_storage_doorway | BG | — | — | User production → Unity integration | PLANNED | REQ-BG-006; REQUEST_M10_06; Jinhee/Jihun foreground speaker space; Minseok/Narae/Junho visible beyond; maintain ordinary Rope continuity. |
+| bg_family_table_sunset | BG | — | — | User production → Unity integration | PLANNED | REQ-BG-007; REQ-CG-001; REQUEST_M10_06; Same occupied table geometry and cast, chosen sunset meal; no vanishing people or time-acceleration clock. |
+| bg_jinhee_bedroom_day | BG | — | — | User production → Unity integration | PLANNED | REQ-BG-008; REQUEST_M10_06; Actual home bedroom in future city; opposite bed, restrained equipment and natural daylight, no family projections. |
+| bg_future_city_street_day | BG | — | — | User production → Unity integration | PLANNED | REQ-BG-010; REQUEST_M10_06; Ordinary bright street at pedestrian height, not an aerial skyline or surveillance image. |
+| bg_dokyung_office | BG | — | — | User production → Unity integration | PLANNED | REQ-BG-011; REQUEST_M10_07; Desk/window, room for two humans and actual Rope below desk; screen secondary. |
+| bg_immersion_preparation | BG | — | — | User production → Unity integration | PLANNED | REQ-BG-012; REQUEST_M10_07; Screen and bed, two humans and actual Rope beside bed; no next-era scene or helper identity. |
+| cg_worn_child_shoe | CG | — | — | User production → Unity integration | PLANNED | REQ-INS-002; REQUEST_NOW; Small folded worn heel with child heel outside; reuse S004. No accident clue. |
+| cg_beach_photo_child | CG | — | — | User production → Unity integration | PLANNED | REQ-INS-004; REQUEST_NOW; Junho sandy hands holding snack bag in a photograph, not a new flashback. |
+| cg_beach_photo_sea | CG | — | — | User production → Unity integration | PLANNED | REQ-INS-004; REQUEST_NOW; Strong sunlight sea photograph turned to by Minseok; no accident aftermath. |
+| cg_returned_bag_contents | CG | — | — | User production → Unity integration | PLANNED | REQ-INS-005; REQUEST_M10_06; Returned travel bag, sandy towel, partly eaten snack wrapper; no implied returner. |
+| cg_unused_new_shoe | CG | — | — | User production → Unity integration | PLANNED | REQ-INS-007; REQUEST_M10_06; Unused sole in Jinhee palm; later fitting uses same design in staging; no memory montage. |
+| cg_present_table_glimpse | CG | — | — | User production → Unity integration | PLANNED | REQ-INS-008; REQUEST_M10_06; Brief present table matching family table camera; no inferred owner, wife/daughter, or lingering empty-chair close-up. |
+| bgm_ordinary_morning | BGM | — | — | User production → Unity integration | PLANNED | REQ-BGM-001; REQUEST_NOW; New eligible paid workflow. L45 enter; S002 continuous lowering requires M10-04; S003 L350 fade at paw touch; silence S004. |
+| bgm_quiet_farewell | BGM | — | — | User production → Unity integration | PLANNED | REQ-BGM-002; REQUEST_M10_06; New eligible paid workflow. Late S005 L784 only; continue exit; S006 L892 immediate stop. |
+| sfx_frying_oil | SFX | — | — | User production → Unity integration | PLANNED | REQ-SFX-001; REQUEST_NOW; Finite domestic frying segment under opening black; no loop requirement. |
+| sfx_plate_counter | SFX | — | — | User production → Unity integration | PLANNED | REQ-SFX-002; REQUEST_M10_05_REVIEW; Single plate placed on counter; authored P2 cue still required before final S001 sound acceptance. |
+| sfx_home_doorbell | SFX | — | — | User production → Unity integration | PLANNED | REQ-SFX-003; REQUEST_NOW; Ordinary doorbell at L77; not a suspense sting. |
+| sfx_child_entry_steps | SFX | — | — | User production → Unity integration | PLANNED | REQ-SFX-004; REQUEST_M10_05_REVIEW; Short child footsteps preceding father rising; authored P2 acceptance retained. |
+| sfx_chair_leg_scrape | SFX | — | — | User production → Unity integration | PLANNED | REQ-SFX-006; REQUEST_NOW; Exactly one close chair-leg scrape; no voices/hallucination. |
+| sfx_junho_laugh | SFX | — | — | User production → Unity integration | PLANNED | REQ-SFX-007; REQUEST_NOW; Same diegetic short child laugh twice total, identical pitch/length; no laugh track. |
+| sfx_meal_cutlery | SFX | — | — | User production → Unity integration | PLANNED | REQ-SFX-012; REQUEST_M10_06; Sparse finite dish/cutlery actions during late meal, leave dialogue clear. |
+| sfx_sink_washing | SFX | — | — | User production → Unity integration | PLANNED | REQ-SFX-013; REQUEST_M10_06; Finite ordinary flowing-water/plate wash at consent; no independent continuous subsystem. |
+| sfx_slipper_toe_tap | SFX | — | — | User production → Unity integration | PLANNED | REQ-SFX-014; REQUEST_M10_06; Same quiet tap twice total, not footsteps or ominous knocking. |
+| sfx_low_vibration | SFX | — | — | User production → Unity integration | PLANNED | REQ-SFX-015; REQUEST_M10_06; Restrained low vibration at localized outline; no cosmic/horror swell. |
+| sfx_equipment_disconnect | SFX | — | — | User production → Unity integration | PLANNED | REQ-SFX-016; REQUEST_M10_06; Short clinical equipment termination at daylight bedroom reveal; no victory chime. |
+| sfx_connection_rain_handoff | SFX | — | — | User production → Unity integration | PLANNED | REQ-SFX-018; REQ-AMB-002; REQUEST_M10_07; Planned finite equipment→rain composite one-shot; includes AMB-002. M10-04 must verify tail, cue order and audio ownership before sourcing; no promised loop API. |
+| sfx_raindrop_awning | SFX | — | — | User production → Unity integration | PLANNED | REQ-SFX-019; REQUEST_M10_07; Single large drop on awning after handoff; separate onset accent, avoid double counting same drop in composite. |
+| sfx_old_bus_brake | SFX | — | — | User production → Unity integration | PLANNED | REQ-SFX-020; REQUEST_M10_07; Old bus braking after drop; no bus picture or next-era gameplay. |
+
+<!-- Allowed status values: PLANNED, IN_PROGRESS, READY, INTEGRATED, DEPRECATED. -->
+
+Production folder policy reuses the existing empty Art/Backgrounds, Art/Characters, Art/CG, Audio/BGM and Audio/SFX. This policy names destinations only; it creates no files/folders. Unknown provenance never qualifies for READY; later deliveries record PROJECT_OWNED / USER_GENERATED_PRODUCTION / LICENSE_CONFIRMED evidence before production approval.
