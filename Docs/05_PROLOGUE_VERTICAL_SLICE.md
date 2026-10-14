@@ -1,15 +1,15 @@
 # Prologue Vertical Slice
 
-Status: DEFINED / CANON SOURCE IMPORTED / PRESENTATION MAPPED / ASSETS AUDITED / PRODUCTION IDs FROZEN
+Status: DEFINED / CANON SOURCE IMPORTED / PRESENTATION MAPPED / ASSETS AUDITED / PRODUCTION IDs FROZEN / TECHNICAL SPIKES REVIEWABLE
 Story Canon: READY
 Presentation Mapping: READY
 Master Asset Requirements: READY
 Current Asset Inventory: READY
 Temporary Mapping: READY
 Production Stable IDs: FROZEN
-Technical Presentation Spikes: PENDING M10-04
-Yarn Implementation: NOT STARTED
-Production Implementation Ready: NO — M10-04 technical spikes and production media/integration remain pending.
+Technical Presentation Spikes: READY — results complete; S002 BGM adaptation decision pending
+Yarn Implementation: PENDING M10-05
+Production Implementation Ready: NO — S002 BGM lowering cannot restore under current SaveData; user adaptation decision pending.
 
 ## Story authority and source fidelity
 
@@ -107,7 +107,7 @@ M10-01 established story authority; M10-02 completed the frozen [S001–S008 Pre
 
 Production stable lookup identities are FROZEN: 9 Character, 19 character-scoped Expression, 12 BG, 6 CG, 2 BGM and 14 SFX keys (43 globally addressable resources plus 19 scoped child states). Ordinary and actual Rope use two presentation definitions for one identity because the current fixed-Body contract cannot swap body through an expression; aliases and S006 L924 reveal stay distinct. Structured overlays, memo/paper text, diagram and profiles remain planned component-owned content without manufactured IDs. S001/S005 group views use occupied morning/sunset BG tableaux and visible-family doorway staging, with two/three relevant foreground sprites elsewhere; preserve all five humans and ordinary Rope, clear duplicate foreground figures, no sixth/free slot. Dedicated production Presentation/Audio catalogs are an M10-04/M10-05 implementation requirement; current VN_Main still references M3/M4 and starts M2_UI_START. No catalog or consumer is rewired here.
 
-First user REQUEST_NOW wave is limited to S001–S003: 14 image bundles, 1 ordinary-morning BGM and 4 SFX briefs (19 global resources, 20 new semantic rows). Review-time P2/ordinary-dog expression work and M10-06/07/polish resources retain explicit timing. Both final BGMs remain new eligible paid-workflow production; all old Free-workflow tracks remain REFERENCE_ONLY. Unknown provenance is never READY. Technical presentation spikes are still PENDING M10-04; Yarn is NOT STARTED; Production Implementation Ready remains NO. Requests do not start generation or M10-04 automatically.
+First user REQUEST_NOW wave is limited to S001–S003: 14 image bundles, 1 ordinary-morning BGM and 4 SFX briefs (19 global resources, 20 new semantic rows). Review-time P2/ordinary-dog expression work and M10-06/07/polish resources retain explicit timing. Both final BGMs remain new eligible paid-workflow production; all old Free-workflow tracks remain REFERENCE_ONLY. Unknown provenance is never READY. At the M10-03 handoff, technical presentation spikes were PENDING M10-04, Yarn was NOT STARTED and Production Implementation Ready was NO. The M10-04 status below supersedes that technical readiness snapshot; asset requests remain independent of implementation.
 
 M10-03 changes only the six linked readiness/inventory/planning Markdown documents. Base `e2dec902c3c99ae9c0222cdb3bfbe44197d60f1f` includes merged PR #48. Canonical story source and Presentation Map remain unchanged. Unity 6000.3.21f1 was opened and inspected through MCP in Edit Mode: healthy, no compile blockage, 0 console errors; VN_Main remained dirty=false. No Play Mode, C#, tests, Yarn, Scene/Prefab/ScriptableObject, media, .meta/import settings, packages, ProjectSettings, input or persistence changes. The entering 443 passed / 0 failed / 0 skipped baseline remains prior evidence; the full suite was not rerun for documentation.
 
@@ -116,3 +116,13 @@ M10-01 import validation (historical): external hash matched the expected M10-00
 M10-02 readiness validation (historical): 103 presentation beats cover S001–S008; all 59 bracketed scene directions are mapped, with all 385 player-content blocks accounted for and production/continuity notes explicitly not player-visible. All 84 requirement rows have presentation references; every existing-asset match was then pending M10-03. Source fingerprint remains unchanged. Full three-document diff, cross-references, field coverage and `git diff --check` are reviewed before commit; commit/PR identities and final worktree status are recorded in the review handoff.
 
 M10-03 readiness validation: all 84 original definition/constraint refs and 103 presentation beats remain traceable; actual inventory/dispositions, 62 scoped/unscoped lookup keys and collision checks, 43 PLANNED manifest rows, P0 timing and first-wave brief fields are checked. Canonical authoring fingerprint and unchanged Presentation Map are verified; six-path diff and whitespace checks precede explicit staging/commit, with final commit/PR/worktree state in the review handoff.
+
+## M10-04 technical presentation handoff
+
+[M10-04 Technical Spike Results](Production/M10_04_TECHNICAL_SPIKE_RESULTS.md) records all ten decisions, authority/persistence/input boundaries and the exact five-reference future catalog wiring plan. Reading semantics, passive structured facts, the one-shot manual hold, localized white door, transient profile browse, finite equipment → rain handoff and coordinated catalog plan are GO. S006 view disturbance uses the task-authorized ADAPT: local white door + low vibration SFX + BGM stop, with no screen motion. A new home Ambient subsystem is NO-GO / OPTIONAL_DEFER and does not block implementation.
+
+**M10-04 DECISION REQUIRED:** same-track S002 source-only lowering preserves track identity/position, but current M5 AudioState restores catalog default gain. No authored gain API or persistence schema is added. The smallest proposed adaptation is an already-low morning BGM kept steady through S001–S002, preserving the existing S003 paw-contact fade/stop. User approval is pending; the canonical source is unchanged and S001–S003 draft readiness remains NO until that decision. This technical blocker does not delay the user's P0/P1 media production.
+
+Production-worthy changes stay within existing Dialogue/Presentation ownership: semantic focus policy, a session manual hold, passive information overlay, owner-aware profile reading input and localized transition effect. Exactly one authoritative LinePresenter and existing M5/M6/M7/M8/M9 runtime authorities remain. No new production Yarn command syntax was finalized, so Docs/06 is unchanged. The eleven-line TECHNICAL/NON-CANON fixture does not become production identity or Start Node; VN_Main remains M2_UI_START with its original catalogs.
+
+Validation: focused semantic/interaction/effect/audio/snapshot/Gallery/Replay checks pass; final unfiltered EditMode **462 passed / 0 failed / 0 skipped / 0 inconclusive**. MCP Play smoke proves the GO seams with neutral/generated material, shared typewriter/Backlog, Auto/Skip hold, Hide/modal arbitration, local door, equal profile review/neutral continuation and transient load/disable cleanup. Play exited normally, Scene dirty=false, Editor healthy/not compiling, Console 0 errors. Canon, Presentation Map and production IDs are unchanged; final production media added: 0. M10-05 has not started; this work is ready for review, with the BGM decision explicitly unresolved.

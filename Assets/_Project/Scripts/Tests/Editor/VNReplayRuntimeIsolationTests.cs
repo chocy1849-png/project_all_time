@@ -43,10 +43,14 @@ namespace ProjectAllTime.Tests.Editor
         private bool playModeOptionsCaptured;
         private bool previousEnterPlayModeOptionsEnabled;
         private EnterPlayModeOptions previousEnterPlayModeOptions;
+        private bool backgroundSettingCaptured;
+        private bool previousRunInBackground;
 
         [TearDown]
         public void TearDown()
         {
+            if (backgroundSettingCaptured) Application.runInBackground = previousRunInBackground;
+            backgroundSettingCaptured = false;
             RestorePlayModeOptions();
             DeleteTestDirectory(temporaryMetaRoot);
             DeleteTestDirectory(temporarySaveRoot);
@@ -133,6 +137,9 @@ namespace ProjectAllTime.Tests.Editor
         {
             EnablePlayModeWithoutDomainReload();
             yield return new EnterPlayMode(expectDomainReload: false);
+            previousRunInBackground = Application.runInBackground;
+            backgroundSettingCaptured = true;
+            Application.runInBackground = true; // Required for awaited Play work during an unfocused MCP test run.
 
             // Build persistence fixtures only after Unity's Play Mode domain transition so
             // no test-owned service or repository instance crosses a domain reload.
