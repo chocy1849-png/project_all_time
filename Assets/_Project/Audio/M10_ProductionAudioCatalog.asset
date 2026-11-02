@@ -17,6 +17,10 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
     defaultVolume: 0.25
     loop: 1
+  - id: bgm_quiet_farewell
+    clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
+    defaultVolume: 0.25
+    loop: 1
   sfx:
   - id: sfx_frying_oil
     clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
@@ -34,5 +38,20 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
     defaultVolume: 1
   - id: sfx_junho_laugh
+    clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
+    defaultVolume: 1
+  - id: sfx_meal_cutlery
+    clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
+    defaultVolume: 1
+  - id: sfx_sink_washing
+    clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
+    defaultVolume: 1
+  - id: sfx_slipper_toe_tap
+    clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
+    defaultVolume: 1
+  - id: sfx_low_vibration
+    clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
+    defaultVolume: 1
+  - id: sfx_equipment_disconnect
     clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
     defaultVolume: 1

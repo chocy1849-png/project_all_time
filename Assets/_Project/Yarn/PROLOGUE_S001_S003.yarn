@@ -353,5 +353,5 @@ title: PROLOGUE_S003_P10
 진희: 제가 잘 기억을 못 해서 그러죠. #line:prologue_s003_026
 지훈: 새 신발은 기억하셨습니다. 그 이야기를 조금 더 하겠습니다. #line:prologue_s003_027
 <<vn_info_hide>>
-// Terminal handoff: M10-06 may link S004 here; no visible completion or unlock.
+<<jump PROLOGUE_S004_P01>>
 ===

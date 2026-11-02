@@ -28,3 +28,7 @@ MonoBehaviour:
     headSprite: {fileID: 0}
   - expressionId: uneasy
     headSprite: {fileID: 0}
+  - expressionId: crying
+    headSprite: {fileID: 0}
+  - expressionId: firm
+    headSprite: {fileID: 0}

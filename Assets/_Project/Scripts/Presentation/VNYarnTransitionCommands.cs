@@ -6,7 +6,7 @@ namespace ProjectAllTime.VN.Presentation
 {
     public sealed class VNYarnTransitionCommands : MonoBehaviour
     {
-        private static readonly string[] CommandNames = { "vn_fade_to_black", "vn_fade_from_black", "vn_bg_crossfade", "vn_show_fade", "vn_hide_fade", "vn_cg_fade_in", "vn_cg_fade_out" };
+        private static readonly string[] CommandNames = { "vn_fade_to_black", "vn_fade_from_black", "vn_bg_crossfade", "vn_show_fade", "vn_hide_fade", "vn_cg_fade_in", "vn_cg_fade_out", "vn_local_effect" };
 
         [SerializeField] private DialogueRunner dialogueRunner;
         [SerializeField] private VNTransitionController transitionController;
@@ -19,6 +19,12 @@ namespace ProjectAllTime.VN.Presentation
         }
 
         private void OnDisable() => UnregisterHandlers();
+
+        private void Update()
+        {
+            if (handlersRegistered && dialogueRunner != null && !dialogueRunner.IsDialogueRunning)
+                ClearLocalizedEffect();
+        }
 
         private void RegisterHandlers()
         {
@@ -35,12 +41,16 @@ namespace ProjectAllTime.VN.Presentation
             dialogueRunner.AddCommandHandler<string, float>("vn_hide_fade", HideCharacterFade);
             dialogueRunner.AddCommandHandler<string, float>("vn_cg_fade_in", FadeCGIn);
             dialogueRunner.AddCommandHandler<float>("vn_cg_fade_out", FadeCGOut);
+            dialogueRunner.AddCommandHandler<string, float>("vn_local_effect", LocalizedEffect);
+            dialogueRunner.onDialogueComplete?.AddListener(ClearLocalizedEffect);
             handlersRegistered = true;
         }
 
         private void UnregisterHandlers()
         {
             if (!handlersRegistered || dialogueRunner == null) return;
+            dialogueRunner.onDialogueComplete?.RemoveListener(ClearLocalizedEffect);
+            ClearLocalizedEffect();
             foreach (var commandName in CommandNames) dialogueRunner.RemoveCommandHandler(commandName);
             handlersRegistered = false;
         }
@@ -63,5 +73,29 @@ namespace ProjectAllTime.VN.Presentation
         private IEnumerator HideCharacterFade(string characterId, float duration) => transitionController.FadeCharacterOut(characterId, duration);
         private IEnumerator FadeCGIn(string cgId, float duration) => transitionController.FadeCGIn(cgId, duration);
         private IEnumerator FadeCGOut(float duration) => transitionController.FadeCGOut(duration);
+
+        private void ClearLocalizedEffect()
+        {
+            if (transitionController != null && transitionController.IsLocalizedEffectVisible)
+                transitionController.NormalizeForLoad();
+        }
+
+        private IEnumerator LocalizedEffect(string state, float duration)
+        {
+            if ((state != "on" && state != "off") || float.IsNaN(duration) || float.IsInfinity(duration) || duration < 0f)
+            {
+                Debug.LogError("vn_local_effect requires on/off and a finite non-negative duration.", this);
+                yield break;
+            }
+            var routine = transitionController.FadeLocalizedEffect(state == "on", duration);
+            try
+            {
+                while (isActiveAndEnabled && dialogueRunner != null && dialogueRunner.IsDialogueRunning && routine.MoveNext())
+                    yield return routine.Current;
+                if (!isActiveAndEnabled || dialogueRunner == null || !dialogueRunner.IsDialogueRunning)
+                    transitionController.NormalizeForLoad();
+            }
+            finally { (routine as System.IDisposable)?.Dispose(); }
+        }
     }
 }
