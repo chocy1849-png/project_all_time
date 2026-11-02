@@ -43,7 +43,7 @@ namespace ProjectAllTime.Tests.Editor
             var entries = result.StringTable.ToArray();
             Assert.That(entries.Count(entry => entry.Value.isImplicitTag), Is.Zero, "String table entries must not use implicit IDs.");
             Assert.That(entries.Select(entry => entry.Key).Distinct(StringComparer.Ordinal).Count(), Is.EqualTo(entries.Length), "Compiled line IDs must be unique.");
-            Assert.That(entries.Length, Is.EqualTo(162), "The existing 151 explicit lines plus eleven M10 technical fixture lines should total 162.");
+            Assert.That(entries.Length, Is.EqualTo(273), "The 162 technical fixture IDs plus 111 production prologue paragraphs should total 273.");
         }
 
         [Test]

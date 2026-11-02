@@ -7,9 +7,9 @@ Master Asset Requirements: READY
 Current Asset Inventory: READY
 Temporary Mapping: READY
 Production Stable IDs: FROZEN
-Technical Presentation Spikes: READY — results complete; S002 BGM adaptation decision pending
-Yarn Implementation: PENDING M10-05
-Production Implementation Ready: NO — S002 BGM lowering cannot restore under current SaveData; user adaptation decision pending.
+Technical Presentation Spikes: READY — M10-05 provisional steady-volume fallback in use; final adaptation acceptance pending
+Yarn Implementation: S001–S003 TECHNICAL DRAFT; S004–S008 pending
+Production Implementation Ready: S001–S003 TECHNICAL DRAFT; production media and final narrative/audio acceptance pending.
 
 ## Story authority and source fidelity
 
@@ -126,3 +126,15 @@ M10-03 readiness validation: all 84 original definition/constraint refs and 103 
 Production-worthy changes stay within existing Dialogue/Presentation ownership: semantic focus policy, a session manual hold, passive information overlay, owner-aware profile reading input and localized transition effect. Exactly one authoritative LinePresenter and existing M5/M6/M7/M8/M9 runtime authorities remain. No new production Yarn command syntax was finalized, so Docs/06 is unchanged. The eleven-line TECHNICAL/NON-CANON fixture does not become production identity or Start Node; VN_Main remains M2_UI_START with its original catalogs.
 
 Validation: focused semantic/interaction/effect/audio/snapshot/Gallery/Replay checks pass; final unfiltered EditMode **462 passed / 0 failed / 0 skipped / 0 inconclusive**. MCP Play smoke proves the GO seams with neutral/generated material, shared typewriter/Backlog, Auto/Skip hold, Hide/modal arbitration, local door, equal profile review/neutral continuation and transient load/disable cleanup. Play exited normally, Scene dirty=false, Editor healthy/not compiling, Console 0 errors. Canon, Presentation Map and production IDs are unchanged; final production media added: 0. M10-05 has not started; this work is ready for review, with the BGM decision explicitly unresolved.
+
+## M10-05 first playable production draft
+
+The [S001–S003 report](Production/M10_05_S001_S003_PLAYABLE_REPORT.md) records 33/33 beats, 111 exact ordered canonical paragraphs, controlled PROLOGUE_S001_START entry, production catalogs and all five coordinated consumer references. VN_Main remains M2_UI_START. No S004 content, route choice, full-prologue completion or production Records population is added.
+
+M10-05's explicit instruction supersedes the earlier technical readiness blocker: implement a restrained catalog-default morning theme continuously through S002 and retain the S003 paw-contact fade/stop. This is a provisional implementation adaptation; the original source lowering cue is unchanged, with no separate approval claimed and final acceptance still pending. No persistent gain or mixer preference mutation.
+
+All three scenes are TECHNICALLY_PLAYABLE / PRODUCTION_MEDIA_PENDING using explicitly temporary neutral diagrams/figures/inserts and silent imported audio. No final art/audio was available to integrate. Final presentation/quality acceptance is not claimed. Exact passive facts use the M10-04 overlay; a scene-owned command adapter adds no persistence or history. Static Korean glyph coverage is baked from the installed font; source-font release attribution remains an existing open check. Checkpoint/file round-trip acceptance is DEFERRED_M10_09 because no production checkpoint is authored.
+
+Validation: fresh 462/0/0 baseline, focused production 8/0/0, final full EditMode 470/0/0 (0 inconclusive). Yarn has 273 explicit IDs (111 new), 0 implicit/duplicate/compiler errors; source fidelity and all 33 beat nodes pass. Actual VN_Main Play flow yields 111 exact ordered Backlog entries/authorized reads, with controlled terminal handoff, Hide/modal arbitration and real load-event facts reconstruction. Final Console/normal Play exit and commit state are recorded in the review handoff. No production checkpoint/file round trip is claimed.
+
+The pre-existing local temporary-mapping edit is preserved and excluded. Canon, Presentation Map and production IDs are unchanged; Unity-authorized operations create/assign serialized assets and wiring. M10-06 has not begun.

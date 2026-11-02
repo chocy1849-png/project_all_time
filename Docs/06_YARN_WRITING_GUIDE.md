@@ -144,3 +144,13 @@ The content validator checks the compiled root and its reachable node closure an
 M9 technical Replay fixtures are non-canon. Keep production story start at `M2_UI_START`; do not change it to an M9 smoke or Replay node.
 
 The M9 Records framework is complete, but production catalogs are intentionally empty. Populated Records entries and their player-facing UX remain deferred until real story content is authored. Later work may still add Chapter Select gameplay navigation, Ending Gallery, a general completion-percentage UI, platform achievements, cloud sync, Meta reset, and New Game / Save Delete UI where those remain unimplemented. Re-run the relevant human UX checks when those production records are populated.
+
+## M10-05 production facts and black opening
+
+- `<<vn_clear_bg>>` clears the existing presentation owner's background without hiding dialogue. It is registered by the production `VNYarnPresentationCommands` and removed on disable; Replay v1's allowlist is unchanged.
+- `<<vn_info_show "title" "first fact" "second fact" "third fact">>` replaces the scene-session passive information panel. The first fact must be nonblank; empty second/third facts are omitted, otherwise joined with newlines. Use exact authored facts only. All four quoted arguments are required.
+- `<<vn_info_hide>>` clears that panel. It is not dialogue, a narrator, history or persisted state.
+- `VNYarnInformationCommands` registers only on its configured production runner. Missing wiring and blank facts log a diagnostic. Disable unregisters and hides; load invalidates stale operations. Re-entry waits until loading ends and honors cancellation/disable. Do not expose these facts commands to isolated Replay.
+- M10 backgrounds use awaited `<<vn_bg_crossfade background_id 0>>` for stable cuts after normalized clears. A full-screen black fade covers text too; use the cleared black background for the opening child dialogue.
+- S001–S003 are 111 canonical paragraphs under 33 beat nodes plus PROLOGUE_S001_START. Source physical line wrapping becomes spaces within each retained paragraph. The terminal S003 boundary adds no visible completion or full-prologue unlock.
+- The controlled MCP entry and temporary-media/asset boundaries are documented in [M10-05 report](Production/M10_05_S001_S003_PLAYABLE_REPORT.md). Start Node remains M2_UI_START. S002 steady restrained BGM is the request's provisional fallback; final deviation acceptance remains tracked.

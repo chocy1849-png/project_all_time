@@ -5,7 +5,7 @@ namespace ProjectAllTime.VN.Presentation
 {
     public sealed class VNYarnPresentationCommands : MonoBehaviour
     {
-        private static readonly string[] CommandNames = { "vn_bg", "vn_show", "vn_expression", "vn_move", "vn_facing", "vn_scale", "vn_hide", "vn_cg", "vn_clear_cg" };
+        private static readonly string[] CommandNames = { "vn_bg", "vn_clear_bg", "vn_show", "vn_expression", "vn_move", "vn_facing", "vn_scale", "vn_hide", "vn_cg", "vn_clear_cg" };
 
         [SerializeField] private DialogueRunner dialogueRunner;
         [SerializeField] private VNPresentationController presentationController;
@@ -28,6 +28,7 @@ namespace ProjectAllTime.VN.Presentation
             }
 
             dialogueRunner.AddCommandHandler<string>("vn_bg", Background);
+            dialogueRunner.AddCommandHandler("vn_clear_bg", ClearBackground);
             dialogueRunner.AddCommandHandler<string, string, string>("vn_show", Show);
             dialogueRunner.AddCommandHandler<string, string>("vn_expression", Expression);
             dialogueRunner.AddCommandHandler<string, string>("vn_move", Move);
@@ -47,6 +48,7 @@ namespace ProjectAllTime.VN.Presentation
         }
 
         private void Background(string backgroundId) => presentationController.SetBackground(backgroundId);
+        private void ClearBackground() => presentationController.ClearBackground();
         private void Show(string characterId, string expressionId, string slotId)
         {
             if (VNPresentationController.TryParseSlot(slotId, out var slot)) presentationController.ShowCharacter(characterId, expressionId, slot);

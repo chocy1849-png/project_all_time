@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af9606ab927eb7e4fb9da8401aab81fd, type: 3}
+  m_Name: M10_ProductionAudioCatalog
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectAllTime.VN.Audio.VNAudioCatalog
+  bgm:
+  - id: bgm_ordinary_morning
+    clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
+    defaultVolume: 0.25
+    loop: 1
+  sfx:
+  - id: sfx_frying_oil
+    clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
+    defaultVolume: 1
+  - id: sfx_plate_counter
+    clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
+    defaultVolume: 1
+  - id: sfx_home_doorbell
+    clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
+    defaultVolume: 1
+  - id: sfx_child_entry_steps
+    clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
+    defaultVolume: 1
+  - id: sfx_chair_leg_scrape
+    clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
+    defaultVolume: 1
+  - id: sfx_junho_laugh
+    clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
+    defaultVolume: 1
