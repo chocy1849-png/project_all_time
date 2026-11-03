@@ -43,7 +43,12 @@ namespace ProjectAllTime.Tests.Editor
             var entries = result.StringTable.ToArray();
             Assert.That(entries.Count(entry => entry.Value.isImplicitTag), Is.Zero, "String table entries must not use implicit IDs.");
             Assert.That(entries.Select(entry => entry.Key).Distinct(StringComparer.Ordinal).Count(), Is.EqualTo(entries.Length), "Compiled line IDs must be unique.");
-            Assert.That(entries.Length, Is.EqualTo(445), "The 273 existing IDs plus 172 draft S004–S006 paragraphs should total 445.");
+            Assert.That(entries.Length, Is.EqualTo(541), "The existing 445 IDs plus 96 S007–S008 paragraphs should total 541.");
+            Assert.That(entries.Count(entry => entry.Key.StartsWith("line:prologue_s007_", StringComparison.Ordinal)), Is.EqualTo(55));
+            Assert.That(entries.Count(entry => entry.Key.StartsWith("line:prologue_s008_", StringComparison.Ordinal)), Is.EqualTo(41));
+            for (var scene = 7; scene <= 8; scene++)
+                for (var beat = 1; beat <= (scene == 7 ? 11 : 14); beat++)
+                    Assert.That(result.Program.Nodes.ContainsKey($"PROLOGUE_S00{scene}_P{beat:00}"), Is.True, $"S{scene:000} beat {beat:00} must be executable.");
         }
 
         [Test]

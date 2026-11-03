@@ -20,6 +20,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d10faa72dafc5314d89385d5bbef9292, type: 2}
   - {fileID: 11400000, guid: b2a942a1806139e4e92d6d27c3287e64, type: 2}
   - {fileID: 11400000, guid: b9e763bf254f90d499673abb7dbb4561, type: 2}
+  - {fileID: 11400000, guid: 7d855317a4cb01544ac2a25022bcb67e, type: 2}
+  - {fileID: 11400000, guid: 5cecf58fd3d09cb46b6fc033e0a4d0d3, type: 2}
   backgrounds:
   - id: bg_family_kitchen_morning
     sprite: {fileID: 21300000, guid: b310ea0cd501f104794b8307589ddc63, type: 3}
@@ -41,6 +43,10 @@ MonoBehaviour:
     sprite: {fileID: 21300000, guid: 8b6be375e71489a49a737fe2b42d8455, type: 3}
   - id: bg_family_table_sunset
     sprite: {fileID: 21300000, guid: 2c729f285f587814e8c82b4a6e556732, type: 3}
+  - id: bg_dokyung_office
+    sprite: {fileID: 21300000, guid: 01f1c501626fdf64d8a1437be3288c49, type: 3}
+  - id: bg_immersion_preparation
+    sprite: {fileID: 21300000, guid: 01f1c501626fdf64d8a1437be3288c49, type: 3}
   cgs:
   - id: cg_worn_child_shoe
     sprite: {fileID: 21300000, guid: 01f1c501626fdf64d8a1437be3288c49, type: 3}

@@ -8,8 +8,8 @@ Current Asset Inventory: READY
 Temporary Mapping: READY
 Production Stable IDs: FROZEN
 Technical Presentation Spikes: READY — M10-05 provisional steady-volume fallback in use; final adaptation acceptance pending
-Yarn Implementation: S001–S006 TECHNICAL DRAFT; S007–S008 pending
-Production Implementation Ready: S001–S006 TECHNICAL DRAFT; production media and final narrative/audio acceptance pending.
+Yarn Implementation: S001–S008 TECHNICAL DRAFT.
+Production Implementation Ready: S001–S008 technical playable draft; production media and final narrative/audio acceptance pending.
 
 ## Story authority and source fidelity
 

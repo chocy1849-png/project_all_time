@@ -42,7 +42,8 @@ namespace ProjectAllTime.Tests.Editor
             for (var scene = 4; scene <= 6; scene++)
                 for (var beat = 1; beat <= (scene == 4 ? 16 : scene == 5 ? 15 : 14); beat++)
                     Assert.That(nodes, Does.Contain($"PROLOGUE_S00{scene}_P{beat:00}"));
-            foreach (Match jump in Regex.Matches(yarn, @"<<jump (\w+)>>")) Assert.That(nodes, Does.Contain(jump.Groups[1].Value));
+            foreach (Match jump in Regex.Matches(yarn, @"<<jump (\w+)>>"))
+                Assert.That(nodes.Contains(jump.Groups[1].Value) || jump.Groups[1].Value == "PROLOGUE_S007_P01", Is.True);
             Assert.That(Regex.IsMatch(yarn, @"(?m)^\s*->|<<vn_complete_ending|<<vn_unlock_|<<vn_checkpoint"), Is.False);
             Assert.That(yarn, Does.Contain("<<vn_manual_hold>>\n지훈: 제가 대신"));
             Assert.That(yarn.IndexOf("<<vn_manual_hold>>", StringComparison.Ordinal), Is.LessThan(yarn.IndexOf("그녀가 문을 열었다", StringComparison.Ordinal)));
@@ -56,7 +57,7 @@ namespace ProjectAllTime.Tests.Editor
             Assert.That(reaction, Is.GreaterThan(assist));
             Assert.That(yarn.IndexOf("<<vn_info_hide>>", assist, StringComparison.Ordinal), Is.GreaterThan(reaction), "Assistance disclosure remains visible for the first adjusted response.");
             Assert.That(Regex.Matches(yarn, "sfx_play sfx_slipper_toe_tap").Count, Is.EqualTo(2));
-            Assert.That(yarn, Does.Not.Contain("PROLOGUE_S007"));
+            Assert.That(yarn, Does.Contain("<<jump PROLOGUE_S007_P01>>"));
         }
 
         [Test]

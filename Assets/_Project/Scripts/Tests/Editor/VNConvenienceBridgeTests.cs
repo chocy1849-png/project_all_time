@@ -314,6 +314,10 @@ namespace ProjectAllTime.Tests.Editor
 
         [TestCase(2, 0, 1)]
         [TestCase(1, 2, 0)]
+        [TestCase(0, 1, 2)]
+        [TestCase(0, 2, 1)]
+        [TestCase(1, 0, 2)]
+        [TestCase(2, 1, 0)]
         public void ProfileBrowse_ArbitraryOrder_OneShotThoughts_SharedManualLine_AndSingleNeutralContinuation(int first, int second, int third)
         {
             var browser = CreateProfileBrowser(out _);
@@ -375,6 +379,38 @@ namespace ProjectAllTime.Tests.Editor
             Assert.That(browser.BeginBrowse(Profiles()), Is.True);
             InvokePrivateNoArguments(browser, "OnDisable");
             Assert.That(browser.IsBrowsing, Is.False); Assert.That(gate.IsStoryInteractionActive, Is.False);
+        }
+
+        [Test]
+        public void ProductionProfileAdapter_KeepsPendingEventUntilYarnAcknowledges_AndReleasesOwnership()
+        {
+            var browser = CreateProfileBrowser(out _);
+            var root = new GameObject("Production profile adapter test"); ownedObjects.Add(root); root.SetActive(false);
+            var adapter = root.AddComponent<VNYarnProfileCommands>();
+            SetPrivateField(adapter, "dialogueRunner", dialogueRunner); SetPrivateField(adapter, "browser", browser);
+            InvokePrivateNoArguments(adapter, "OnEnable");
+            try
+            {
+                InvokePrivateNoArguments(adapter, "Begin");
+                Assert.That(browser.Inspect(0), Is.True);
+                var result = typeof(VNYarnProfileCommands).GetField("result", BindingFlags.Instance | BindingFlags.NonPublic);
+                Assert.That(result.GetValue(adapter), Is.EqualTo(0));
+                var wait = (System.Collections.IEnumerator)typeof(VNYarnProfileCommands).GetMethod("WaitForEvent", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(adapter, null);
+                wait.MoveNext();
+                Assert.That(result.GetValue(adapter), Is.EqualTo(0), "Starting a wait must not erase a queued review event.");
+                Present("line:prologue_s008_009", "사진 행사. 참여 인원이 많겠군."); CompleteDisplay();
+                Assert.That(convenience.HandleManualAdvance(), Is.True);
+                typeof(VNYarnProfileCommands).GetMethod("CompleteReview", BindingFlags.Instance | BindingFlags.NonPublic).Invoke(adapter, new object[] { 0f });
+                Assert.That(result.GetValue(adapter), Is.EqualTo(-1));
+                Assert.That(browser.HasReviewed(0), Is.True);
+                Assert.That(sessionState.ReadHistory.IsRead("line:prologue_s008_009"), Is.True);
+                Assert.That(browser.Back(), Is.True); Assert.That(browser.Inspect(2), Is.True);
+                Assert.That(result.GetValue(adapter), Is.EqualTo(2));
+                InvokePrivateNoArguments(adapter, "CompleteSilentReview");
+                Assert.That(result.GetValue(adapter), Is.EqualTo(-1));
+            }
+            finally { InvokePrivateNoArguments(adapter, "OnDisable"); }
+            Assert.That(gate.IsStoryInteractionActive, Is.False);
         }
 
         private static VNProfileContent[] Profiles() => new[]

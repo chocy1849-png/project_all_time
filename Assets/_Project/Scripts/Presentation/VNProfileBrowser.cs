@@ -48,6 +48,7 @@ namespace ProjectAllTime.VN.Presentation
         public bool AllReviewed => reviewed[0] && reviewed[1] && reviewed[2];
         public bool HasReviewed(int index) => index >= 0 && index < 3 && reviewed[index];
         public event Action<int> ReviewRequested;
+        public event Action<int> SilentReviewRequested;
         public event Action Completed;
 
         public bool BeginBrowse(VNProfileContent[] profiles)
@@ -64,12 +65,14 @@ namespace ProjectAllTime.VN.Presentation
         public bool Inspect(int index)
         {
             if (!IsOverview || index < 0 || index >= 3) return false;
+            var firstReview = !reviewed[index];
             CurrentProfile = index;
             IsReviewPending = !reviewed[index] && content[index].RequiresFirstReviewLine;
             if (!IsReviewPending) reviewed[index] = true;
             interactionGate.SetStoryReadingEnabled(this, IsReviewPending);
             Render();
             if (IsReviewPending) ReviewRequested?.Invoke(index);
+            else if (firstReview) SilentReviewRequested?.Invoke(index);
             return true;
         }
 

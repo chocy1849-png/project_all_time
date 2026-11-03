@@ -1,0 +1,299 @@
+// M10-07 source transcription; production presentation wiring remains in progress.
+
+title: PROLOGUE_S007_P01
+---
+// S007-P01
+<<vn_bg_crossfade bg_dokyung_office 0>>
+<<vn_show jihun default left>>
+<<vn_show dokyung default right>>
+<<vn_show rope default center>>
+도경: 지금 통증은? #line:prologue_s007_001
+지훈: 없습니다. #line:prologue_s007_002
+도경: 시야가 흔들리는 건? #line:prologue_s007_003
+지훈: 접속 종료할 때 한 번. 그 뒤에는 없었습니다. #line:prologue_s007_004
+도경: 감각 경로 원인은 아직 분석 중이에요. 오늘 기본 검사에서 급성 손상 징후는 없지만, 바로 같은 접속을 반복하진 않을 겁니다. #line:prologue_s007_005
+지훈: 업무 제한은 얼마나 갑니까? #line:prologue_s007_006
+도경: 확인할 자료가 더 있어요. 그리고 그 이야기 전에, 최근 생활부터 봅시다. #line:prologue_s007_007
+<<jump PROLOGUE_S007_P02>>
+===
+
+title: PROLOGUE_S007_P02
+---
+// S007-P02
+<<vn_info_show "최근 생활 기록" "수면" "식사" "">>
+도경: 최근에 재미있었던 일 하나만 말해보세요. #line:prologue_s007_008
+지훈: 어제 환자가 깨어났습니다. #line:prologue_s007_009
+도경: 그걸로 기뻤어요? #line:prologue_s007_010
+지훈: 목표를 달성했죠. #line:prologue_s007_011
+도경: 알겠습니다. 업무 밖에서는요? #line:prologue_s007_012
+지훈: 특별한 일은 없었습니다. #line:prologue_s007_013
+도경: 이번 달부터 작년까지 넓혀도요? #line:prologue_s007_014
+지훈: 기록을 봐야겠습니다. #line:prologue_s007_015
+도경: 기록 없이 떠오르는 건 없어요? #line:prologue_s007_016
+<<jump PROLOGUE_S007_P03>>
+===
+
+title: PROLOGUE_S007_P03
+---
+// S007-P03
+지훈: 없네요. #line:prologue_s007_017
+<<jump PROLOGUE_S007_P04>>
+===
+
+title: PROLOGUE_S007_P04
+---
+// S007-P04
+도경: 어제 저녁은 뭐 드셨습니까? #line:prologue_s007_018
+지훈: 영양식. #line:prologue_s007_019
+도경: 맛은요? #line:prologue_s007_020
+지훈: 늘 먹는 겁니다. #line:prologue_s007_021
+도경: 어떤 맛이냐고요. #line:prologue_s007_022
+지훈: ……로프. #line:prologue_s007_023
+로프: 묻는 건 제품명이 아닌 것 같아. #line:prologue_s007_024
+도경은 웃지 않았다. 지훈이 다시 답할 시간을 줬다. #line:prologue_s007_025
+지훈: 확인하지 않았습니다. #line:prologue_s007_026
+도경: 잠을 못 자서 반응이 떨어지는 것만은 아니에요. 쉬는 날 검사에서도 반응 폭이 좁아졌습니다. 전 회차 자료와 비교해도 그렇고요. #line:prologue_s007_027
+<<jump PROLOGUE_S007_P05>>
+===
+
+title: PROLOGUE_S007_P05
+---
+// S007-P05
+<<vn_info_hide>>
+<<vn_medical_diagram_show>>
+도경: 각성고갈증의 초기 소견입니다. 아직 회복 가능한 단계예요. #line:prologue_s007_028
+지훈: 초기치고는 업무에 지장이 큽니다. #line:prologue_s007_029
+도경: 일은 계속할 수 있어도, 그 밖의 삶에 반응하지 못할 수 있어요. #line:prologue_s007_030
+지훈: 그건 상당히 흔한 상태 아닙니까. #line:prologue_s007_031
+도경: 흔하다고 안전한 건 아닙니다. #line:prologue_s007_032
+<<jump PROLOGUE_S007_P06>>
+===
+
+title: PROLOGUE_S007_P06
+---
+// S007-P06
+지훈: 진희 씨는 침잠 쪽이었죠. #line:prologue_s007_033
+도경: 맞아요. 고통과 단절된 기억에서 물러나는 경로와, 오랜 반복 속에서 반응 자체가 소진되는 경로는 시작이 달라요. #line:prologue_s007_034
+도경: 다만 말기에 자아를 유지하는 기능이 무너지면, 어느 쪽이든 우리가 되돌릴 수 없습니다. #line:prologue_s007_035
+지훈: 그 설명은 환자한테 저도 합니다. #line:prologue_s007_036
+도경: 오늘은 선생님 자료를 보고 있어요. #line:prologue_s007_037
+<<jump PROLOGUE_S007_P07>>
+===
+
+title: PROLOGUE_S007_P07
+---
+// S007-P07
+<<vn_medical_diagram_hide>>
+도경: 회귀 관리 기록상 신체 상태는 안정적입니다. 하지만 몸을 젊게 유지하는 시술이 지금의 반응 저하까지 되돌리진 않아요. #line:prologue_s007_038
+지훈: 처방은요? #line:prologue_s007_039
+<<jump PROLOGUE_S007_P08>>
+===
+
+title: PROLOGUE_S007_P08
+---
+// S007-P08
+도경: 감각 경로 확인과 회복 기간을 거친 뒤 시대 몰입 세 회차. 첫 회차는 가볍게 갑니다. #line:prologue_s007_040
+지훈: 지난번보다요? #line:prologue_s007_041
+도경: 지난번처럼 탈출 위기만 주면, 선생님은 일하듯 끝내고 오죠. 이번에는 같이 움직일 사람이 있습니다. #line:prologue_s007_042
+지훈: 팀 과제입니까? #line:prologue_s007_043
+도경: 그 사람을 알아야 풀리는 과제요. #line:prologue_s007_044
+지훈: 상대 정보는 지급되겠죠. #line:prologue_s007_045
+도경: 프로필은요. 그 사람이 무엇을 원하는지는 만나서 알아보세요. #line:prologue_s007_046
+지훈은 처방 기간부터 확인했다. 그다음에야 치료 항목을 읽었다. #line:prologue_s007_047
+<<jump PROLOGUE_S007_P09>>
+===
+
+title: PROLOGUE_S007_P09
+---
+// S007-P09
+도경: 검사는 분기에서 월 단위로 당깁니다. 두통이나 감각 혼선이 반복되면 더 자주 보겠습니다. #line:prologue_s007_048
+지훈: 몰입 횟수도 늘립니까? #line:prologue_s007_049
+도경: 검사를 자주 하는 것과 자극을 세게 주는 건 별개예요. 증상이 올라오면 몰입은 늦추거나 중단합니다. #line:prologue_s007_050
+<<jump PROLOGUE_S007_P10>>
+===
+
+title: PROLOGUE_S007_P10
+---
+// S007-P10
+지훈: 휴식만으로 끝낼 수는 없습니까? #line:prologue_s007_051
+도경: 쉬는 날엔 뭐 하세요? #line:prologue_s007_052
+지훈: 다음 환자 기록을 봅니다. #line:prologue_s007_053
+지훈: ……아무것도 안 보는 쪽으로 쉬면요. #line:prologue_s007_054
+도경: 그것도 해보죠. 몰입 치료와 별개로. #line:prologue_s007_055
+<<jump PROLOGUE_S007_P11>>
+===
+
+title: PROLOGUE_S007_P11
+---
+// S007-P11
+<<vn_info_show "처방" "승인 전 재평가" "" "">>
+<<wait 1>>
+<<jump PROLOGUE_S008_P01>>
+===
+
+title: PROLOGUE_S008_P01
+---
+// S008-P01
+<<vn_hide dokyung>>
+<<vn_bg_crossfade bg_immersion_preparation 0>>
+<<vn_show eunjung default right>>
+<<vn_info_show "며칠 뒤" "재평가 완료" "접속 승인" "">>
+은정: 재평가 결과 전달받았어요. 오늘은 도시 일상 회차입니다. 기본 절차는 기억하시죠? #line:prologue_s008_001
+지훈: 기억합니다. #line:prologue_s008_002
+은정: 동행 방식이 달라서 그 부분은 새로 확인할게요. #line:prologue_s008_003
+<<jump PROLOGUE_S008_P02>>
+===
+
+title: PROLOGUE_S008_P02
+---
+// S008-P02
+<<vn_info_show "시대 몰입" "재구성 한국 도시" "2000년대 초의 생활 환경" "">>
+은정: 이름과 배경은 배역 설정입니다. 동행자는 생성 반응과 익명 인간 조력자의 참여로 운영됩니다. #line:prologue_s008_004
+지훈: 실제 사람도 들어옵니까? #line:prologue_s008_005
+은정: 이 회차는 그렇습니다. 누구에게 어떤 배역을 배정할지는 선택 후에 정해져요. 서로 개인 신원은 공개하지 않습니다. #line:prologue_s008_006
+지훈: 종료 뒤 연락은요? #line:prologue_s008_007
+은정: 상호 동의가 있으면 중계 연락함을 쓸 수 있어요. 지금은 그것까지 결정하지 않으셔도 됩니다. #line:prologue_s008_008
+<<jump PROLOGUE_S008_P03>>
+===
+
+title: PROLOGUE_S008_P03
+---
+// S008-P03
+<<vn_info_show "참여 확인" "참여 방식" "녹화 범위" "정보 보호">>
+<<wait 1>>
+<<vn_info_hide>>
+<<vn_profile_begin>>
+<<jump PROLOGUE_S008_PROFILE_WAIT>>
+===
+
+title: PROLOGUE_S008_PROFILE_WAIT
+---
+<<vn_profile_wait>>
+<<if vn_profile_result() == 0>>
+    <<jump PROLOGUE_S008_P04>>
+<<elseif vn_profile_result() == 1>>
+    <<jump PROLOGUE_S008_P05>>
+<<elseif vn_profile_result() == 2>>
+    <<jump PROLOGUE_S008_P06>>
+<<elseif vn_profile_result() == 3>>
+    <<jump PROLOGUE_S008_P07>>
+<<endif>>
+===
+
+title: PROLOGUE_S008_P04
+---
+// S008-P04
+지훈·독백: 사진 행사. 참여 인원이 많겠군. #line:prologue_s008_009
+<<vn_profile_review_complete 0>>
+<<jump PROLOGUE_S008_PROFILE_WAIT>>
+===
+
+title: PROLOGUE_S008_P05
+---
+// S008-P05
+지훈·독백: 계획이 자주 바뀔 가능성이 있다. #line:prologue_s008_010
+<<vn_profile_review_complete 1>>
+<<jump PROLOGUE_S008_PROFILE_WAIT>>
+===
+
+title: PROLOGUE_S008_P06
+---
+// S008-P06
+<<vn_profile_silent_complete>>
+<<jump PROLOGUE_S008_PROFILE_WAIT>>
+===
+
+title: PROLOGUE_S008_P07
+---
+// S008-P07
+지훈: 하나로 하겠습니다. #line:prologue_s008_011
+은정: 어떤 점이 마음에 드셨습니까? #line:prologue_s008_012
+지훈: 할 일이 명확하네요. #line:prologue_s008_013
+은정: 사람보다요? #line:prologue_s008_014
+지훈: 아직 사람은 모르니까요. #line:prologue_s008_015
+은정: 좋습니다. 그럼 그 사람을 만나서 알아보시면 됩니다. #line:prologue_s008_016
+<<vn_info_show "배역 확정" "하나" "" "">>
+<<jump PROLOGUE_S008_P08>>
+===
+
+title: PROLOGUE_S008_P08
+---
+// S008-P08
+<<vn_info_hide>>
+은정: 이번 회차에는 호감도 항목이 있습니다. #line:prologue_s008_017
+지훈: 얼마나 올리면 됩니까? #line:prologue_s008_018
+은정: 역할 사이의 신뢰와 협력을 추정하는 진행 표시예요. 사랑에 빠졌는지 재는 수치가 아닙니다. #line:prologue_s008_019
+지훈: 협력에 맞는 답을 선택하면 되겠군요. #line:prologue_s008_020
+은정: 답만 잘 고른다고 끝나지는 않아요. 행동까지 봅니다. 상대가 싫다고 한 일을 계속하면 좋은 말을 해도 협력은 어려워지겠죠. #line:prologue_s008_021
+지훈: 과제를 해결하면 그쪽도 올라가지 않습니까? #line:prologue_s008_022
+은정: 상대의 의사를 무시하면서 해결할 수도 있으니까요. #line:prologue_s008_023
+<<jump PROLOGUE_S008_P09>>
+===
+
+title: PROLOGUE_S008_P09
+---
+// S008-P09
+<<vn_info_show "정상 종료 확인" "공동 과제 해결" "동행자와의 신뢰·협력 형성" "치료 대상자의 자발적 관심 반응">>
+은정: 세 항목을 함께 확인합니다. 반응 평가는 참고 자료고, 귀환 후 담당의가 치료 경과를 판단해요. #line:prologue_s008_024
+지훈: 관심 반응은 무엇으로 확인합니까? #line:prologue_s008_025
+은정: 회차 안의 행동과 제한적인 접속 자료요. 더 알아보고 싶은지, 필요 없어진 뒤에도 무언가를 이어가는지 같은 것들입니다. #line:prologue_s008_026
+지훈·독백: 해야 할 일이 세 개로 늘었다. #line:prologue_s008_027
+<<jump PROLOGUE_S008_P10>>
+===
+
+title: PROLOGUE_S008_P10
+---
+// S008-P10
+<<vn_info_hide>>
+은정: 그리고 정상 완료와 중단은 다릅니다. 상태가 나빠지면 조건을 채우지 않아도 언제든 돌아올 수 있어요. #line:prologue_s008_028
+지훈: 동행자에게 귀환 승인을 받을 필요는 없고요? #line:prologue_s008_029
+은정: 없습니다. 상대가 좋아할 때까지 갇혀 있는 치료는 하지 않아요. #line:prologue_s008_030
+로프: 이번에도 귀환 담당은 나야. 두통이 올라오면 숨기지 말고. #line:prologue_s008_031
+지훈: 알았어. #line:prologue_s008_032
+<<jump PROLOGUE_S008_P11>>
+===
+
+title: PROLOGUE_S008_P11
+---
+// S008-P11
+은정: 배역은 마지막 상영을 도와줄 임시 조수입니다. 하나 씨는 선생님이 오는 걸 알고 기다리고 있어요. #line:prologue_s008_033
+지훈: 시간 제한은? #line:prologue_s008_034
+은정: 회차 안에서는 오늘 밤이 상영 시한입니다. 외부 접속은 별도 한도로 관리하고요. 이번에 다 못 끝내도 중단할 수 있습니다. #line:prologue_s008_035
+지훈: 짐을 옮기고, 장비를 준비하고, 상영하면 되겠네요. #line:prologue_s008_036
+은정: 직접 만나서 확인해보세요. #line:prologue_s008_037
+<<jump PROLOGUE_S008_P12>>
+===
+
+title: PROLOGUE_S008_P12
+---
+// S008-P12
+지훈은 화면 속 하나의 프로필을 다시 읽었다. 빈말보다 구체적인 도움을 신뢰한다. #line:prologue_s008_038
+지훈·독백: 일을 잘하면 되는 상대다. 그나마 오래 걸리지 않을 것 같았다. #line:prologue_s008_039
+은정: 연결하겠습니다. #line:prologue_s008_040
+<<vn_fade_to_black 0.8>>
+<<sfx_play sfx_connection_rain_handoff>>
+<<wait 1>>
+<<sfx_play sfx_raindrop_awning>>
+<<wait 1>>
+<<sfx_play sfx_old_bus_brake>>
+<<wait 1>>
+<<vn_hide jihun>>
+<<vn_hide eunjung>>
+<<vn_hide rope>>
+<<vn_clear_bg>>
+<<vn_fade_from_black 0>>
+<<jump PROLOGUE_S008_P13>>
+===
+
+title: PROLOGUE_S008_P13
+---
+// S008-P13
+커다란 빗방울 하나가 차양을 두드렸다. 이어서 낡은 버스의 브레이크 소리가 들렸다. #line:prologue_s008_041
+<<jump PROLOGUE_S008_P14>>
+===
+
+title: PROLOGUE_S008_P14
+---
+// S008-P14
+<<vn_part_end_title>>
+===
