@@ -24,3 +24,5 @@ MonoBehaviour:
   expressions:
   - expressionId: default
     headSprite: {fileID: 0}
+  - expressionId: alert
+    headSprite: {fileID: 0}

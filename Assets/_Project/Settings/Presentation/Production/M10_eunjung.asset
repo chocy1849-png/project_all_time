@@ -18,9 +18,9 @@ MonoBehaviour:
   defaultFacing: 1
   defaultScale: 1
   backHairSprite: {fileID: 0}
-  bodySprite: {fileID: 21300000, guid: f98f3ea64f9170443bd5e4cce1f6dbcf, type: 3}
+  bodySprite: {fileID: 21300000, guid: e59fe93a9264f3f4d87625f5954fb267, type: 3}
   saveIcon: {fileID: 0}
   defaultExpressionId: default
   expressions:
   - expressionId: default
-    headSprite: {fileID: 21300000, guid: f98f3ea64f9170443bd5e4cce1f6dbcf, type: 3}
+    headSprite: {fileID: 0}

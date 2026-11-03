@@ -24,39 +24,39 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5cecf58fd3d09cb46b6fc033e0a4d0d3, type: 2}
   backgrounds:
   - id: bg_family_kitchen_morning
-    sprite: {fileID: 21300000, guid: b310ea0cd501f104794b8307589ddc63, type: 3}
+    sprite: {fileID: 21300000, guid: 0bf961a5772f0a44c900c5e3a783a9c2, type: 3}
   - id: bg_family_table_morning
-    sprite: {fileID: 21300000, guid: 2c729f285f587814e8c82b4a6e556732, type: 3}
+    sprite: {fileID: 21300000, guid: 2746bc0c981f0a046b7d4f653c94c057, type: 3}
   - id: bg_family_entrance
-    sprite: {fileID: 21300000, guid: cfec31157b14784429d5ff62a9547dc7, type: 3}
+    sprite: {fileID: 21300000, guid: ebc783dae1c2eee4080e4bf45572ae77, type: 3}
   - id: bg_family_living_room
-    sprite: {fileID: 21300000, guid: 8b6be375e71489a49a737fe2b42d8455, type: 3}
+    sprite: {fileID: 21300000, guid: e456f57f811bf5d41850324ec1f2f4eb, type: 3}
   - id: bg_family_hall
-    sprite: {fileID: 21300000, guid: 0161534390a64434f880da9eafc5d2ea, type: 3}
+    sprite: {fileID: 21300000, guid: e353182de14f70c4bb204729437e553a, type: 3}
   - id: bg_family_storage
-    sprite: {fileID: 21300000, guid: 01f1c501626fdf64d8a1437be3288c49, type: 3}
+    sprite: {fileID: 21300000, guid: d8be748614388ce4aa700babb6450292, type: 3}
   - id: bg_jinhee_bedroom_day
-    sprite: {fileID: 21300000, guid: 01f1c501626fdf64d8a1437be3288c49, type: 3}
+    sprite: {fileID: 21300000, guid: c3388990ea4395945b5eb354ca0a9cc5, type: 3}
   - id: bg_future_city_street_day
-    sprite: {fileID: 21300000, guid: 01f1c501626fdf64d8a1437be3288c49, type: 3}
+    sprite: {fileID: 21300000, guid: 5fb7ac19cc61de74fa634d53c8e8d500, type: 3}
   - id: bg_family_storage_doorway
-    sprite: {fileID: 21300000, guid: 8b6be375e71489a49a737fe2b42d8455, type: 3}
+    sprite: {fileID: 21300000, guid: e56d7ed65e28c9143b8154b8dca97f72, type: 3}
   - id: bg_family_table_sunset
-    sprite: {fileID: 21300000, guid: 2c729f285f587814e8c82b4a6e556732, type: 3}
+    sprite: {fileID: 21300000, guid: fd01e80d415eeb84db73ed0cd6b9aae4, type: 3}
   - id: bg_dokyung_office
-    sprite: {fileID: 21300000, guid: 01f1c501626fdf64d8a1437be3288c49, type: 3}
+    sprite: {fileID: 21300000, guid: 0f1e360b4ba5fed44a3881b8b276305b, type: 3}
   - id: bg_immersion_preparation
-    sprite: {fileID: 21300000, guid: 01f1c501626fdf64d8a1437be3288c49, type: 3}
+    sprite: {fileID: 21300000, guid: fe6f907c0bc174a4993f84a20da9b42b, type: 3}
   cgs:
   - id: cg_worn_child_shoe
-    sprite: {fileID: 21300000, guid: 01f1c501626fdf64d8a1437be3288c49, type: 3}
+    sprite: {fileID: 21300000, guid: a73e77cdfc0f38143bfca196572b91ba, type: 3}
   - id: cg_beach_photo_child
-    sprite: {fileID: 21300000, guid: 01f1c501626fdf64d8a1437be3288c49, type: 3}
+    sprite: {fileID: 21300000, guid: 46c4307cc1d64304a8e3d515f791ff99, type: 3}
   - id: cg_beach_photo_sea
-    sprite: {fileID: 21300000, guid: 01f1c501626fdf64d8a1437be3288c49, type: 3}
+    sprite: {fileID: 21300000, guid: a5eb0537e9326d8478ab680ab9f23f77, type: 3}
   - id: cg_returned_bag_contents
-    sprite: {fileID: 21300000, guid: 01f1c501626fdf64d8a1437be3288c49, type: 3}
+    sprite: {fileID: 21300000, guid: ab521aab0c518f448b12aea922013d76, type: 3}
   - id: cg_unused_new_shoe
-    sprite: {fileID: 21300000, guid: 01f1c501626fdf64d8a1437be3288c49, type: 3}
+    sprite: {fileID: 21300000, guid: 6e3f08f5b5be7c24c9f28c23942a8a25, type: 3}
   - id: cg_present_table_glimpse
-    sprite: {fileID: 21300000, guid: 01f1c501626fdf64d8a1437be3288c49, type: 3}
+    sprite: {fileID: 21300000, guid: fd614c78672ff1f44bdb2f57ef255fac, type: 3}
