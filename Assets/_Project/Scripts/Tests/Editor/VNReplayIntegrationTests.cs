@@ -236,6 +236,44 @@ namespace ProjectAllTime.Tests.Editor
             Assert.That(character.Slot, Is.EqualTo(VNCharacterSlot.Left));
             Assert.That(character.Facing, Is.EqualTo(VNCharacterFacing.Left));
             Assert.That(character.Scale, Is.EqualTo(1.25f));
+
+            var familyIds = new[] { "minseok", "jinhee", "jihun", "rope_memory", "junho", "narae" };
+            var familySlots = new[]
+            {
+                VNCharacterSlot.FarLeft, VNCharacterSlot.Left, VNCharacterSlot.Center,
+                VNCharacterSlot.Right, VNCharacterSlot.FarRight, VNCharacterSlot.OuterFarRight,
+            };
+            Assert.That(firstSession.PresentationController.HideCharacter("m9_replay_character"), Is.True);
+            for (var index = 0; index < familyIds.Length; index++)
+            {
+                Assert.That(firstSession.PresentationController.ShowCharacter(familyIds[index], "default", familySlots[index]), Is.True, familyIds[index]);
+                Assert.That(firstSession.PresentationController.SetFacing(familyIds[index], index % 2 == 0 ? VNCharacterFacing.Right : VNCharacterFacing.Left), Is.True);
+                Assert.That(firstSession.PresentationController.SetScale(familyIds[index], 0.5f + index * 0.1f), Is.True);
+            }
+
+            Assert.That(firstSession.PresentationController.TryCaptureStableState(out var replaySnapshot, out var replayCaptureDiagnostic), Is.True, replayCaptureDiagnostic);
+            Assert.That(replaySnapshot.characters, Has.Length.EqualTo(6));
+            Assert.That(firstSession.PresentationController.TryPrepareRestore(replaySnapshot, out var replayPlan, out var replayPrepareDiagnostic), Is.True, replayPrepareDiagnostic);
+            Assert.That(firstSession.PresentationController.VisibleCharacters, Has.Count.EqualTo(6), "Replay restore preparation is read-only.");
+            for (var index = 0; index < familyIds.Length; index++)
+                Assert.That(firstSession.PresentationController.HideCharacter(familyIds[index]), Is.True);
+            Assert.That(firstSession.PresentationController.VisibleCharacters, Is.Empty);
+            Assert.That(firstSession.PresentationController.RestorePreparedState(replayPlan, out var replayRestoreDiagnostic), Is.True, replayRestoreDiagnostic);
+            Assert.That(firstSession.PresentationController.VisibleCharacters, Has.Count.EqualTo(6));
+            for (var index = 0; index < familyIds.Length; index++)
+            {
+                var restored = firstSession.PresentationController.VisibleCharacters[familyIds[index]];
+                Assert.That(restored.Slot, Is.EqualTo(familySlots[index]));
+                Assert.That(restored.Facing, Is.EqualTo(index % 2 == 0 ? VNCharacterFacing.Right : VNCharacterFacing.Left));
+                Assert.That(restored.Scale, Is.EqualTo(0.5f + index * 0.1f));
+                Assert.That(firstSession.PresentationController.TryGetVisibleCharacterSlotView(familyIds[index], out _), Is.True);
+            }
+            foreach (var familyId in familyIds)
+                Assert.That(firstSession.PresentationController.HideCharacter(familyId), Is.True);
+            Assert.That(firstSession.PresentationController.ShowCharacter("m9_replay_character", "replay_expression", VNCharacterSlot.Left), Is.True);
+            Assert.That(firstSession.PresentationController.SetFacing("m9_replay_character", VNCharacterFacing.Left), Is.True);
+            Assert.That(firstSession.PresentationController.SetScale("m9_replay_character", 1.25f), Is.True);
+
             yield return AdvanceToLine(firstView, "Replay character presentation is clear.");
             Assert.That(firstSession.PresentationController.VisibleCharacters, Is.Empty);
             firstView.NextButton.onClick.Invoke();
@@ -571,7 +609,11 @@ namespace ProjectAllTime.Tests.Editor
             var cgSprite = CreateSprite("Replay CG", new Color(0.65f, 0.45f, 0.2f, 1f));
             var characterSprite = CreateSprite("Replay Character", new Color(0.3f, 0.6f, 0.7f, 1f));
             var character = CreateCharacterDefinition(characterSprite);
-            SetField(catalog, "characterDefinitions", new List<VNCharacterDefinition> { character });
+            var definitions = new List<VNCharacterDefinition> { character };
+            var familyIds = new[] { "minseok", "jinhee", "jihun", "rope_memory", "junho", "narae" };
+            for (var index = 0; index < familyIds.Length; index++)
+                definitions.Add(CreateCharacterDefinition(familyIds[index], CreateSprite("Replay " + familyIds[index], new Color(0.2f + index * 0.1f, 0.45f, 0.65f, 1f))));
+            SetField(catalog, "characterDefinitions", definitions);
             SetField(catalog, "backgrounds", new List<VNSpriteCatalogEntry> { CreateSpriteEntry("replay_background", backgroundSprite) });
             SetField(catalog, "cgs", new List<VNSpriteCatalogEntry> { CreateSpriteEntry("m3_cg", cgSprite) });
             return catalog;
@@ -579,8 +621,13 @@ namespace ProjectAllTime.Tests.Editor
 
         private VNCharacterDefinition CreateCharacterDefinition(Sprite sprite)
         {
+            return CreateCharacterDefinition("m9_replay_character", sprite);
+        }
+
+        private VNCharacterDefinition CreateCharacterDefinition(string characterId, Sprite sprite)
+        {
             var definition = ScriptableObject.CreateInstance<VNCharacterDefinition>();
-            definition.name = "M9-09 Replay Character";
+            definition.name = "Replay " + characterId;
             ownedAssets.Add(definition);
             var defaultExpression = new VNExpressionDefinition();
             SetField(defaultExpression, "expressionId", "default");
@@ -588,7 +635,7 @@ namespace ProjectAllTime.Tests.Editor
             var replayExpression = new VNExpressionDefinition();
             SetField(replayExpression, "expressionId", "replay_expression");
             SetField(replayExpression, "headSprite", sprite);
-            SetField(definition, "characterId", "m9_replay_character");
+            SetField(definition, "characterId", characterId);
             SetField(definition, "speakerAliases", new List<string>());
             SetField(definition, "defaultFacing", VNCharacterFacing.Right);
             SetField(definition, "defaultScale", 1f);
