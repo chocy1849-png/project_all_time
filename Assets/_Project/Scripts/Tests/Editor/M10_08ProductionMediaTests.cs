@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using NUnit.Framework;
 using ProjectAllTime.VN.Audio;
@@ -164,9 +165,10 @@ namespace ProjectAllTime.Tests.Editor
         }
 
         [Test]
-        public void ExpressionKeys_RemainScopedAndUnfabricated()
+        public void ExpressionKeys_RemainScopedAndOptionalHeadArtKeepsBodyFallback()
         {
             var catalog = AssetDatabase.LoadAssetAtPath<VNPresentationCatalog>(PresentationPath);
+            Assert.That(catalog, Is.Not.Null);
             var presentation = new SerializedObject(catalog);
             var definitions = presentation.FindProperty("characterDefinitions");
             var count = 0;
@@ -174,19 +176,101 @@ namespace ProjectAllTime.Tests.Editor
             for (var i = 0; i < definitions.arraySize; i++)
             {
                 var character = definitions.GetArrayElementAtIndex(i).objectReferenceValue as VNCharacterDefinition;
+                Assert.That(character, Is.Not.Null);
+                Assert.That(character.BodySprite, Is.Not.Null, character.CharacterId);
                 var serializedCharacter = new SerializedObject(character);
                 var expressions = serializedCharacter.FindProperty("expressions");
                 for (var e = 0; e < expressions.arraySize; e++)
                 {
                     var expression = expressions.GetArrayElementAtIndex(e);
                     actualKeys.Add(character.CharacterId + "/" + expression.FindPropertyRelative("expressionId").stringValue);
-                    Assert.That(expression.FindPropertyRelative("headSprite").objectReferenceValue, Is.Null,
-                        $"{character.CharacterId}/{expression.FindPropertyRelative("expressionId").stringValue} must remain an unillustrated fallback.");
+                    var headSprite = expression.FindPropertyRelative("headSprite").objectReferenceValue;
+                    Assert.That(headSprite == null || headSprite is Sprite, Is.True,
+                        $"{character.CharacterId}/{expression.FindPropertyRelative("expressionId").stringValue} may use valid optional Sprite art.");
                     count++;
                 }
             }
             Assert.That(count, Is.EqualTo(19));
+            Assert.That(actualKeys.Distinct(StringComparer.Ordinal).Count(), Is.EqualTo(19), "Character-scoped expression identities must stay unique.");
             CollectionAssert.AreEquivalent(ExpectedExpressionKeys, actualKeys);
+            Assert.That(catalog.TryGetCharacter("expr_jinhee_crying", out _), Is.False, "Expressions remain scoped to their character definitions, not global character IDs.");
+        }
+
+        [Test]
+        public void S008AudioTimeline_UsesFiniteTransitionAndWaitsBeforeBusAndTitle()
+        {
+            var catalog = AssetDatabase.LoadAssetAtPath<VNAudioCatalog>(AudioPath);
+            Assert.That(catalog, Is.Not.Null);
+            Assert.That(catalog.TryGetSfx("sfx_connection_rain_handoff", out var handoff), Is.True);
+            Assert.That(catalog.TryGetSfx("sfx_raindrop_awning", out var drop), Is.True);
+            Assert.That(catalog.TryGetSfx("sfx_old_bus_brake", out var bus), Is.True);
+
+            var handoffDuration = handoff.Clip.samples / (double)handoff.Clip.frequency;
+            var dropDuration = drop.Clip.samples / (double)drop.Clip.frequency;
+            var busDuration = bus.Clip.samples / (double)bus.Clip.frequency;
+            Assert.That(double.IsNaN(handoffDuration) || double.IsInfinity(handoffDuration), Is.False);
+            Assert.That(handoffDuration, Is.EqualTo(4.25d).Within(0.01d),
+                "The imported finite handoff may include codec/import padding around the nominal source duration.");
+            Assert.That(busDuration, Is.EqualTo(13.378d).Within(0.01d),
+                "The imported finite bus cue may include codec/import padding around the nominal source duration.");
+            Assert.That(AssetDatabase.GetAssetPath(drop.Clip), Is.EqualTo("Assets/_Project/Audio/TEMPORARY_M10_Silence.wav"),
+                "The rejected 12.714-second rain splash must not replace the missing discrete drop.");
+
+            const double rainCrossfadeBeginsAt = 1.75d;
+            const double rainCrossfadeCompletesAt = 2.76d;
+            const double dropOnsetAfterHandoff = 3d;
+            Assert.That(rainCrossfadeBeginsAt, Is.LessThan(rainCrossfadeCompletesAt));
+            Assert.That(rainCrossfadeCompletesAt, Is.LessThan(dropOnsetAfterHandoff), "The drop is triggered after the rain has taken over from the 2.76-second equipment source.");
+            Assert.That(dropOnsetAfterHandoff, Is.LessThan(handoffDuration));
+
+            var yarn = File.ReadAllText("Assets/_Project/Yarn/PROLOGUE_S007_S008.yarn").Replace("\r\n", "\n");
+            var p12 = GetNode(yarn, "PROLOGUE_S008_P12");
+            var transitionStart = p12.IndexOf("<<vn_fade_to_black 0.8>>", StringComparison.Ordinal);
+            Assert.That(transitionStart, Is.GreaterThanOrEqualTo(0));
+            var transition = p12.Substring(transitionStart);
+            var handoffCall = transition.IndexOf("<<sfx_play sfx_connection_rain_handoff>>", StringComparison.Ordinal);
+            var dropWait = transition.IndexOf("<<wait 3>>", StringComparison.Ordinal);
+            var dropCall = transition.IndexOf("<<sfx_play sfx_raindrop_awning>>", StringComparison.Ordinal);
+            var dropCompletionWait = transition.IndexOf("<<sfx_wait>>", StringComparison.Ordinal);
+            var busCall = transition.IndexOf("<<sfx_play sfx_old_bus_brake>>", StringComparison.Ordinal);
+            Assert.That(handoffCall, Is.GreaterThanOrEqualTo(0));
+            Assert.That(handoffCall, Is.LessThan(dropWait));
+            Assert.That(dropWait, Is.LessThan(dropCall));
+            Assert.That(dropCall, Is.LessThan(dropCompletionWait));
+            Assert.That(dropCompletionWait, Is.LessThan(busCall));
+            Assert.That(Regex.Matches(p12, @"<<sfx_play sfx_connection_rain_handoff>>").Count, Is.EqualTo(1));
+            Assert.That(Regex.Matches(p12, @"<<sfx_play sfx_raindrop_awning>>").Count, Is.EqualTo(1));
+            Assert.That(Regex.Matches(p12, @"<<sfx_play sfx_old_bus_brake>>").Count, Is.EqualTo(1));
+
+            var computedBusOnset = Math.Max(handoffDuration, dropOnsetAfterHandoff + dropDuration);
+            Assert.That(computedBusOnset, Is.GreaterThan(dropOnsetAfterHandoff));
+            Assert.That(computedBusOnset, Is.GreaterThanOrEqualTo(handoffDuration), "The finite handoff completes before the bus cue begins; drop duration is read from the current catalog clip.");
+
+            var p13 = GetNode(yarn, "PROLOGUE_S008_P13");
+            var narrationLine = p13.IndexOf("#line:prologue_s008_041", StringComparison.Ordinal);
+            var endingWait = p13.IndexOf("<<sfx_wait>>", StringComparison.Ordinal);
+            var p13Jump = p13.IndexOf("<<jump PROLOGUE_S008_P14>>", StringComparison.Ordinal);
+            var p14 = GetNode(yarn, "PROLOGUE_S008_P14");
+            Assert.That(narrationLine, Is.GreaterThanOrEqualTo(0));
+            Assert.That(narrationLine, Is.LessThan(endingWait), "The authored narration may accompany the bus cue.");
+            Assert.That(endingWait, Is.LessThan(p13Jump));
+            Assert.That(p13Jump, Is.GreaterThanOrEqualTo(0));
+            Assert.That(p14, Does.Contain("<<vn_part_end_title>>"), "The title follows the P13 completion wait in the next node.");
+
+            var commandNames = (string[])typeof(VNYarnAudioCommands).GetField("CommandNames", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
+            Assert.That(commandNames, Does.Contain("sfx_wait"));
+            Assert.That(commandNames.Any(name => name.StartsWith("ambient", StringComparison.OrdinalIgnoreCase)), Is.False,
+                "The wait uses the existing one-shot authority; no Ambient owner is introduced.");
+        }
+
+        private static string GetNode(string yarn, string nodeTitle)
+        {
+            var marker = "title: " + nodeTitle;
+            var start = yarn.IndexOf(marker, StringComparison.Ordinal);
+            Assert.That(start, Is.GreaterThanOrEqualTo(0), nodeTitle);
+            var end = yarn.IndexOf("\n===\n", start, StringComparison.Ordinal);
+            Assert.That(end, Is.GreaterThan(start), nodeTitle);
+            return yarn.Substring(start, end - start);
         }
 
         [Test]

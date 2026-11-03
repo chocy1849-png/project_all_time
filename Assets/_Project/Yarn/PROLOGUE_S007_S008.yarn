@@ -272,9 +272,11 @@ title: PROLOGUE_S008_P12
 은정: 연결하겠습니다. #line:prologue_s008_040
 <<vn_fade_to_black 0.8>>
 <<sfx_play sfx_connection_rain_handoff>>
-<<wait 1>>
+// The finite handoff starts rain at 1.75s and has completed its equipment-to-rain crossfade by 2.76s.
+// keep one short rain-only beat before the discrete awning-drop cue.
+<<wait 3>>
 <<sfx_play sfx_raindrop_awning>>
-<<wait 1>>
+<<sfx_wait>>
 <<sfx_play sfx_old_bus_brake>>
 <<wait 1>>
 <<vn_hide jihun>>
@@ -289,6 +291,7 @@ title: PROLOGUE_S008_P13
 ---
 // S008-P13
 커다란 빗방울 하나가 차양을 두드렸다. 이어서 낡은 버스의 브레이크 소리가 들렸다. #line:prologue_s008_041
+<<sfx_wait>>
 <<jump PROLOGUE_S008_P14>>
 ===
 

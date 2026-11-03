@@ -37,9 +37,13 @@ namespace ProjectAllTime.VN.Audio
         private float pausedBgmVolume = 1f;
         private string currentBgmId = string.Empty;
         private int activeBgmTransitionOperations;
+        private double pendingSfxEndDspTime;
 
         public string CurrentBgmId => currentBgmId ?? string.Empty;
         public bool IsBgmTransitionActive => activeBgmTransitionOperations > 0;
+        public bool IsSfxPlaybackPending =>
+            AudioSettings.dspTime < pendingSfxEndDspTime ||
+            (sfxSource != null && sfxSource.isPlaying);
 
         public bool PlayBgm(string bgmId)
         {
@@ -78,7 +82,23 @@ namespace ProjectAllTime.VN.Audio
             }
 
             sfxSource.PlayOneShot(entry.Clip, entry.DefaultVolume);
+            var pitch = Math.Abs((double)sfxSource.pitch);
+            if (entry.Clip.samples > 0 && entry.Clip.frequency > 0 && pitch > 0d)
+            {
+                var clipDuration = entry.Clip.samples / (double)entry.Clip.frequency;
+                pendingSfxEndDspTime = Math.Max(pendingSfxEndDspTime, AudioSettings.dspTime + clipDuration / pitch);
+            }
             return true;
+        }
+
+        /// <summary>
+        /// Waits for the finite one-shot clips issued through this controller.
+        /// Uses clip sample length and AudioSource pitch so Yarn timing follows
+        /// the actual catalog resource instead of a hard-coded duration.
+        /// </summary>
+        public IEnumerator WaitForSfxPlayback()
+        {
+            while (IsSfxPlaybackPending) yield return null;
         }
 
         /// <summary>Validates a logical BGM ID without exposing source roles.</summary>
@@ -219,6 +239,7 @@ namespace ProjectAllTime.VN.Audio
             StopAndReset(bgmSourceA);
             StopAndReset(bgmSourceB);
             if (sfxSource != null) sfxSource.Stop();
+            pendingSfxEndDspTime = AudioSettings.dspTime;
             sourceAIsActive = true;
             activeBgmIsPaused = false;
             pausedBgmVolume = 1f;

@@ -134,6 +134,112 @@ namespace ProjectAllTime.Tests.Editor
         }
 
         [Test]
+        public void ProductionMorningSixCharacterSnapshot_RoundTripsAndLegacyFiveSlotStateRemainsCompatible()
+        {
+            const string catalogPath = "Assets/_Project/Settings/Presentation/Production/M10_ProductionPresentationCatalog.asset";
+            var catalog = AssetDatabase.LoadAssetAtPath<VNPresentationCatalog>(catalogPath);
+            Assert.That(catalog, Is.Not.Null);
+            var presentation = CreatePresentationHarness(catalog);
+            var characterIds = new[] { "minseok", "jinhee", "jihun", "rope_memory", "junho", "narae" };
+            var slots = new[]
+            {
+                VNCharacterSlot.FarLeft, VNCharacterSlot.Left, VNCharacterSlot.Center,
+                VNCharacterSlot.Right, VNCharacterSlot.FarRight, VNCharacterSlot.OuterFarRight,
+            };
+            var scales = new[] { 0.60f, 0.60f, 0.60f, 0.28f, 0.60f, 0.60f };
+            var definitions = new VNCharacterDefinition[characterIds.Length];
+            var uniqueBodySprites = new HashSet<Sprite>();
+
+            Assert.That(presentation.Controller.SetBackground("bg_family_table_morning"), Is.True);
+            for (var index = 0; index < characterIds.Length; index++)
+            {
+                Assert.That(catalog.TryGetCharacter(characterIds[index], out definitions[index]), Is.True, characterIds[index]);
+                Assert.That(presentation.Controller.ShowCharacter(characterIds[index], "default", slots[index]), Is.True, characterIds[index]);
+                Assert.That(presentation.Controller.SetFacing(characterIds[index], definitions[index].DefaultFacing), Is.True, characterIds[index]);
+                Assert.That(presentation.Controller.SetScale(characterIds[index], scales[index]), Is.True, characterIds[index]);
+                Assert.That(definitions[index].BodySprite, Is.Not.Null, characterIds[index]);
+                Assert.That(uniqueBodySprites.Add(definitions[index].BodySprite), Is.True, $"{characterIds[index]} must retain its own default body sprite.");
+            }
+
+            Assert.That(presentation.Controller.VisibleCharacters, Has.Count.EqualTo(6));
+            Assert.That(presentation.Controller.TryCaptureStableState(out var captured, out var captureDiagnostic), Is.True, captureDiagnostic);
+            Assert.That(captured.characters, Has.Length.EqualTo(6));
+            var capturedIds = new HashSet<string>();
+            var capturedSlots = new HashSet<string>();
+            for (var index = 0; index < captured.characters.Length; index++)
+            {
+                var state = captured.characters[index];
+                Assert.That(capturedIds.Add(state.characterId), Is.True, state.characterId);
+                Assert.That(capturedSlots.Add(state.slot), Is.True, state.slot);
+                Assert.That(state.characterId, Is.EqualTo(characterIds[index]));
+                Assert.That(state.slot, Is.EqualTo(VNPresentationController.ToSerializedSlot(slots[index])));
+                Assert.That(state.expressionId, Is.EqualTo(definitions[index].DefaultExpressionId));
+                Assert.That(state.facing, Is.EqualTo(VNPresentationController.ToSerializedFacing(definitions[index].DefaultFacing)));
+                Assert.That(state.scale, Is.EqualTo(scales[index]));
+            }
+
+            Assert.That(VNPresentationController.TryParseSlot("outer_far_right", out var sixthSlot), Is.True);
+            Assert.That(sixthSlot, Is.EqualTo(VNCharacterSlot.OuterFarRight));
+            Assert.That(VNPresentationController.ToSerializedSlot(sixthSlot), Is.EqualTo("outer_far_right"));
+
+            Assert.That(presentation.Controller.TryPrepareRestore(captured, out var fullRestorePlan, out var preparationDiagnostic), Is.True, preparationDiagnostic);
+            Assert.That(presentation.Controller.VisibleCharacters, Has.Count.EqualTo(6), "Preparing a snapshot must not mutate the live presentation.");
+            Assert.That(presentation.Controller.CurrentBackgroundId, Is.EqualTo("bg_family_table_morning"));
+
+            var invalidSlotState = ClonePresentationState(captured);
+            invalidSlotState.characters[5].slot = "unrecognized_slot";
+            Assert.That(presentation.Controller.TryPrepareRestore(invalidSlotState, out _, out _), Is.False);
+
+            var duplicateSlotState = ClonePresentationState(captured);
+            duplicateSlotState.characters[5].slot = "far_right";
+            Assert.That(presentation.Controller.TryPrepareRestore(duplicateSlotState, out _, out _), Is.False);
+            Assert.That(presentation.Controller.VisibleCharacters, Has.Count.EqualTo(6), "Invalid preparation must leave all six visible characters untouched.");
+
+            var clearState = CreatePresentationState(string.Empty, string.Empty);
+            Assert.That(presentation.Controller.TryPrepareRestore(clearState, out var clearPlan, out _), Is.True);
+            Assert.That(presentation.Controller.RestorePreparedState(clearPlan, out var clearDiagnostic), Is.True, clearDiagnostic);
+            Assert.That(presentation.Controller.VisibleCharacters, Is.Empty);
+            Assert.That(presentation.Controller.RestorePreparedState(fullRestorePlan, out var restoreDiagnostic), Is.True, restoreDiagnostic);
+            Assert.That(presentation.Controller.VisibleCharacters, Has.Count.EqualTo(6));
+
+            for (var index = 0; index < characterIds.Length; index++)
+            {
+                var state = presentation.Controller.VisibleCharacters[characterIds[index]];
+                Assert.That(state.Slot, Is.EqualTo(slots[index]));
+                Assert.That(state.Facing, Is.EqualTo(definitions[index].DefaultFacing));
+                Assert.That(state.Scale, Is.EqualTo(scales[index]));
+                Assert.That(presentation.Views[slots[index]].gameObject.activeSelf, Is.True, characterIds[index]);
+                var bodyImage = (Image)typeof(VNCharacterSlotView).GetField("bodyImage", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(presentation.Views[slots[index]]);
+                Assert.That(bodyImage.enabled, Is.True, characterIds[index]);
+                Assert.That(bodyImage.sprite, Is.SameAs(definitions[index].BodySprite), characterIds[index]);
+            }
+
+            Assert.That(catalog.TryGetCharacter("jinhee", out var jinhee), Is.True);
+            Assert.That(jinhee.TryGetExpression("crying", out var cryingExpression), Is.True);
+            Assert.That(presentation.Controller.SetExpression("jinhee", "crying"), Is.True);
+            var jinheeBody = (Image)typeof(VNCharacterSlotView).GetField("bodyImage", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(presentation.Views[VNCharacterSlot.Left]);
+            var jinheeHead = (Image)typeof(VNCharacterSlotView).GetField("headImage", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(presentation.Views[VNCharacterSlot.Left]);
+            Assert.That(jinheeBody.enabled, Is.True);
+            Assert.That(jinheeBody.sprite, Is.SameAs(jinhee.BodySprite));
+            if (cryingExpression.HeadSprite != null)
+                Assert.That(ReferenceEquals(jinheeHead.sprite, cryingExpression.HeadSprite), Is.True);
+            else
+                Assert.That(jinheeHead.sprite == null, Is.True, "Unity object null semantics should keep the optional head image hidden when no expression art is assigned.");
+            Assert.That(jinheeHead.enabled, Is.EqualTo(cryingExpression.HeadSprite != null), "Optional expression art must be displayed when supplied and safely hidden while the default body remains visible when absent.");
+
+            var legacyFiveCharacters = new CharacterSaveState[5];
+            Array.Copy(captured.characters, legacyFiveCharacters, legacyFiveCharacters.Length);
+            var legacyFiveState = CreatePresentationState(captured.backgroundId, captured.cgId, legacyFiveCharacters);
+            Assert.That(presentation.Controller.TryPrepareRestore(legacyFiveState, out var legacyFivePlan, out var legacyDiagnostic), Is.True, legacyDiagnostic);
+            Assert.That(presentation.Controller.RestorePreparedState(clearPlan, out _), Is.True);
+            Assert.That(presentation.Controller.RestorePreparedState(legacyFivePlan, out var legacyRestoreDiagnostic), Is.True, legacyRestoreDiagnostic);
+            Assert.That(presentation.Controller.VisibleCharacters, Has.Count.EqualTo(5));
+            Assert.That(presentation.Controller.VisibleCharacters.ContainsKey("narae"), Is.False);
+            for (var index = 0; index < legacyFiveCharacters.Length; index++)
+                Assert.That(presentation.Controller.VisibleCharacters[legacyFiveCharacters[index].characterId].Slot, Is.EqualTo(slots[index]));
+        }
+
+        [Test]
         public void AudioCapture_UsesLogicalIdAndSamplePositionAndSilenceHasNoSourceIdentity()
         {
             var audio = CreateAudioHarness();
@@ -169,9 +275,18 @@ namespace ProjectAllTime.Tests.Editor
             var audio = CreateAudioHarness();
             audio.SourceB.clip = audio.ClipB;
             audio.SourceB.volume = 0.25f;
-            audio.SfxSource.clip = audio.ClipA;
+            audio.SfxSource.mute = true;
+            Assert.That(audio.Controller.PlaySfx("sfx_test"), Is.True);
+            Assert.That(audio.SfxSource.isPlaying, Is.True, "PlayOneShot should be visible through the controller's SFX AudioSource.");
+            SetPrivate(audio.Controller, "pendingSfxEndDspTime", AudioSettings.dspTime - 1d);
+            Assert.That(audio.Controller.IsSfxPlaybackPending, Is.True);
+            Assert.That(audio.SfxSource.isPlaying, Is.True, "The live AudioSource state keeps the wait pending even after the estimated clip deadline.");
+            var sfxWait = audio.Controller.WaitForSfxPlayback();
+            Assert.That(sfxWait.MoveNext(), Is.True, "The wait must yield while the one-shot is pending.");
             Assert.That(audio.Controller.TryPrepareRestore(new AudioState { bgmId = "bgm_a", playbackSeconds = 0.5f }, out var plan, out var diagnostic), Is.True, diagnostic);
             audio.Controller.NormalizeTransientForLoad();
+            Assert.That(audio.Controller.IsSfxPlaybackPending, Is.False);
+            Assert.That(sfxWait.MoveNext(), Is.False, "Load normalization must release a pending SFX wait after stopping the transient source.");
             Assert.That(audio.Controller.RestorePreparedState(plan, out var restoreDiagnostic), Is.True, restoreDiagnostic);
             Assert.That(audio.Controller.CurrentBgmId, Is.EqualTo("bgm_a"));
             Assert.That(audio.SourceA.clip, Is.EqualTo(audio.ClipA));
@@ -300,17 +415,21 @@ namespace ProjectAllTime.Tests.Editor
             Assert.That(presentation.Controller.VisibleCharacters["char_b"].SpeakerActive, Is.False);
         }
 
-        private PresentationHarness CreatePresentationHarness()
+        private PresentationHarness CreatePresentationHarness(VNPresentationCatalog existingCatalog = null)
         {
             var spriteA = CreateSprite("A");
             var spriteB = CreateSprite("B");
-            var catalog = ScriptableObject.CreateInstance<VNPresentationCatalog>();
-            ownedObjects.Add(catalog);
-            var characterA = CreateCharacterDefinition("char_a", spriteA);
-            var characterB = CreateCharacterDefinition("char_b", spriteB);
-            SetPrivate(catalog, "characterDefinitions", new List<VNCharacterDefinition> { characterA, characterB });
-            SetPrivate(catalog, "backgrounds", new List<VNSpriteCatalogEntry> { CreateSpriteEntry("bg_a", spriteA), CreateSpriteEntry("bg_b", spriteB) });
-            SetPrivate(catalog, "cgs", new List<VNSpriteCatalogEntry> { CreateSpriteEntry("cg_a", spriteA), CreateSpriteEntry("cg_b", spriteB) });
+            var catalog = existingCatalog;
+            if (catalog == null)
+            {
+                catalog = ScriptableObject.CreateInstance<VNPresentationCatalog>();
+                ownedObjects.Add(catalog);
+                var characterA = CreateCharacterDefinition("char_a", spriteA);
+                var characterB = CreateCharacterDefinition("char_b", spriteB);
+                SetPrivate(catalog, "characterDefinitions", new List<VNCharacterDefinition> { characterA, characterB });
+                SetPrivate(catalog, "backgrounds", new List<VNSpriteCatalogEntry> { CreateSpriteEntry("bg_a", spriteA), CreateSpriteEntry("bg_b", spriteB) });
+                SetPrivate(catalog, "cgs", new List<VNSpriteCatalogEntry> { CreateSpriteEntry("cg_a", spriteA), CreateSpriteEntry("cg_b", spriteB) });
+            }
 
             var background = CreateImage("Background", out var backgroundFade);
             var cg = CreateImage("CG", out var cgFade);
@@ -356,7 +475,7 @@ namespace ProjectAllTime.Tests.Editor
             var catalog = ScriptableObject.CreateInstance<VNAudioCatalog>();
             ownedObjects.Add(catalog);
             SetPrivate(catalog, "bgm", new List<VNBgmCatalogEntry> { CreateBgmEntry("bgm_a", clipA, 0.7f, true), CreateBgmEntry("bgm_b", clipB, 0.4f, false) });
-            SetPrivate(catalog, "sfx", new List<VNSfxCatalogEntry>());
+            SetPrivate(catalog, "sfx", new List<VNSfxCatalogEntry> { CreateSfxEntry("sfx_test", clipA) });
 
             var root = new GameObject("Audio Controller");
             ownedObjects.Add(root);
@@ -449,6 +568,15 @@ namespace ProjectAllTime.Tests.Editor
             return entry;
         }
 
+        private static VNSfxCatalogEntry CreateSfxEntry(string id, AudioClip clip)
+        {
+            var entry = new VNSfxCatalogEntry();
+            SetPrivate(entry, "id", id);
+            SetPrivate(entry, "clip", clip);
+            SetPrivate(entry, "defaultVolume", 1f);
+            return entry;
+        }
+
         private Sprite CreateSprite(string name)
         {
             var texture = new Texture2D(2, 2) { name = name + " Texture" };
@@ -498,6 +626,17 @@ namespace ProjectAllTime.Tests.Editor
         private static PresentationState CreatePresentationState(string backgroundId, string cgId, params CharacterSaveState[] characters)
         {
             return new PresentationState { backgroundId = backgroundId, cgId = cgId, characters = characters };
+        }
+
+        private static PresentationState ClonePresentationState(PresentationState state)
+        {
+            var characters = new CharacterSaveState[state.characters.Length];
+            for (var index = 0; index < state.characters.Length; index++)
+            {
+                var character = state.characters[index];
+                characters[index] = Character(character.characterId, character.expressionId, character.slot, character.facing, character.scale);
+            }
+            return CreatePresentationState(state.backgroundId, state.cgId, characters);
         }
 
         private static CharacterSaveState Character(string id, string expression, string slot, string facing, float scale)

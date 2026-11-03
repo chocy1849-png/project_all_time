@@ -6,7 +6,7 @@ namespace ProjectAllTime.VN.Audio
 {
     public sealed class VNYarnAudioCommands : MonoBehaviour
     {
-        private static readonly string[] CommandNames = { "bgm_play", "bgm_crossfade", "bgm_pause", "bgm_resume", "bgm_stop", "sfx_play" };
+        private static readonly string[] CommandNames = { "bgm_play", "bgm_crossfade", "bgm_pause", "bgm_resume", "bgm_stop", "sfx_play", "sfx_wait" };
 
         [SerializeField] private DialogueRunner dialogueRunner;
         [SerializeField] private VNAudioController audioController;
@@ -34,6 +34,7 @@ namespace ProjectAllTime.VN.Audio
             dialogueRunner.AddCommandHandler<float>("bgm_resume", ResumeBgm);
             dialogueRunner.AddCommandHandler<float>("bgm_stop", StopBgm);
             dialogueRunner.AddCommandHandler<string>("sfx_play", PlaySfx);
+            dialogueRunner.AddCommandHandler("sfx_wait", WaitForSfxPlayback);
             handlersRegistered = true;
         }
 
@@ -48,6 +49,7 @@ namespace ProjectAllTime.VN.Audio
         private IEnumerator PauseBgm(float duration) => audioController.PauseBgm(duration);
         private IEnumerator ResumeBgm(float duration) => audioController.ResumeBgm(duration);
         private IEnumerator StopBgm(float duration) => audioController.FadeStopBgm(duration);
+        private IEnumerator WaitForSfxPlayback() => audioController.WaitForSfxPlayback();
         private void PlayBgm(string bgmId) => audioController.PlayBgm(bgmId);
         private void PlaySfx(string sfxId) => audioController.PlaySfx(sfxId);
     }
