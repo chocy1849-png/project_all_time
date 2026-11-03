@@ -8,8 +8,8 @@ Current Asset Inventory: READY
 Temporary Mapping: READY
 Production Stable IDs: FROZEN
 Technical Presentation Spikes: READY — M10-05 provisional steady-volume fallback in use; final adaptation acceptance pending
-Yarn Implementation: S001–S003 TECHNICAL DRAFT; S004–S008 pending
-Production Implementation Ready: S001–S003 TECHNICAL DRAFT; production media and final narrative/audio acceptance pending.
+Yarn Implementation: S001–S006 TECHNICAL DRAFT; S007–S008 pending
+Production Implementation Ready: S001–S006 TECHNICAL DRAFT; production media and final narrative/audio acceptance pending.
 
 ## Story authority and source fidelity
 
@@ -138,3 +138,11 @@ All three scenes are TECHNICALLY_PLAYABLE / PRODUCTION_MEDIA_PENDING using expli
 Validation: fresh 462/0/0 baseline, focused production 8/0/0, final full EditMode 470/0/0 (0 inconclusive). Yarn has 273 explicit IDs (111 new), 0 implicit/duplicate/compiler errors; source fidelity and all 33 beat nodes pass. Actual VN_Main Play flow yields 111 exact ordered Backlog entries/authorized reads, with controlled terminal handoff, Hide/modal arbitration and real load-event facts reconstruction. Final Console/normal Play exit and commit state are recorded in the review handoff. No production checkpoint/file round trip is claimed.
 
 The pre-existing local temporary-mapping edit is preserved and excluded. Canon, Presentation Map and production IDs are unchanged; Unity-authorized operations create/assign serialized assets and wiring. M10-06 has not begun.
+
+## M10-06 S004–S006 technical handoff
+
+The [M10-06 report](Production/M10_06_S004_S006_PLAYABLE_REPORT.md) covers all 45 new mapped beats and 172 canonical paragraphs, linked after the 111 S001–S003 paragraphs. Jinhee's door uses a session-only manual hold on the preceding authored line; S005 explicitly discloses and terminates bounded projection assistance before her voluntary return. The late farewell BGM uses the existing audio owner. S006 uses a localized white-door outline and no screen movement, then hides ordinary `rope_memory` before revealing actual `rope` after L924. Medical facts stay passive and no invented values or dates are added.
+
+The existing production catalogs and five consumer references remain the single lookup authority. Missing final S004–S006 media uses documented neutral diagrams/frames, a temporary cyber-dog joint marker and silent audio; no acoustic, visual or emotional acceptance is claimed. S007–S008 remains pending. Full production Save/Load round trip is DEFERRED_M10_09; no checkpoint/schema is added.
+
+Validation: full EditMode **476 passed, 0 failed, 0 skipped, 0 inconclusive**; focused prologue **14/14** and the convenience, localized-effect, audio, snapshot, settings, MetaProgress, Records and Replay groups **59/59** passed. Yarn compilation and the 445 unique explicit ID inventory passed. A continuous Unity Play run presented all 283 S001–S006 lines and checked canonical text, the manual hold, projection overlay, farewell music, localized door and Rope identities; Play exited normally with 0 Console errors (2 warnings). An actual load-start event exercised transient cleanup; a production save-file round trip remains deferred to M10-09. Final art, sound, font provenance and visual/audio acceptance remain pending.

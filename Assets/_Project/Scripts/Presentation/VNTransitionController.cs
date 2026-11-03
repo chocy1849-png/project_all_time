@@ -21,6 +21,8 @@ namespace ProjectAllTime.VN.Presentation
         public bool IsTransitionActive => activeTransitionOperations > 0 ||
             localizedEffectCanvasGroup != null && localizedEffectCanvasGroup.alpha > 0f;
 
+        public bool IsLocalizedEffectVisible => localizedEffectCanvasGroup != null && localizedEffectCanvasGroup.alpha > 0f;
+
         /// <summary>Localized presentation effect; the visible interval is transient and not saveable.</summary>
         public IEnumerator FadeLocalizedEffect(bool visible, float duration) => TrackTransition(LocalEffectRoutine(visible, duration));
 

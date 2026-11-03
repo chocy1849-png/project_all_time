@@ -42,7 +42,7 @@ namespace ProjectAllTime.Tests.Editor
         }
 
         [Test]
-        public void Nodes_CoverAll33Beats_ResolveEveryJump_AndStopBeforeS004()
+        public void Nodes_CoverAll33Beats_AndLinkToS004()
         {
             var yarn = File.ReadAllText(YarnPath);
             var nodes = Regex.Matches(yarn, @"(?m)^title: (\w+)").Cast<Match>().Select(m => m.Groups[1].Value).ToArray();
@@ -50,8 +50,9 @@ namespace ProjectAllTime.Tests.Editor
             for (var scene = 1; scene <= 3; scene++)
                 for (var beat = 1; beat <= (scene == 1 ? 13 : 10); beat++)
                     Assert.That(nodes.Count(n => n == $"PROLOGUE_S00{scene}_P{beat:00}"), Is.EqualTo(1));
-            foreach (Match jump in Regex.Matches(yarn, @"<<jump (\w+)>>")) Assert.That(nodes, Does.Contain(jump.Groups[1].Value));
-            Assert.That(yarn, Does.Not.Contain("S004" + "_"));
+            foreach (Match jump in Regex.Matches(yarn, @"<<jump (\w+)>>"))
+                Assert.That(nodes.Contains(jump.Groups[1].Value) || jump.Groups[1].Value == "PROLOGUE_S004_P01", Is.True);
+            Assert.That(yarn, Does.Contain("<<jump PROLOGUE_S004_P01>>"));
             Assert.That(Regex.IsMatch(yarn, @"(?m)^\s*->|<<vn_complete_ending|<<vn_unlock_|<<vn_checkpoint"), Is.False);
         }
 
@@ -86,7 +87,8 @@ namespace ProjectAllTime.Tests.Editor
             foreach (var id in new[] { "jihun", "jinhee", "minseok", "narae", "junho", "rope_memory" }) Assert.That(catalog.TryGetCharacter(id, out _), Is.True, id);
             foreach (var alias in new[] { "지훈", "지훈·독백", "지훈·내부" }) { Assert.That(catalog.TryResolveSpeakerAlias(alias, out var id), Is.True); Assert.That(id, Is.EqualTo("jihun")); }
             Assert.That(catalog.TryResolveSpeakerAlias("로프·내부", out var dog), Is.True); Assert.That(dog, Is.EqualTo("rope_memory"));
-            Assert.That(catalog.TryResolveSpeakerAlias("로프", out _), Is.False);
+            Assert.That(catalog.TryResolveSpeakerAlias("로프", out var actualDog), Is.True);
+            Assert.That(actualDog, Is.EqualTo("rope"));
             Assert.That(catalog.TryGetBackground("m3_bg_a", out _), Is.False, "Legacy technical lookups fail closed.");
             Assert.That(audio.TryGetBgm("m4_bgm_a", out _), Is.False);
         }

@@ -1,7 +1,8 @@
-// S004–S006 canonical production draft. Presentation commands are being integrated.
+// S004–S006 canonical production draft. Neutral presentation media is temporary.
 title: PROLOGUE_S004_P01
 ---
 // S004-P01; canonical source L422-L435
+<<vn_cg cg_worn_child_shoe>>
 지훈: 뒤꿈치가 닿는 자리가 많이 닳았습니다. #line:prologue_s004_001
 진희: 맨날 이렇게 신어요. 벗을 때도 손을 안 대고. #line:prologue_s004_002
 지훈: 새 신발도 그렇게 신을 것 같습니까? #line:prologue_s004_003
@@ -12,6 +13,7 @@ title: PROLOGUE_S004_P01
 title: PROLOGUE_S004_P02
 ---
 // S004-P02; canonical source L436-L458
+<<vn_clear_cg>>
 진희: 제가 한 번 만져봤어요. 상자 뚜껑 열고. #line:prologue_s004_005
 지훈: 언제였습니까? #line:prologue_s004_006
 진희: 금요일 저녁. 받아두고, 안 맞으면 바꿔야 하니까. #line:prologue_s004_007
@@ -38,6 +40,7 @@ title: PROLOGUE_S004_P03
 title: PROLOGUE_S004_P04
 ---
 // S004-P04; canonical source L481-L486
+<<vn_info_show "상태" "—" "" "">>
 지훈·독백: 가족의 죽음을 들이밀면 방어가 더 강해진다. 하지만 신발을 사둔 건, 준호가 그걸 신고 걸을 날을 원했기 때문이다. #line:prologue_s004_019
 <<jump PROLOGUE_S004_P05>>
 ===
@@ -45,6 +48,7 @@ title: PROLOGUE_S004_P04
 title: PROLOGUE_S004_P05
 ---
 // S004-P05; canonical source L487-L501
+<<vn_info_hide>>
 진희: 상자는 저 방에 있어요. #line:prologue_s004_020
 민석: 내가 나중에 꺼내줄게. #line:prologue_s004_021
 진희: 왜 나중에? #line:prologue_s004_022
@@ -68,9 +72,11 @@ title: PROLOGUE_S004_P06
 title: PROLOGUE_S004_P07
 ---
 // S004-P07; canonical source L523-L536
+<<vn_bg_crossfade bg_family_hall 0>>
 진희: 열면, 왜 여기 있는지 생각날 것 같아요. #line:prologue_s004_031
 지훈: 결정은 진희 씨가 합니다. #line:prologue_s004_032
 진희: 그냥 신발만 꺼내올 수는 없어요? #line:prologue_s004_033
+<<vn_manual_hold>>
 지훈: 제가 대신 가져다드려도, 진희 씨는 다시 저 문을 피하게 됩니다. #line:prologue_s004_034
 <<jump PROLOGUE_S004_P08>>
 ===
@@ -91,6 +97,7 @@ title: PROLOGUE_S004_P09
 title: PROLOGUE_S004_P10
 ---
 // S004-P10; canonical source L544-L548
+<<vn_bg_crossfade bg_family_storage 0>>
 진희: 이거…… 세탁기에 넣은 게 아니었네. #line:prologue_s004_036
 <<jump PROLOGUE_S004_P11>>
 ===
@@ -98,6 +105,7 @@ title: PROLOGUE_S004_P10
 title: PROLOGUE_S004_P11
 ---
 // S004-P11; canonical source L549-L555
+<<vn_cg cg_returned_bag_contents>>
 그녀는 가방에서 모래 묻은 수건을 꺼냈다. 접힌 부분 안에 아이가 먹다 남긴 과자 봉지가 있었다. #line:prologue_s004_037
 진희: 버리려고 했는데. #line:prologue_s004_038
 <<jump PROLOGUE_S004_P12>>
@@ -106,6 +114,8 @@ title: PROLOGUE_S004_P11
 title: PROLOGUE_S004_P12
 ---
 // S004-P12; canonical source L556-L563
+<<vn_clear_cg>>
+<<vn_info_show "" "민석 / 나래 / 준호" "같은 사고 날짜" "">>
 신발 상자 아래에서 봉투가 미끄러졌다. 세 사람의 이름. 같은 사고 날짜. 진희가 전에 읽고 접어두었던 서류였다. #line:prologue_s004_039
 진희: 제가 이걸…… 여기 넣었어요. #line:prologue_s004_040
 <<jump PROLOGUE_S004_P13>>
@@ -114,6 +124,8 @@ title: PROLOGUE_S004_P12
 title: PROLOGUE_S004_P13
 ---
 // S004-P13; canonical source L564-L589
+<<vn_info_hide>>
+<<vn_expression jinhee crying>>
 진희: 다들 못 돌아왔어요. #line:prologue_s004_041
 지훈: 네. #line:prologue_s004_042
 진희: 나는 집에 있었는데. #line:prologue_s004_043
@@ -128,6 +140,7 @@ title: PROLOGUE_S004_P13
 title: PROLOGUE_S004_P14
 ---
 // S004-P14; canonical source L590-L605
+<<vn_cg cg_unused_new_shoe>>
 진희는 새 신발의 포장을 벗겼다. 발이 들어간 적 없는 바닥이 손바닥 위에 놓였다. #line:prologue_s004_049
 진희: 사진을 없애면 좀 괜찮아질 줄 알았어요. #line:prologue_s004_050
 진희: 기억도 정리했어요. 사고부터. 그다음에는 그날 얘기하던 것들까지. #line:prologue_s004_051
@@ -139,6 +152,7 @@ title: PROLOGUE_S004_P14
 title: PROLOGUE_S004_P15
 ---
 // S004-P15; canonical source L606-L615
+<<vn_clear_cg>>
 문밖에서 준호가 그녀를 불렀다. 진희는 신발을 놓지 못한 채 돌아보았다. #line:prologue_s004_054
 준호·화면 밖: 엄마. 찾았어? #line:prologue_s004_055
 진희: ……응. 찾았어. #line:prologue_s004_056
@@ -155,6 +169,7 @@ title: PROLOGUE_S004_P16
 title: PROLOGUE_S005_P01
 ---
 // S005-P01; canonical source L624-L640
+<<vn_bg_crossfade bg_family_storage_doorway 0>>
 진희: 그러면 저 사람들은 뭐예요? #line:prologue_s005_001
 지훈: 진희 씨 안에 남아 있는 가족의 모습입니다. #line:prologue_s005_002
 진희: 가짜라는 말이에요? #line:prologue_s005_003
@@ -191,6 +206,7 @@ title: PROLOGUE_S005_P03
 title: PROLOGUE_S005_P04
 ---
 // S005-P04; canonical source L683-L699
+<<vn_info_show "" "귀환 의향 — 미형성" "외부 접속 잔여 — 21분" "">>
 지훈·내부: 사별 사실은 통합됐어. 귀환 거부의 중심은? #line:prologue_s005_019
 로프·내부: 혼자 계속 사는 일을 가족을 버리는 행동으로 연결하고 있어. #line:prologue_s005_020
 지훈·내부: 가족 투영의 반응 보조를 준비해. 외출할 때의 기억에서. #line:prologue_s005_021
@@ -202,6 +218,7 @@ title: PROLOGUE_S005_P04
 title: PROLOGUE_S005_P05
 ---
 // S005-P05; canonical source L700-L701
+<<vn_info_show "" "투영 반응 보조" "기존 반응 범위" "개입 기록 보존">>
 <<jump PROLOGUE_S005_P06>>
 ===
 
@@ -209,6 +226,7 @@ title: PROLOGUE_S005_P06
 ---
 // S005-P06; canonical source L702-L730
 민석: 진희야. #line:prologue_s005_024
+<<vn_info_hide>>
 민석이 식탁 옆에서 아침 접시를 모으고 있었다. 진희가 그를 보았다. #line:prologue_s005_025
 민석: 당신 밥은? #line:prologue_s005_026
 진희: ……나 먹었어. #line:prologue_s005_027
@@ -231,6 +249,10 @@ title: PROLOGUE_S005_P07
 title: PROLOGUE_S005_P08
 ---
 // S005-P08; canonical source L737-L760
+<<vn_hide jihun>>
+<<vn_hide jinhee>>
+<<vn_bg_crossfade bg_family_table_sunset 0>>
+<<sfx_play sfx_meal_cutlery>>
 진희는 냉장고를 열었다. 무엇이 있는지 확인하지 않고도 익숙한 접시를 꺼냈다. #line:prologue_s005_035
 진희: 나래야, 컵은 양손으로. #line:prologue_s005_036
 나래: 알아. #line:prologue_s005_037
@@ -262,6 +284,7 @@ title: PROLOGUE_S005_P10
 title: PROLOGUE_S005_P11
 ---
 // S005-P11; canonical source L784-L810
+<<bgm_play bgm_quiet_farewell>>
 민석: 접시는 두고 가. 내가 씻을게. #line:prologue_s005_048
 진희: 당신 씻으면 바닥에 물 다 튀어. #line:prologue_s005_049
 민석: 닦을게. #line:prologue_s005_050
@@ -287,6 +310,7 @@ title: PROLOGUE_S005_P12
 title: PROLOGUE_S005_P13
 ---
 // S005-P13; canonical source L829-L836
+<<vn_info_show "" "귀환 선택 대기" "" "">>
 지훈·내부: 투영 조정은 여기까지. 이후 반응은 건드리지 마. #line:prologue_s005_061
 로프·내부: 종료. 최종 선택은 본인 응답으로 확인해야 해. #line:prologue_s005_062
 <<jump PROLOGUE_S005_P14>>
@@ -295,7 +319,9 @@ title: PROLOGUE_S005_P13
 title: PROLOGUE_S005_P14
 ---
 // S005-P14; canonical source L837-L852
+<<vn_info_hide>>
 지훈: 진희 씨. 돌아가시겠습니까? #line:prologue_s005_063
+<<sfx_play sfx_sink_washing>>
 진희는 식탁을 보았다. 민석이 흐르는 물 아래 접시를 돌리고 있었다. #line:prologue_s005_064
 진희: 저 사람들까지 없애는 건 아니죠? #line:prologue_s005_065
 지훈: 이번 치료에서 기억 삭제는 하지 않습니다. #line:prologue_s005_066
@@ -314,11 +340,18 @@ title: PROLOGUE_S005_P15
 title: PROLOGUE_S006_P01
 ---
 // S006-P01; canonical source L865-L885
+<<vn_bg_crossfade bg_family_entrance 0>>
+<<vn_show jihun default left>>
+<<vn_show jinhee firm right>>
+<<vn_show rope_memory alert center>>
 진희: 신발은요? #line:prologue_s006_001
 지훈: 바깥에 있는 물건을 다시 확인하실 수 있습니다. #line:prologue_s006_002
 진희: 저 신발 말고. 제가 신는 거. #line:prologue_s006_003
 지훈은 진희의 발을 보았다. 그녀는 집 안의 슬리퍼를 신고 있었다. #line:prologue_s006_004
 지훈: 그대로 가셔도 됩니다. #line:prologue_s006_005
+<<sfx_play sfx_slipper_toe_tap>>
+<<wait 0.7>>
+<<sfx_play sfx_slipper_toe_tap>>
 진희는 슬리퍼 앞코를 바닥에 두 번 맞췄다. 그러고는 문턱 쪽으로 발을 뻗었다. #line:prologue_s006_006
 <<jump PROLOGUE_S006_P02>>
 ===
@@ -326,6 +359,8 @@ title: PROLOGUE_S006_P01
 title: PROLOGUE_S006_P02
 ---
 // S006-P02; canonical source L886-L891
+<<sfx_play sfx_low_vibration>>
+<<vn_local_effect on 0.2>>
 진희: 저쪽은……. #line:prologue_s006_007
 <<jump PROLOGUE_S006_P03>>
 ===
@@ -333,6 +368,7 @@ title: PROLOGUE_S006_P02
 title: PROLOGUE_S006_P03
 ---
 // S006-P03; canonical source L892-L896
+<<bgm_stop 0>>
 지훈·독백: 관자놀이 안쪽이 찌르듯 아팠다. 벽 너머에서 바닥까지 이어지는 진동이 느껴졌다. #line:prologue_s006_008
 <<jump PROLOGUE_S006_P04>>
 ===
@@ -352,12 +388,18 @@ title: PROLOGUE_S006_P04
 title: PROLOGUE_S006_P05
 ---
 // S006-P05; canonical source L916-L917
+<<vn_local_effect off 0.2>>
+<<vn_fade_to_black 0.4>>
 <<jump PROLOGUE_S006_P06>>
 ===
 
 title: PROLOGUE_S006_P06
 ---
 // S006-P06; canonical source L918-L923
+<<vn_hide rope_memory>>
+<<vn_bg_crossfade bg_jinhee_bedroom_day 0>>
+<<sfx_play sfx_equipment_disconnect>>
+<<vn_fade_from_black 0.4>>
 지훈이 눈을 떴다. 맞은편 침대의 진희는 아직 눈을 감고 있었다. #line:prologue_s006_015
 <<jump PROLOGUE_S006_P07>>
 ===
@@ -365,6 +407,7 @@ title: PROLOGUE_S006_P06
 title: PROLOGUE_S006_P07
 ---
 // S006-P07; canonical source L924-L927
+<<vn_show rope default center>>
 로프: 환자 연결 해제. 외부 반응 확인해. #line:prologue_s006_016
 <<jump PROLOGUE_S006_P08>>
 ===
@@ -388,6 +431,7 @@ title: PROLOGUE_S006_P08
 title: PROLOGUE_S006_P09
 ---
 // S006-P09; canonical source L960-L970
+<<vn_info_show "" "각성 반응 안정" "후속 관리 알림 전송" "재접속 제한 적용">>
 로프: 기본 반응 안정. 회복 관리팀에 기록 전달했어. #line:prologue_s006_027
 지훈: 방문 계획은? #line:prologue_s006_028
 로프: 오늘 첫 상태 확인. 그전에도 침상 호출을 사용할 수 있어. #line:prologue_s006_029
@@ -397,6 +441,7 @@ title: PROLOGUE_S006_P09
 title: PROLOGUE_S006_P10
 ---
 // S006-P10; canonical source L971-L983
+<<vn_info_hide>>
 지훈은 접속 패치를 떼어 보관함에 넣었다. 진희는 반대편 방문을 바라보고 있었다. #line:prologue_s006_030
 진희: 제가 얼마나 자고 있었어요? #line:prologue_s006_031
 지훈: 길게는 관리 기록에서 확인할 수 있습니다. 지금은 갑자기 일어나지 마세요. #line:prologue_s006_032
@@ -407,6 +452,7 @@ title: PROLOGUE_S006_P10
 title: PROLOGUE_S006_P11
 ---
 // S006-P11; canonical source L984-L987
+<<vn_hide jinhee>>
 그는 장비 가방을 닫았다. 진희가 다시 고개를 돌렸을 때 지훈은 이미 문밖에 있었다. #line:prologue_s006_034
 <<jump PROLOGUE_S006_P12>>
 ===
@@ -414,6 +460,10 @@ title: PROLOGUE_S006_P11
 title: PROLOGUE_S006_P12
 ---
 // S006-P12; canonical source L988-L1006
+<<vn_cg cg_present_table_glimpse>>
+<<wait 1>>
+<<vn_clear_cg>>
+<<vn_bg_crossfade bg_future_city_street_day 0>>
 로프: 두통은? #line:prologue_s006_035
 지훈: 줄었어. #line:prologue_s006_036
 로프: 흰 문은 진희의 생성 기록에 없어. #line:prologue_s006_037
@@ -438,4 +488,5 @@ title: PROLOGUE_S006_P13
 title: PROLOGUE_S006_P14
 ---
 // S006-P14; canonical source L1027-L1028
+<<vn_info_hide>>
 ===
