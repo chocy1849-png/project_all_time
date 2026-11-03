@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace ProjectAllTime.VN.Presentation
 {
-    public enum VNCharacterSlot { FarLeft, Left, Center, Right, FarRight }
+    public enum VNCharacterSlot { FarLeft, Left, Center, Right, FarRight, OuterFarRight }
 
     public sealed class VNCharacterRuntimeState
     {
@@ -395,6 +395,7 @@ namespace ProjectAllTime.VN.Presentation
                 case "center": slot = VNCharacterSlot.Center; return true;
                 case "right": slot = VNCharacterSlot.Right; return true;
                 case "far_right": slot = VNCharacterSlot.FarRight; return true;
+                case "outer_far_right": slot = VNCharacterSlot.OuterFarRight; return true;
                 default: slot = default; return false;
             }
         }
@@ -418,6 +419,7 @@ namespace ProjectAllTime.VN.Presentation
                 case VNCharacterSlot.Center: return "center";
                 case VNCharacterSlot.Right: return "right";
                 case VNCharacterSlot.FarRight: return "far_right";
+                case VNCharacterSlot.OuterFarRight: return "outer_far_right";
                 default: return null;
             }
         }

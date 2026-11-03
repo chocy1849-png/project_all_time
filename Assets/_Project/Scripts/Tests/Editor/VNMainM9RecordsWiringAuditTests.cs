@@ -164,7 +164,8 @@ namespace ProjectAllTime.Tests.Editor
             foreach (var key in new[]{"backgroundImage","cgImage"})
                 Assert.That(Ref<Image>(presentation,key).transform.IsChildOf(view.transform), Is.True);
             var slots = view.GetComponentsInChildren<VNCharacterSlotView>(true);
-            Assert.That(slots.Length, Is.EqualTo(5));
+            Assert.That(slots.Length, Is.EqualTo(Enum.GetValues(typeof(VNCharacterSlot)).Length));
+            Assert.That(slots.Length, Is.EqualTo(6));
             CollectionAssert.AreEquivalent(Enum.GetValues(typeof(VNCharacterSlot)), slots.Select(s=>s.Slot));
             foreach (var slot in slots) Assert.That(slot.IsConfigured, Is.True);
             Assert.That(view.LinePresenter.transform.IsChildOf(view.transform), Is.True);

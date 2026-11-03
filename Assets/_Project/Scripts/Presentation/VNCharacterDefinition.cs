@@ -23,6 +23,7 @@ namespace ProjectAllTime.VN.Presentation
         [SerializeField] private List<string> speakerAliases = new();
         [SerializeField] private VNCharacterFacing defaultFacing = VNCharacterFacing.Right;
         [SerializeField, Min(0.01f)] private float defaultScale = 1f;
+        [SerializeField] private Vector2 stageOffset;
         [SerializeField] private Sprite backHairSprite;
         [SerializeField] private Sprite bodySprite;
         [Tooltip("Optional M5 Save/Load card icon. It is never persisted in SaveSlotData.")]
@@ -34,6 +35,7 @@ namespace ProjectAllTime.VN.Presentation
         public IReadOnlyList<string> SpeakerAliases => speakerAliases;
         public VNCharacterFacing DefaultFacing => defaultFacing;
         public float DefaultScale => defaultScale;
+        public Vector2 StageOffset => stageOffset;
         public Sprite BackHairSprite => backHairSprite;
         public Sprite BodySprite => bodySprite;
         public Sprite SaveIcon => saveIcon;

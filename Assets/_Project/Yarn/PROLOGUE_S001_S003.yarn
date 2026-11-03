@@ -95,6 +95,18 @@ title: PROLOGUE_S001_P08
 <<vn_hide jihun>>
 <<vn_hide rope_memory>>
 <<vn_bg_crossfade bg_family_table_morning 0>>
+<<vn_show minseok default far_left>>
+<<vn_scale minseok 0.60>>
+<<vn_show jinhee default left>>
+<<vn_scale jinhee 0.60>>
+<<vn_show jihun default center>>
+<<vn_scale jihun 0.60>>
+<<vn_show rope_memory default right>>
+<<vn_scale rope_memory 0.28>>
+<<vn_show junho default far_right>>
+<<vn_scale junho 0.60>>
+<<vn_show narae default outer_far_right>>
+<<vn_scale narae 0.60>>
 지훈은 신발을 벗어 왼쪽 끝에 나란히 놓았다. 강아지는 그가 자리를 정하기도 전에 식탁 아래로 들어갔다. #line:prologue_s001_030
 진희: 식기 전에 앉으세요. 커피는 지난번처럼 드리면 되죠? #line:prologue_s001_031
 지훈: 네. #line:prologue_s001_032
@@ -150,9 +162,13 @@ title: PROLOGUE_S001_P13
 title: PROLOGUE_S002_P01
 ---
 // S002-P01; canonical source L171-L196
+<<vn_hide minseok>>
+<<vn_hide narae>>
+<<vn_hide junho>>
+<<vn_hide rope_memory>>
 <<vn_bg_crossfade bg_family_living_room 0>>
-<<vn_show jihun default left>>
-<<vn_show jinhee default right>>
+<<vn_move jinhee right>>
+<<vn_move jihun left>>
 진희: 오늘도 사진 보실 거죠? 제가 꺼내놨어요. #line:prologue_s002_001
 지훈: 지난번 여행 사진부터 보겠습니다. #line:prologue_s002_002
 진희: 또 바다요? #line:prologue_s002_003

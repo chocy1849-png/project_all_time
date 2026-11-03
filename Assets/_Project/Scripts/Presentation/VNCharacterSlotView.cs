@@ -12,12 +12,20 @@ namespace ProjectAllTime.VN.Presentation
         [SerializeField] private Image headImage;
         [SerializeField] private CanvasGroup fadeCanvasGroup;
 
+        private Vector2 baseVisualRootAnchoredPosition;
+        private bool hasBaseVisualRootAnchoredPosition;
+
         public VNCharacterSlot Slot => slot;
         public Color Tint => bodyImage.color;
         public CanvasGroup FadeCanvasGroup => fadeCanvasGroup;
         public bool HasFadeCanvasGroup => fadeCanvasGroup != null;
 
         public bool IsConfigured => visualRoot != null && backHairImage != null && bodyImage != null && headImage != null;
+
+        private void Awake()
+        {
+            CacheBaseVisualRootPosition();
+        }
 
         public void SetVisible(bool visible)
         {
@@ -35,6 +43,8 @@ namespace ProjectAllTime.VN.Presentation
             SetLayer(backHairImage, character.BackHairSprite);
             SetLayer(bodyImage, character.BodySprite);
             SetLayer(headImage, expression.HeadSprite);
+            CacheBaseVisualRootPosition();
+            visualRoot.anchoredPosition = baseVisualRootAnchoredPosition + character.StageOffset;
             ApplyTransform(state);
             SetTint(state.SpeakerActive ? Color.white : new Color(0.65f, 0.65f, 0.65f, 1f));
             SetVisible(true);
@@ -57,6 +67,13 @@ namespace ProjectAllTime.VN.Presentation
         {
             image.sprite = sprite;
             image.enabled = sprite != null;
+        }
+
+        private void CacheBaseVisualRootPosition()
+        {
+            if (hasBaseVisualRootAnchoredPosition || visualRoot == null) return;
+            baseVisualRootAnchoredPosition = visualRoot.anchoredPosition;
+            hasBaseVisualRootAnchoredPosition = true;
         }
     }
 }

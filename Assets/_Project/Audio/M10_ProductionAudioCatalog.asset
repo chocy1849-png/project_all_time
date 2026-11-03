@@ -14,35 +14,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ProjectAllTime.VN.Audio.VNAudioCatalog
   bgm:
   - id: bgm_ordinary_morning
-    clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
+    clip: {fileID: 8300000, guid: ec2fb4e58abcae5439d6f9a8312a87e9, type: 3}
     defaultVolume: 0.25
     loop: 1
   - id: bgm_quiet_farewell
-    clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
+    clip: {fileID: 8300000, guid: 227e2c4a18f30a4418d15fc1b34c207b, type: 3}
     defaultVolume: 0.25
     loop: 1
   sfx:
   - id: sfx_frying_oil
-    clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
-    defaultVolume: 1
+    clip: {fileID: 8300000, guid: fdade46332cd11049a237d47684db5af, type: 3}
+    defaultVolume: 0.35
   - id: sfx_plate_counter
     clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
     defaultVolume: 1
   - id: sfx_home_doorbell
-    clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
-    defaultVolume: 1
+    clip: {fileID: 8300000, guid: 005bd735e48fffb4cacbd12fd80f81b5, type: 3}
+    defaultVolume: 0.55
   - id: sfx_child_entry_steps
     clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
     defaultVolume: 1
   - id: sfx_chair_leg_scrape
-    clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
-    defaultVolume: 1
+    clip: {fileID: 8300000, guid: 5aa3a986eae63e74eb1e058be213b9f9, type: 3}
+    defaultVolume: 0.8
   - id: sfx_junho_laugh
-    clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
-    defaultVolume: 1
+    clip: {fileID: 8300000, guid: 59960663f2ee8e742b03dbf4f38372f2, type: 3}
+    defaultVolume: 0.5
   - id: sfx_meal_cutlery
-    clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
-    defaultVolume: 1
+    clip: {fileID: 8300000, guid: 633b85e1e31ca29499f0d6c9ecd5f1ca, type: 3}
+    defaultVolume: 0.65
   - id: sfx_sink_washing
     clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
     defaultVolume: 1
@@ -50,17 +50,17 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
     defaultVolume: 1
   - id: sfx_low_vibration
-    clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
-    defaultVolume: 1
+    clip: {fileID: 8300000, guid: 10afc6358ada9f841ac23d545a0f04fc, type: 3}
+    defaultVolume: 0.18
   - id: sfx_equipment_disconnect
-    clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
-    defaultVolume: 1
+    clip: {fileID: 8300000, guid: 809d1b5951f534647b84d115a257ff50, type: 3}
+    defaultVolume: 0.4
   - id: sfx_connection_rain_handoff
-    clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
-    defaultVolume: 1
+    clip: {fileID: 8300000, guid: eac4fcf2e0f44044d8fad587888a6f80, type: 3}
+    defaultVolume: 0.6
   - id: sfx_raindrop_awning
     clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
     defaultVolume: 1
   - id: sfx_old_bus_brake
-    clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
-    defaultVolume: 1
+    clip: {fileID: 8300000, guid: 8634536340d3c5c4a8ce6d0dc3d193e1, type: 3}
+    defaultVolume: 0.18

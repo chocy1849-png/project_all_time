@@ -169,7 +169,21 @@ title: PROLOGUE_S004_P16
 title: PROLOGUE_S005_P01
 ---
 // S005-P01; canonical source L624-L640
+<<vn_hide jihun>>
+<<vn_hide jinhee>>
 <<vn_bg_crossfade bg_family_storage_doorway 0>>
+<<vn_show minseok default far_left>>
+<<vn_scale minseok 0.60>>
+<<vn_show jinhee default left>>
+<<vn_scale jinhee 0.60>>
+<<vn_show jihun default center>>
+<<vn_scale jihun 0.60>>
+<<vn_show rope_memory default right>>
+<<vn_scale rope_memory 0.28>>
+<<vn_show junho default far_right>>
+<<vn_scale junho 0.60>>
+<<vn_show narae default outer_far_right>>
+<<vn_scale narae 0.60>>
 진희: 그러면 저 사람들은 뭐예요? #line:prologue_s005_001
 지훈: 진희 씨 안에 남아 있는 가족의 모습입니다. #line:prologue_s005_002
 진희: 가짜라는 말이에요? #line:prologue_s005_003
@@ -249,8 +263,6 @@ title: PROLOGUE_S005_P07
 title: PROLOGUE_S005_P08
 ---
 // S005-P08; canonical source L737-L760
-<<vn_hide jihun>>
-<<vn_hide jinhee>>
 <<vn_bg_crossfade bg_family_table_sunset 0>>
 <<sfx_play sfx_meal_cutlery>>
 진희는 냉장고를 열었다. 무엇이 있는지 확인하지 않고도 익숙한 접시를 꺼냈다. #line:prologue_s005_035
@@ -340,10 +352,19 @@ title: PROLOGUE_S005_P15
 title: PROLOGUE_S006_P01
 ---
 // S006-P01; canonical source L865-L885
+<<vn_hide minseok>>
+<<vn_hide narae>>
+<<vn_hide junho>>
+<<vn_hide jihun>>
+<<vn_hide jinhee>>
+<<vn_hide rope_memory>>
 <<vn_bg_crossfade bg_family_entrance 0>>
 <<vn_show jihun default left>>
+<<vn_scale jihun 0.60>>
 <<vn_show jinhee firm right>>
+<<vn_scale jinhee 0.60>>
 <<vn_show rope_memory alert center>>
+<<vn_scale rope_memory 0.28>>
 진희: 신발은요? #line:prologue_s006_001
 지훈: 바깥에 있는 물건을 다시 확인하실 수 있습니다. #line:prologue_s006_002
 진희: 저 신발 말고. 제가 신는 거. #line:prologue_s006_003
