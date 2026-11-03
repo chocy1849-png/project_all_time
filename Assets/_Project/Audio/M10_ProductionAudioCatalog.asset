@@ -55,3 +55,12 @@ MonoBehaviour:
   - id: sfx_equipment_disconnect
     clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
     defaultVolume: 1
+  - id: sfx_connection_rain_handoff
+    clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
+    defaultVolume: 1
+  - id: sfx_raindrop_awning
+    clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
+    defaultVolume: 1
+  - id: sfx_old_bus_brake
+    clip: {fileID: 8300000, guid: 01e06d88cdba4a04e8dcea8a06c6d00f, type: 3}
+    defaultVolume: 1
