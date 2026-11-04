@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using NUnit.Framework;
 using ProjectAllTime.VN.Audio;
+using ProjectAllTime.VN.Dialogue;
 using ProjectAllTime.VN.Presentation;
 using ProjectAllTime.VN.SaveLoad;
 using UnityEditor;
@@ -35,6 +36,48 @@ namespace ProjectAllTime.Tests.Editor
             for (var index = ownedObjects.Count - 1; index >= 0; index--) UnityEngine.Object.DestroyImmediate(ownedObjects[index]);
             ownedObjects.Clear();
             if (Directory.Exists(temporaryRoot)) Directory.Delete(temporaryRoot, true);
+        }
+
+        [Test]
+        public void ProductionLine_ComposesV2ToDiskAndRejectsMismatchedResumeBeforeMutation()
+        {
+            var runner = CreateRunner();
+            var service = CreateCheckpointService();
+            var presentation = CreatePresentationHarness();
+            var audio = CreateAudioHarness();
+            var sessionObject = new GameObject("Exact line session");
+            ownedObjects.Add(sessionObject);
+            var session = sessionObject.AddComponent<VNDialogueSessionState>();
+            var gate = sessionObject.AddComponent<VNInteractionGate>();
+            var linePresenter = sessionObject.AddComponent<LinePresenter>();
+            linePresenter.canvasGroup = sessionObject.AddComponent<CanvasGroup>();
+            var textObject = new GameObject("Exact line text", typeof(RectTransform), typeof(CanvasRenderer));
+            ownedObjects.Add(textObject);
+            linePresenter.lineText = textObject.AddComponent<TMPro.TextMeshProUGUI>();
+            runner.DialoguePresenters = new DialoguePresenterBase[] { linePresenter };
+            var coordinator = new VNYarnSaveCoordinator(repository, service, runner, new VNPlayTimeTracker(),
+                presentation.Controller, presentation.Transition, audio.Controller, session, gate);
+            var key = new VNSaveSlotKey(VNSaveSlotType.Manual, 0);
+            Assert.That(service.TryEnterCheckpoint(CheckpointId, runner, out var checkpointDiagnostic), Is.True, checkpointDiagnostic);
+            Assert.That(coordinator.TryComposeCompleteSave(key, out _, out var noLine), Is.False);
+            Assert.That(noLine, Does.Contain("active dialogue paragraph"));
+            SetPrivate(session, "isLineActive", true);
+            SetPrivate(session, "currentLineId", "line:prologue_s001_016");
+            Assert.That(coordinator.TryWriteCompleteSave(key, out var save).Succeeded, Is.True);
+            Assert.That(save.schemaVersion, Is.EqualTo(2));
+            Assert.That(save.resumeLineId, Is.EqualTo("line:prologue_s001_016"));
+            Assert.That(save.resumeEntryNode, Is.EqualTo("PROLOGUE_LINE_S001_016"));
+            Assert.That(repository.Read(key).State, Is.EqualTo(VNSaveSlotState.Valid));
+            var canvasGroup = linePresenter.canvasGroup;
+            linePresenter.canvasGroup = null;
+            Assert.That(coordinator.ValidateLoad(key).Status, Is.EqualTo(VNYarnLoadValidationStatus.InvalidDependencies));
+            Assert.That(session.CurrentLineId, Is.EqualTo("line:prologue_s001_016"));
+            linePresenter.canvasGroup = canvasGroup;
+            Assert.That(coordinator.ValidateLoad(key).Status, Is.EqualTo(VNYarnLoadValidationStatus.Valid));
+            save.resumeEntryNode = "PROLOGUE_S001_P01";
+            Assert.That(repository.Write(key, save).Succeeded, Is.True);
+            Assert.That(coordinator.ValidateLoad(key).Status, Is.EqualTo(VNYarnLoadValidationStatus.InvalidCheckpoint));
+            Assert.That(session.CurrentLineId, Is.EqualTo("line:prologue_s001_016"));
         }
 
         [Test]
@@ -133,14 +176,15 @@ namespace ProjectAllTime.Tests.Editor
             Assert.That(presentation.Controller.VisibleCharacters, Is.Empty);
         }
 
-        [Test]
-        public void ProductionMorningSixCharacterSnapshot_RoundTripsAndLegacyFiveSlotStateRemainsCompatible()
+        [TestCase("rope_memory")]
+        [TestCase("rope")]
+        public void ProductionMorningSixCharacterSnapshot_RoundTripsAndLegacyFiveSlotStateRemainsCompatible(string ropeId)
         {
             const string catalogPath = "Assets/_Project/Settings/Presentation/Production/M10_ProductionPresentationCatalog.asset";
             var catalog = AssetDatabase.LoadAssetAtPath<VNPresentationCatalog>(catalogPath);
             Assert.That(catalog, Is.Not.Null);
             var presentation = CreatePresentationHarness(catalog);
-            var characterIds = new[] { "minseok", "jinhee", "jihun", "rope_memory", "junho", "narae" };
+            var characterIds = new[] { "minseok", "jinhee", "jihun", ropeId, "junho", "narae" };
             var slots = new[]
             {
                 VNCharacterSlot.FarLeft, VNCharacterSlot.Left, VNCharacterSlot.Center,
@@ -164,6 +208,11 @@ namespace ProjectAllTime.Tests.Editor
             Assert.That(presentation.Controller.VisibleCharacters, Has.Count.EqualTo(6));
             Assert.That(presentation.Controller.TryCaptureStableState(out var captured, out var captureDiagnostic), Is.True, captureDiagnostic);
             Assert.That(captured.characters, Has.Length.EqualTo(6));
+            var diskKey = new VNSaveSlotKey(VNSaveSlotType.Manual, 0);
+            Assert.That(repository.Write(diskKey, CreateSave(diskKey, captured, new AudioState())).Succeeded, Is.True);
+            var diskRead = repository.Read(diskKey);
+            Assert.That(diskRead.State, Is.EqualTo(VNSaveSlotState.Valid));
+            captured = diskRead.SaveData.presentationState;
             var capturedIds = new HashSet<string>();
             var capturedSlots = new HashSet<string>();
             for (var index = 0; index < captured.characters.Length; index++)

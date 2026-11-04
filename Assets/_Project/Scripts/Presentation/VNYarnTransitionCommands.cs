@@ -1,4 +1,5 @@
 using System.Collections;
+using ProjectAllTime.VN.SaveLoad;
 using UnityEngine;
 using Yarn.Unity;
 
@@ -37,11 +38,11 @@ namespace ProjectAllTime.VN.Presentation
             dialogueRunner.AddCommandHandler<float>("vn_fade_to_black", FadeToBlack);
             dialogueRunner.AddCommandHandler<float>("vn_fade_from_black", FadeFromBlack);
             dialogueRunner.AddCommandHandler<string, float>("vn_bg_crossfade", CrossfadeBackground);
-            dialogueRunner.AddCommandHandler<string, string, string, float>("vn_show_fade", ShowCharacterFade);
+            dialogueRunner.AddCommandHandler<string, string, string, float>("vn_show_fade", TrackedShowCharacterFade);
             dialogueRunner.AddCommandHandler<string, float>("vn_hide_fade", HideCharacterFade);
             dialogueRunner.AddCommandHandler<string, float>("vn_cg_fade_in", FadeCGIn);
             dialogueRunner.AddCommandHandler<float>("vn_cg_fade_out", FadeCGOut);
-            dialogueRunner.AddCommandHandler<string, float>("vn_local_effect", LocalizedEffect);
+            dialogueRunner.AddCommandHandler<string, float>("vn_local_effect", TrackedLocalizedEffect);
             dialogueRunner.onDialogueComplete?.AddListener(ClearLocalizedEffect);
             handlersRegistered = true;
         }
@@ -55,9 +56,12 @@ namespace ProjectAllTime.VN.Presentation
             handlersRegistered = false;
         }
 
-        private IEnumerator FadeToBlack(float duration) => transitionController.FadeToBlack(duration);
-        private IEnumerator FadeFromBlack(float duration) => transitionController.FadeFromBlack(duration);
-        private IEnumerator CrossfadeBackground(string backgroundId, float duration) => transitionController.CrossfadeBackground(backgroundId, duration);
+        private IEnumerator FadeToBlack(float duration) => VNAsyncCommandRegistry.Track(dialogueRunner, transitionController.FadeToBlack(duration));
+        private IEnumerator FadeFromBlack(float duration) => VNAsyncCommandRegistry.Track(dialogueRunner, transitionController.FadeFromBlack(duration));
+        private IEnumerator CrossfadeBackground(string backgroundId, float duration) => VNAsyncCommandRegistry.Track(dialogueRunner, transitionController.CrossfadeBackground(backgroundId, duration));
+
+        private IEnumerator TrackedShowCharacterFade(string characterId, string expressionId, string slotId, float duration)
+            => VNAsyncCommandRegistry.Track(dialogueRunner, ShowCharacterFade(characterId, expressionId, slotId, duration));
 
         private IEnumerator ShowCharacterFade(string characterId, string expressionId, string slotId, float duration)
         {
@@ -70,15 +74,18 @@ namespace ProjectAllTime.VN.Presentation
             yield return transitionController.FadeCharacterIn(characterId, expressionId, slot, duration);
         }
 
-        private IEnumerator HideCharacterFade(string characterId, float duration) => transitionController.FadeCharacterOut(characterId, duration);
-        private IEnumerator FadeCGIn(string cgId, float duration) => transitionController.FadeCGIn(cgId, duration);
-        private IEnumerator FadeCGOut(float duration) => transitionController.FadeCGOut(duration);
+        private IEnumerator HideCharacterFade(string characterId, float duration) => VNAsyncCommandRegistry.Track(dialogueRunner, transitionController.FadeCharacterOut(characterId, duration));
+        private IEnumerator FadeCGIn(string cgId, float duration) => VNAsyncCommandRegistry.Track(dialogueRunner, transitionController.FadeCGIn(cgId, duration));
+        private IEnumerator FadeCGOut(float duration) => VNAsyncCommandRegistry.Track(dialogueRunner, transitionController.FadeCGOut(duration));
 
         private void ClearLocalizedEffect()
         {
             if (transitionController != null && transitionController.IsLocalizedEffectVisible)
                 transitionController.NormalizeForLoad();
         }
+
+        private IEnumerator TrackedLocalizedEffect(string state, float duration)
+            => VNAsyncCommandRegistry.Track(dialogueRunner, LocalizedEffect(state, duration));
 
         private IEnumerator LocalizedEffect(string state, float duration)
         {

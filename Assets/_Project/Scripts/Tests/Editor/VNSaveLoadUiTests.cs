@@ -53,7 +53,7 @@ namespace ProjectAllTime.Tests.Editor
             WriteValid(new VNSaveSlotKey(VNSaveSlotType.Auto, 1), "2026-08-19T01:00:00.0000000+00:00");
             WriteValid(new VNSaveSlotKey(VNSaveSlotType.Auto, 3), "2026-08-19T03:00:00.0000000+00:00");
             WriteRaw(new VNSaveSlotKey(VNSaveSlotType.Auto, 2), "{ broken json");
-            WriteRaw(new VNSaveSlotKey(VNSaveSlotType.Auto, 4), "{\"schemaVersion\":2}");
+            WriteRaw(new VNSaveSlotKey(VNSaveSlotType.Auto, 4), "{\"schemaVersion\":3}");
 
             var models = VNSaveLoadSlotModelBuilder.Build(repository.InspectAllSlots(), VNSaveLoadCategory.Auto, 0, TimeZoneInfo.Utc);
             Assert.That(models, Has.Count.EqualTo(5));
@@ -79,7 +79,7 @@ namespace ProjectAllTime.Tests.Editor
             Assert.That(VNSaveLoadInteractionPolicy.GetInteraction(VNSaveLoadMode.Save, VNSaveLoadCategory.Manual, VNSaveSlotState.Valid), Is.EqualTo(VNSaveSlotInteraction.ConfirmManualOverwrite));
             Assert.That(VNSaveLoadInteractionPolicy.GetInteraction(VNSaveLoadMode.Save, VNSaveLoadCategory.Manual, VNSaveSlotState.Corrupted), Is.EqualTo(VNSaveSlotInteraction.Disabled));
             Assert.That(VNSaveLoadInteractionPolicy.GetInteraction(VNSaveLoadMode.Save, VNSaveLoadCategory.Auto, VNSaveSlotState.Empty), Is.EqualTo(VNSaveSlotInteraction.Disabled));
-            Assert.That(VNSaveLoadInteractionPolicy.GetInteraction(VNSaveLoadMode.Save, VNSaveLoadCategory.Quick, VNSaveSlotState.Unsupported), Is.EqualTo(VNSaveSlotInteraction.WriteQuick));
+            Assert.That(VNSaveLoadInteractionPolicy.GetInteraction(VNSaveLoadMode.Save, VNSaveLoadCategory.Quick, VNSaveSlotState.Unsupported), Is.EqualTo(VNSaveSlotInteraction.Disabled));
             Assert.That(VNSaveLoadInteractionPolicy.GetInteraction(VNSaveLoadMode.Load, VNSaveLoadCategory.Manual, VNSaveSlotState.Valid), Is.EqualTo(VNSaveSlotInteraction.Load));
             Assert.That(VNSaveLoadInteractionPolicy.GetInteraction(VNSaveLoadMode.Load, VNSaveLoadCategory.Manual, VNSaveSlotState.Empty), Is.EqualTo(VNSaveSlotInteraction.Disabled));
             Assert.That(VNSaveLoadInteractionPolicy.GetInteraction(VNSaveLoadMode.Load, VNSaveLoadCategory.Manual, VNSaveSlotState.Corrupted), Is.EqualTo(VNSaveSlotInteraction.Disabled));
@@ -93,6 +93,28 @@ namespace ProjectAllTime.Tests.Editor
             Assert.That(VNSaveLoadSlotModelBuilder.FormatSavedAtLocal("invalid", TimeZoneInfo.Utc), Is.EqualTo("—"));
             Assert.That(VNSaveLoadSlotModelBuilder.FormatPlayedTime((27 * 3600) + (15 * 60) + 4.9f), Is.EqualTo("27:15:04"));
             Assert.That(VNSaveLoadSlotModelBuilder.FormatPlayedTime(float.NaN), Is.EqualTo("00:00:00"));
+        }
+
+        [Test]
+        public void QuickSave_PreservesCorruptAndFutureVersionFiles()
+        {
+            var key = new VNSaveSlotKey(VNSaveSlotType.Quick, 0);
+            var root = new GameObject("Protected quick-save test");
+            try
+            {
+                var controller = root.AddComponent<VNSaveLoadController>();
+                typeof(VNSaveLoadController).GetField("repository", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                    .SetValue(controller, repository);
+                foreach (var json in new[] { "{ broken", "{\"schemaVersion\":3}" })
+                {
+                    WriteRaw(key, json);
+                    Assert.That(repository.TryGetSlotPath(key, out var path), Is.True);
+                    var before = File.ReadAllBytes(path);
+                    Assert.That(controller.QuickSave().Status, Is.EqualTo(VNSaveLoadOperationStatus.UnsupportedSave));
+                    CollectionAssert.AreEqual(before, File.ReadAllBytes(path));
+                }
+            }
+            finally { UnityEngine.Object.DestroyImmediate(root); }
         }
 
         [Test]
@@ -122,6 +144,10 @@ namespace ProjectAllTime.Tests.Editor
             UnityEngine.Object.DestroyImmediate(loaded.Texture);
 
             Assert.That(repository.TryGetThumbnailSidecarPath(key, filename, out var path), Is.True);
+            Assert.That(repository.TryGetSlotPath(key, out var jsonPath), Is.True);
+            File.SetLastWriteTimeUtc(path, File.GetLastWriteTimeUtc(jsonPath).AddMinutes(-1));
+            Assert.That(thumbnails.LoadThumbnail(repository, key, filename).Status, Is.EqualTo(VNThumbnailLoadStatus.Placeholder),
+                "An old sidecar must not be displayed for newer authoritative JSON.");
             File.WriteAllBytes(path, new byte[] { 1, 2, 3, 4 });
             Assert.That(thumbnails.LoadThumbnail(repository, key, filename).Status, Is.EqualTo(VNThumbnailLoadStatus.Placeholder));
             Assert.That(repository.Read(key).State, Is.EqualTo(VNSaveSlotState.Valid));

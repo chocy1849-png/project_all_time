@@ -38,14 +38,17 @@ namespace ProjectAllTime.Tests.Editor
         {
             var yarn = File.ReadAllText(Path).Replace("\r\n", "\n");
             var nodes = Regex.Matches(yarn, @"(?m)^title: (\w+)").Cast<Match>().Select(m => m.Groups[1].Value).ToArray();
-            Assert.That(nodes.Length, Is.EqualTo(45));
+            Assert.That(nodes.Length, Is.EqualTo(217)); // 45 beats + 172 line entries.
+            for (var scene = 4; scene <= 6; scene++)
+                Assert.That(nodes.Count(n => n.StartsWith($"PROLOGUE_LINE_S00{scene}_", StringComparison.Ordinal)),
+                    Is.EqualTo(Regex.Matches(yarn, $"#line:prologue_s00{scene}_").Count));
             for (var scene = 4; scene <= 6; scene++)
                 for (var beat = 1; beat <= (scene == 4 ? 16 : scene == 5 ? 15 : 14); beat++)
                     Assert.That(nodes, Does.Contain($"PROLOGUE_S00{scene}_P{beat:00}"));
             foreach (Match jump in Regex.Matches(yarn, @"<<jump (\w+)>>"))
                 Assert.That(nodes.Contains(jump.Groups[1].Value) || jump.Groups[1].Value == "PROLOGUE_S007_P01", Is.True);
             Assert.That(Regex.IsMatch(yarn, @"(?m)^\s*->|<<vn_complete_ending|<<vn_unlock_|<<vn_checkpoint"), Is.False);
-            Assert.That(yarn, Does.Contain("<<vn_manual_hold>>\n지훈: 제가 대신"));
+            Assert.That(yarn, Does.Contain("<<vn_manual_hold>>\n<<jump PROLOGUE_LINE_S004_034>>\n===\n\ntitle: PROLOGUE_LINE_S004_034\n---\n지훈: 제가 대신"));
             Assert.That(yarn.IndexOf("<<vn_manual_hold>>", StringComparison.Ordinal), Is.LessThan(yarn.IndexOf("그녀가 문을 열었다", StringComparison.Ordinal)));
             Assert.That(yarn.IndexOf("bgm_play bgm_quiet_farewell", StringComparison.Ordinal), Is.GreaterThan(yarn.IndexOf("PROLOGUE_S005_P11\n---", StringComparison.Ordinal)));
             Assert.That(yarn.IndexOf("vn_local_effect on", StringComparison.Ordinal), Is.LessThan(yarn.IndexOf("bgm_stop 0", StringComparison.Ordinal)));

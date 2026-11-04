@@ -14,6 +14,11 @@ namespace ProjectAllTime.VN.SaveLoad
         public int slotIndex;
         public string checkpointId = string.Empty;
         public string resumeNode = string.Empty;
+        // V2 uses an explicit line identity; v1 retains checkpoint semantics.
+        public string saveMode = string.Empty;
+        public string resumeLineId = string.Empty;
+        public string resumeEntryNode = string.Empty;
+        public string resumeGraphVersion = string.Empty;
         public YarnVariablesData yarnVariables = new();
         public PresentationState presentationState = new();
         public AudioState audioState = new();

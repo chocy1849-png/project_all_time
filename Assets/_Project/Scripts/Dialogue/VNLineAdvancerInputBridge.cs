@@ -54,6 +54,7 @@ namespace ProjectAllTime.VN.Dialogue
                 return false;
 
             if (!sessionState.IsLineActive) return false;
+            if (sessionState.IsCurrentLineConsumed) return false;
             if (source != VNAdvanceSource.Manual && sessionState.IsManualAdvanceRequired) return false;
 
             if (frameCount == sessionState.CurrentPresentationStartedFrame) return false;

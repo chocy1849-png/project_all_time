@@ -151,7 +151,7 @@ namespace ProjectAllTime.Tests.Editor
         public void FutureSchema_IsUnsupported_AndStoredKeyMismatchIsCorrupted()
         {
             var unsupportedKey = new VNSaveSlotKey(VNSaveSlotType.Manual, 7);
-            WriteRaw(unsupportedKey, "{\"schemaVersion\":2}");
+            WriteRaw(unsupportedKey, "{\"schemaVersion\":3}");
             Assert.That(repository.Read(unsupportedKey).State, Is.EqualTo(VNSaveSlotState.Unsupported));
 
             var requestedKey = new VNSaveSlotKey(VNSaveSlotType.Manual, 8);
@@ -218,7 +218,7 @@ namespace ProjectAllTime.Tests.Editor
             Assert.That(oldest.SlotKey.Value, Is.EqualTo(new VNSaveSlotKey(VNSaveSlotType.Auto, 3)));
 
             var unsupportedKey = new VNSaveSlotKey(VNSaveSlotType.Auto, 0);
-            WriteRaw(unsupportedKey, "{\"schemaVersion\":2}");
+            WriteRaw(unsupportedKey, "{\"schemaVersion\":3}");
             var candidate = repository.AllocateNextAutoSlot();
             Assert.That(candidate.Status, Is.EqualTo(VNAutoSlotAllocationStatus.Allocated));
             Assert.That(candidate.SlotKey.Value, Is.Not.EqualTo(unsupportedKey));
@@ -239,7 +239,7 @@ namespace ProjectAllTime.Tests.Editor
             Assert.That(tied.SlotKey.Value, Is.EqualTo(new VNSaveSlotKey(VNSaveSlotType.Auto, 0)));
 
             for (var index = 0; index < VNSaveSlotKey.AutoSlotCount; index++)
-                WriteRaw(new VNSaveSlotKey(VNSaveSlotType.Auto, index), "{\"schemaVersion\":2}");
+                WriteRaw(new VNSaveSlotKey(VNSaveSlotType.Auto, index), "{\"schemaVersion\":3}");
 
             var unavailable = repository.AllocateNextAutoSlot();
             Assert.That(unavailable.Status, Is.EqualTo(VNAutoSlotAllocationStatus.NoSafeCandidate));
@@ -284,6 +284,78 @@ namespace ProjectAllTime.Tests.Editor
             Assert.That(tracker.TrySetPlayedSeconds(-1f), Is.False);
             Assert.That(tracker.TryAdvance(float.PositiveInfinity), Is.False);
             Assert.That(tracker.PlayedSeconds, Is.EqualTo(7.5f));
+        }
+
+        [Test]
+        public void AutoAllocation_SkipsIncompatibleValidSlotsAndPreservesTheirBytes()
+        {
+            var originals = new byte[VNSaveSlotKey.AutoSlotCount][];
+            for (var i = 0; i < originals.Length; i++)
+            {
+                var key = new VNSaveSlotKey(VNSaveSlotType.Auto, i);
+                Assert.That(repository.Write(key, CreateValidData(key)).Succeeded, Is.True);
+                Assert.That(repository.TryGetSlotPath(key, out var path), Is.True);
+                originals[i] = File.ReadAllBytes(path);
+            }
+            var result = repository.AllocateNextAutoSlot((key, data) => false);
+            Assert.That(result.Status, Is.EqualTo(VNAutoSlotAllocationStatus.NoSafeCandidate));
+            for (var i = 0; i < originals.Length; i++)
+            {
+                Assert.That(repository.TryGetSlotPath(new VNSaveSlotKey(VNSaveSlotType.Auto, i), out var path), Is.True);
+                CollectionAssert.AreEqual(originals[i], File.ReadAllBytes(path));
+            }
+        }
+
+        [Test]
+        public void ExactLineV2_RoundTripsThroughDiskWithoutCheckpointMetadata()
+        {
+            var key = new VNSaveSlotKey(VNSaveSlotType.Manual, 0);
+            var data = CreateValidData(key);
+            data.schemaVersion = VNSaveSerializer.ExactLineSchemaVersion;
+            data.checkpointId = string.Empty;
+            data.resumeNode = string.Empty;
+            data.saveMode = VNSaveSerializer.ExactLineSaveMode;
+            data.resumeLineId = "line:prologue_s001_009";
+            data.resumeEntryNode = "PROLOGUE_LINE_S001_009";
+            data.resumeGraphVersion = new string('a', 64);
+            data.presentationState.characters[0].slot = "outer_far_right";
+            Assert.That(repository.Write(key, data).Succeeded, Is.True);
+            Assert.That(repository.TryGetSlotPath(key, out var path), Is.True);
+            Assert.That(File.ReadAllText(path), Does.Contain("line:prologue_s001_009"));
+            var read = VNSaveRepository.CreateForTesting(temporaryRoot).Read(key);
+            Assert.That(read.State, Is.EqualTo(VNSaveSlotState.Valid));
+            Assert.That(read.SaveData.resumeLineId, Is.EqualTo(data.resumeLineId));
+            Assert.That(read.SaveData.resumeEntryNode, Is.EqualTo(data.resumeEntryNode));
+            Assert.That(read.SaveData.resumeGraphVersion, Is.EqualTo(data.resumeGraphVersion));
+            Assert.That(read.SaveData.yarnVariables.floats[0].value, Is.EqualTo(2.5f));
+            Assert.That(read.SaveData.audioState.playbackSeconds, Is.EqualTo(42.25f));
+            Assert.That(read.SaveData.presentationState.characters[0].slot, Is.EqualTo("outer_far_right"));
+        }
+
+        [Test]
+        public void ExactLineV2_RejectsIncompleteResumeIdentityWithoutReplacingValidFile()
+        {
+            var key = new VNSaveSlotKey(VNSaveSlotType.Quick, 0);
+            var legacy = CreateValidData(key);
+            Assert.That(repository.Write(key, legacy).Succeeded, Is.True);
+            Assert.That(repository.TryGetSlotPath(key, out var path), Is.True);
+            var original = File.ReadAllBytes(path);
+            var v2 = CreateValidData(key);
+            v2.schemaVersion = VNSaveSerializer.ExactLineSchemaVersion;
+            v2.saveMode = VNSaveSerializer.ExactLineSaveMode;
+            v2.resumeLineId = "line:prologue_s001_009";
+            v2.resumeEntryNode = "PROLOGUE_LINE_S001_009";
+            v2.resumeGraphVersion = new string('a', 64);
+            v2.resumeLineId = "prologue_s001_009";
+            Assert.That(repository.Write(key, v2).Succeeded, Is.False);
+            v2.resumeLineId = "line:prologue_s001_009";
+            v2.resumeGraphVersion = "invalid";
+            Assert.That(repository.Write(key, v2).Succeeded, Is.False);
+            v2.resumeGraphVersion = new string('a', 64);
+            v2.resumeEntryNode = "";
+            Assert.That(repository.Write(key, v2).Succeeded, Is.False);
+            CollectionAssert.AreEqual(original, File.ReadAllBytes(path));
+            Assert.That(repository.Read(key).SaveData.schemaVersion, Is.EqualTo(1));
         }
 
         private void AssertPath(VNSaveSlotKey key, string expectedFileName)

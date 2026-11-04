@@ -55,6 +55,22 @@ namespace ProjectAllTime.Tests.Editor
         }
 
         [Test]
+        public void ConsumedFlag_OnlyChangesAfterAuthorizedConsumeAndResetsForNextOccurrence()
+        {
+            Present(CreateLine("line:first", "Eve", "First."));
+            Assert.That(sessionState.IsCurrentLineConsumed, Is.False);
+            Assert.That(sessionState.TryAuthorizeCurrentLineConsume(), Is.False);
+            Assert.That(sessionState.IsCurrentLineConsumed, Is.False);
+            CompleteDisplay();
+            Assert.That(sessionState.IsCurrentLineConsumed, Is.False);
+            Assert.That(sessionState.TryAuthorizeCurrentLineConsume(), Is.True);
+            Assert.That(sessionState.IsCurrentLineConsumed, Is.True);
+            Assert.That(sessionState.TryAuthorizeCurrentLineConsume(), Is.True);
+            Present(CreateLine("line:second", "Eve", "Second."));
+            Assert.That(sessionState.IsCurrentLineConsumed, Is.False);
+        }
+
+        [Test]
         public void LocalizedLine_MapsToBacklogFields_AndDetectsNarration()
         {
             Present(CreateLine("line-speaker", "Eve", "Welcome."));

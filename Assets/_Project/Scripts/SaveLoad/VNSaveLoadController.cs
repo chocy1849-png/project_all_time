@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using ProjectAllTime.VN.Audio;
+using ProjectAllTime.VN.Dialogue;
 using ProjectAllTime.VN.Presentation;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -55,6 +56,10 @@ namespace ProjectAllTime.VN.SaveLoad
         [SerializeField] private VNTransitionController transitionController;
         [SerializeField] private VNAudioController audioController;
         [SerializeField] private VNPresentationCatalog presentationCatalog;
+        [SerializeField] private VNDialogueSessionState sessionState;
+        [SerializeField] private VNInteractionGate interactionGate;
+        [SerializeField] private VNInformationOverlay informationOverlay;
+        [SerializeField] private VNProloguePanels prologuePanels;
 
         [Header("M2 Modal Input Gate")]
         [Tooltip("Assign the existing VNInputActions Dialogue/Advance InputActionReference. It is disabled only while the Save/Load modal or a load transaction owns input.")]
@@ -66,10 +71,17 @@ namespace ProjectAllTime.VN.SaveLoad
         private readonly VNPlayTimeTracker playTimeTracker = new();
         private readonly VNThumbnailService thumbnailService = new();
         private readonly HashSet<VNSaveSlotKey> thumbnailPlaceholderSlots = new();
+        private readonly Dictionary<VNSaveSlotKey, long> thumbnailRevisions = new();
         private VNSaveRepository repository;
         private VNYarnSaveCoordinator saveCoordinator;
         private VNSaveSlotKey? pendingManualOverwrite;
         private readonly VNCheckpointAutosaveGuard autosaveGuard = new();
+        private static readonly HashSet<string> ProductionAutosaveLines = new(StringComparer.Ordinal)
+        {
+            "line:prologue_s001_016", "line:prologue_s002_001", "line:prologue_s003_001",
+            "line:prologue_s004_001", "line:prologue_s005_048", "line:prologue_s006_017",
+            "line:prologue_s007_001", "line:prologue_s008_017",
+        };
         private bool dialogueAdvanceWasEnabled;
         private bool dialogueAdvanceSuppressed;
         private bool loadInProgress;
@@ -91,18 +103,20 @@ namespace ProjectAllTime.VN.SaveLoad
         private void Awake()
         {
             repository = new VNSaveRepository();
-            saveCoordinator = new VNYarnSaveCoordinator(repository, checkpointService, dialogueRunner, playTimeTracker, presentationController, transitionController, audioController);
+            saveCoordinator = new VNYarnSaveCoordinator(repository, checkpointService, dialogueRunner, playTimeTracker, presentationController, transitionController, audioController, sessionState, interactionGate, informationOverlay, prologuePanels);
             saveLoadModal?.Initialize(this, repository, thumbnailService, presentationCatalog);
         }
 
         private void OnEnable()
         {
             if (checkpointService != null) checkpointService.CheckpointEntered += HandleCheckpointEntered;
+            if (sessionState != null) sessionState.CurrentLineChanged += HandleProductionLineChanged;
         }
 
         private void OnDisable()
         {
             if (checkpointService != null) checkpointService.CheckpointEntered -= HandleCheckpointEntered;
+            if (sessionState != null) sessionState.CurrentLineChanged -= HandleProductionLineChanged;
             saveLoadModal?.EndThumbnailVisualSuppression();
             RestoreDialogueAdvanceInput();
         }
@@ -138,6 +152,8 @@ namespace ProjectAllTime.VN.SaveLoad
                 case VNSaveSlotState.Empty:
                     return WriteCompleteSlot(slotKey, "Manual save complete.");
                 case VNSaveSlotState.Valid:
+                    if (!IsCompatibleOverwrite(slotKey, existing.SaveData))
+                        return Complete(VNSaveLoadOperationStatus.UnsupportedSave, "This save is incompatible with the current narrative and is preserved.");
                     pendingManualOverwrite = slotKey;
                     saveLoadModal?.ShowOverwriteConfirmation(VNSaveLoadSlotModelBuilder.Build(repository.InspectAllSlots(), VNSaveLoadCategory.Manual, slotIndex / VNSaveLoadSlotModelBuilder.ManualSlotsPerPage)[slotIndex % VNSaveLoadSlotModelBuilder.ManualSlotsPerPage]);
                     return Complete(VNSaveLoadOperationStatus.ConfirmationRequired, "Confirm overwrite of the selected Manual save.");
@@ -273,7 +289,11 @@ namespace ProjectAllTime.VN.SaveLoad
 
         private VNSaveLoadOperationResult WriteCompleteSlot(VNSaveSlotKey slotKey, string successMessage)
         {
-            var result = saveCoordinator.TryWriteCompleteSave(slotKey, out _);
+            var existing = repository.Read(slotKey);
+            if (existing.State == VNSaveSlotState.Corrupted || existing.State == VNSaveSlotState.Unsupported ||
+                (existing.State == VNSaveSlotState.Valid && !IsCompatibleOverwrite(slotKey, existing.SaveData)))
+                return Complete(VNSaveLoadOperationStatus.UnsupportedSave, "The existing save is corrupted or incompatible and is preserved.");
+            var result = saveCoordinator.TryWriteCompleteSave(slotKey, out var savedData);
             if (!result.Succeeded)
             {
                 var status = ClassifySaveFailure(result.Diagnostic);
@@ -289,7 +309,7 @@ namespace ProjectAllTime.VN.SaveLoad
             else
                 PublishStatus(successMessage + " Thumbnail is refreshing.");
 
-            StartCoroutine(CaptureThumbnailAfterSave(slotKey));
+            QueueThumbnailCapture(slotKey, savedData);
             RefreshSlots();
             var completed = VNSaveLoadOperationResult.Create(VNSaveLoadOperationStatus.Succeeded, successMessage);
             OperationCompleted?.Invoke(completed);
@@ -320,7 +340,17 @@ namespace ProjectAllTime.VN.SaveLoad
             }
         }
 
-        private IEnumerator CaptureThumbnailAfterSave(VNSaveSlotKey slotKey)
+        private void QueueThumbnailCapture(VNSaveSlotKey slotKey, SaveSlotData savedData)
+        {
+            thumbnailRevisions.TryGetValue(slotKey, out var revision);
+            thumbnailRevisions[slotKey] = ++revision;
+            var lineId = savedData != null && savedData.schemaVersion == VNSaveSerializer.ExactLineSchemaVersion
+                ? savedData.resumeLineId : null;
+            var occurrence = sessionState == null ? 0 : sessionState.CurrentPresentationOccurrence;
+            StartCoroutine(CaptureThumbnailAfterSave(slotKey, revision, lineId, occurrence));
+        }
+
+        private IEnumerator CaptureThumbnailAfterSave(VNSaveSlotKey slotKey, long revision, string lineId, long occurrence)
         {
             var modalWasSuppressed = saveLoadModal != null && saveLoadModal.BeginThumbnailVisualSuppression();
             byte[] jpgBytes = null;
@@ -331,6 +361,16 @@ namespace ProjectAllTime.VN.SaveLoad
                 captureDiagnostic = diagnostic;
             });
             if (modalWasSuppressed) saveLoadModal.EndThumbnailVisualSuppression();
+
+            if (!thumbnailRevisions.TryGetValue(slotKey, out var currentRevision) || currentRevision != revision)
+                yield break; // A newer JSON save owns this slot and its preview.
+            if (!string.IsNullOrEmpty(lineId) && (loadInProgress || sessionState == null || !sessionState.IsLineActive ||
+                sessionState.IsCurrentLineConsumed || sessionState.CurrentPresentationOccurrence != occurrence || sessionState.CurrentLineId != lineId))
+            {
+                ReportThumbnailWarning("Save succeeded, but its thumbnail was skipped because the displayed line changed.");
+                RefreshSlots();
+                yield break;
+            }
 
             if (jpgBytes == null || jpgBytes.Length == 0)
             {
@@ -360,14 +400,14 @@ namespace ProjectAllTime.VN.SaveLoad
             }
 
             if (!autosaveOnSuccessfulCheckpoint) return;
-            var allocation = repository.AllocateNextAutoSlot();
+            var allocation = repository.AllocateNextAutoSlot(IsCompatibleOverwrite);
             if (allocation.Status != VNAutoSlotAllocationStatus.Allocated || !allocation.SlotKey.HasValue)
             {
                 PublishStatus(allocation.Diagnostic ?? "Autosave could not allocate a safe slot.");
                 return;
             }
 
-            var writeResult = saveCoordinator.TryWriteCompleteSave(allocation.SlotKey.Value, out _);
+            var writeResult = saveCoordinator.TryWriteLegacyCheckpointAutoSave(allocation.SlotKey.Value, out var save);
             if (!writeResult.Succeeded)
             {
                 PublishStatus("Autosave was skipped: " + (writeResult.Diagnostic ?? "complete snapshot was unavailable"));
@@ -376,8 +416,52 @@ namespace ProjectAllTime.VN.SaveLoad
 
             thumbnailPlaceholderSlots.Add(allocation.SlotKey.Value);
             thumbnailService.TryRemoveJpgSidecar(repository, allocation.SlotKey.Value);
-            StartCoroutine(CaptureThumbnailAfterSave(allocation.SlotKey.Value));
+            QueueThumbnailCapture(allocation.SlotKey.Value, save);
             RefreshSlots();
+        }
+
+        private void HandleProductionLineChanged()
+        {
+            if (!autosaveOnSuccessfulCheckpoint || loadInProgress || sessionState == null ||
+                !sessionState.IsLineActive || !ProductionAutosaveLines.Contains(sessionState.CurrentLineId)) return;
+            StartCoroutine(AutosaveProductionLine(sessionState.CurrentLineId, sessionState.CurrentPresentationOccurrence));
+        }
+
+        private IEnumerator AutosaveProductionLine(string lineId, long occurrence)
+        {
+            // Let the line presenter and its already-awaited setup settle. A
+            // changed occurrence or load cannot consume this pending request.
+            yield return null;
+            if (loadInProgress || sessionState == null || !sessionState.IsLineActive ||
+                sessionState.CurrentPresentationOccurrence != occurrence || sessionState.CurrentLineId != lineId) yield break;
+            var allocation = repository.AllocateNextAutoSlot(IsCompatibleOverwrite);
+            if (allocation.Status != VNAutoSlotAllocationStatus.Allocated || !allocation.SlotKey.HasValue)
+            {
+                PublishStatus(allocation.Diagnostic ?? "Autosave could not allocate a safe slot.");
+                yield break;
+            }
+            var key = allocation.SlotKey.Value;
+            var result = saveCoordinator.TryWriteCompleteSave(key, out var save);
+            if (!result.Succeeded || save == null || save.schemaVersion != VNSaveSerializer.ExactLineSchemaVersion)
+            {
+                PublishStatus("Autosave was skipped: " + (result.Diagnostic ?? "exact-line state was unavailable"));
+                yield break;
+            }
+            thumbnailPlaceholderSlots.Add(key);
+            if (!thumbnailService.TryRemoveJpgSidecar(repository, key))
+                ReportThumbnailWarning("Autosave succeeded, but an old thumbnail could not be removed.");
+            QueueThumbnailCapture(key, save);
+            RefreshSlots();
+        }
+
+        private bool IsCompatibleOverwrite(VNSaveSlotKey key, SaveSlotData data)
+        {
+            if (data == null) return false;
+            if (data.schemaVersion == VNSaveSerializer.CurrentSchemaVersion)
+                return saveCoordinator != null && saveCoordinator.ValidateLoad(key).Status == VNYarnLoadValidationStatus.Valid;
+            return dialogueRunner != null &&
+                VNProductionLineResume.TryResolve(data.resumeLineId, dialogueRunner.YarnProject, out var node, out var graph, out _) &&
+                node == data.resumeEntryNode && graph == data.resumeGraphVersion;
         }
 
         private void SuppressDialogueAdvanceInput()
@@ -436,6 +520,7 @@ namespace ProjectAllTime.VN.SaveLoad
                 return VNSaveLoadOperationStatus.SaveUnavailableNoCheckpoint;
             if (!string.IsNullOrEmpty(diagnostic) &&
                 (diagnostic.IndexOf("transition", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                 diagnostic.IndexOf("Saving is unavailable", StringComparison.OrdinalIgnoreCase) >= 0 ||
                  diagnostic.IndexOf("BGM", StringComparison.OrdinalIgnoreCase) >= 0 ||
                  diagnostic.IndexOf("presentation", StringComparison.OrdinalIgnoreCase) >= 0 ||
                  diagnostic.IndexOf("audio", StringComparison.OrdinalIgnoreCase) >= 0))
