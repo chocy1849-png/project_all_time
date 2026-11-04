@@ -40,6 +40,7 @@ namespace ProjectAllTime.VN.Dialogue
         public bool IsCurrentLineFullyDisplayed => isCurrentLineFullyDisplayed;
         public bool OptionsActive => optionsActive;
         public bool IsManualAdvanceRequired { get; private set; }
+        public bool IsCurrentLineConsumed { get; private set; }
 
         /// <summary>Authored, session-only hold for the next fully displayed manual consume.</summary>
         public void RequireManualAdvance() => IsManualAdvanceRequired = true;
@@ -62,6 +63,7 @@ namespace ProjectAllTime.VN.Dialogue
                 string.IsNullOrWhiteSpace(currentLineId))
                 return false;
 
+            IsCurrentLineConsumed = true;
             var wasAdded = readHistory.RecordAuthorizedConsume(currentLineId);
             if (wasAdded) ReadStateChanged?.Invoke(currentLineId);
             VNConvenienceDiagnostics.Log(
@@ -97,6 +99,7 @@ namespace ProjectAllTime.VN.Dialogue
             SetOptionsActive(false);
 
             isLineActive = true;
+            IsCurrentLineConsumed = false;
             isCurrentLineFullyDisplayed = false;
             currentLineId = line?.TextID ?? string.Empty;
             currentSpeakerName = line?.CharacterName ?? string.Empty;
@@ -144,6 +147,7 @@ namespace ProjectAllTime.VN.Dialogue
                           currentLineId.Length > 0 || currentSpeakerName.Length > 0 || currentText.Length > 0;
             var wasFullyDisplayed = isCurrentLineFullyDisplayed;
             isLineActive = false;
+            IsCurrentLineConsumed = false;
             isCurrentLineFullyDisplayed = false;
             currentLineId = string.Empty;
             currentSpeakerName = string.Empty;

@@ -23,7 +23,7 @@ namespace ProjectAllTime.VN.Presentation
                 Debug.LogError("VNYarnInformationCommands requires production runner, overlay and SaveLoad references.", this);
                 return;
             }
-            dialogueRunner.AddCommandHandler<string, string, string, string>("vn_info_show", Show);
+            dialogueRunner.AddCommandHandler<string, string, string, string>("vn_info_show", TrackedShow);
             dialogueRunner.AddCommandHandler("vn_info_hide", Hide);
             saveLoad.LoadStateChanged += Loading;
             registered = true;
@@ -46,6 +46,9 @@ namespace ProjectAllTime.VN.Presentation
         }
 
         private void Loading(bool active) { if (active) generation++; }
+
+        private IEnumerator TrackedShow(string title, string first, string second, string third)
+            => VNAsyncCommandRegistry.Track(dialogueRunner, Show(title, first, second, third));
 
         private IEnumerator Show(string title, string first, string second, string third)
         {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using ProjectAllTime.VN.SaveLoad;
 using UnityEngine;
 using Yarn.Unity;
 
@@ -29,7 +30,7 @@ namespace ProjectAllTime.VN.Presentation
                 return;
             }
             dialogueRunner.AddCommandHandler("vn_profile_begin", Begin);
-            dialogueRunner.AddCommandHandler("vn_profile_wait", WaitForEvent);
+            dialogueRunner.AddCommandHandler("vn_profile_wait", TrackedWaitForEvent);
             dialogueRunner.AddCommandHandler<float>("vn_profile_review_complete", CompleteReview);
             dialogueRunner.AddCommandHandler("vn_profile_silent_complete", CompleteSilentReview);
             dialogueRunner.AddFunction("vn_profile_result", (Func<float>)(() => result));
@@ -66,6 +67,8 @@ namespace ProjectAllTime.VN.Presentation
             if (!browser.BeginBrowse(CreateProfiles()))
                 Debug.LogError("Could not begin the profile browser.", this);
         }
+
+        private IEnumerator TrackedWaitForEvent() => VNAsyncCommandRegistry.Track(dialogueRunner, WaitForEvent());
 
         private IEnumerator WaitForEvent()
         {

@@ -30945,6 +30945,9 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7262066351540048079, guid: 52571f68872914e24837210513edea1d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1321607884}
     - targetCorrespondingSourceObject: {fileID: 3859336324316773512, guid: 52571f68872914e24837210513edea1d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1321607883}
@@ -30952,6 +30955,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 1321607882}
   m_SourcePrefab: {fileID: 100100000, guid: 52571f68872914e24837210513edea1d, type: 3}
+--- !u!1 &1321607878 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7262066351540048079, guid: 52571f68872914e24837210513edea1d, type: 3}
+  m_PrefabInstance: {fileID: 1321607877}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1321607879 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3859336324316773512, guid: 52571f68872914e24837210513edea1d, type: 3}
@@ -30967,7 +30975,7 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8309902628685535410, guid: 52571f68872914e24837210513edea1d, type: 3}
   m_PrefabInstance: {fileID: 1321607877}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1321607878}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4bec29c0a230741bdac901dba8da47ee, type: 3}
@@ -31018,6 +31026,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ProjectAllTime.VN.Dialogue.VNLineAdvancerInputBridge
   sessionState: {fileID: 1444090794}
   interactionGate: {fileID: 1444090792}
+--- !u!114 &1321607884
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1321607878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a706d1f39edd0eb4aac8c3d1f7ea2c9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectAllTime.VN.SaveLoad.VNYarnTrackedWaitCommands
+  dialogueRunner: {fileID: 1321607881}
 --- !u!1 &1322191023
 GameObject:
   m_ObjectHideFlags: 0
@@ -38479,6 +38500,10 @@ MonoBehaviour:
   transitionController: {fileID: 1474110444}
   audioController: {fileID: 1715486990}
   presentationCatalog: {fileID: 11400000, guid: 8cc24f7387355284cbe3e06af3067684, type: 2}
+  sessionState: {fileID: 1444090794}
+  interactionGate: {fileID: 1444090792}
+  informationOverlay: {fileID: 1532195730}
+  prologuePanels: {fileID: 1474110445}
   dialogueAdvanceAction: {fileID: -5344719146435493309, guid: 6fac5fd1e55030243aff7c38a614bab8, type: 3}
   autosaveOnSuccessfulCheckpoint: 1
 --- !u!114 &1615106015

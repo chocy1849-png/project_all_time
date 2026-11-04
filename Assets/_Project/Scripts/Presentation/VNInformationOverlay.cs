@@ -16,6 +16,17 @@ namespace ProjectAllTime.VN.Presentation
         [SerializeField] private VNSaveLoadController saveLoad;
 
         public bool IsShown { get; private set; }
+        public bool CanRestore => isActiveAndEnabled && root != null && titleText != null && bodyText != null && visibility != null && saveLoad != null;
+
+        public bool RestoreForLoad(string title, string facts)
+        {
+            if (!CanRestore || !saveLoad.IsLoadInProgress || string.IsNullOrWhiteSpace(facts)) return false;
+            titleText.text = title ?? string.Empty;
+            bodyText.text = facts;
+            IsShown = true;
+            ApplyVisibility();
+            return true;
+        }
 
         public bool Show(string title, string facts)
         {

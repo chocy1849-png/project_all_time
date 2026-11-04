@@ -46,7 +46,11 @@ namespace ProjectAllTime.Tests.Editor
         {
             var yarn = File.ReadAllText(YarnPath);
             var nodes = Regex.Matches(yarn, @"(?m)^title: (\w+)").Cast<Match>().Select(m => m.Groups[1].Value).ToArray();
-            Assert.That(nodes.Length, Is.EqualTo(34));
+            Assert.That(nodes.Length, Is.EqualTo(145)); // Start + 33 beats + 111 line entries.
+            for (var scene = 1; scene <= 3; scene++)
+                Assert.That(nodes.Count(n => n.StartsWith($"PROLOGUE_LINE_S00{scene}_", StringComparison.Ordinal)),
+                    Is.EqualTo(Regex.Matches(yarn, $"#line:prologue_s00{scene}_").Count));
+            Assert.That(nodes.Count(n => n == "PROLOGUE_LINE_S001_016"), Is.EqualTo(1));
             for (var scene = 1; scene <= 3; scene++)
                 for (var beat = 1; beat <= (scene == 1 ? 13 : 10); beat++)
                     Assert.That(nodes.Count(n => n == $"PROLOGUE_S00{scene}_P{beat:00}"), Is.EqualTo(1));

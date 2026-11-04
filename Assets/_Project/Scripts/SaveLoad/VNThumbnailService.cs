@@ -53,6 +53,11 @@ namespace ProjectAllTime.VN.SaveLoad
             try
             {
                 if (!File.Exists(path)) return VNThumbnailLoadResult.Placeholder();
+                // If replacement failed, the previous sidecar may still be on
+                // disk. Never render one older than its authoritative JSON.
+                if (repository.TryGetSlotPath(slotKey, out var jsonPath) && File.Exists(jsonPath) &&
+                    File.GetLastWriteTimeUtc(path) < File.GetLastWriteTimeUtc(jsonPath))
+                    return VNThumbnailLoadResult.Placeholder("Thumbnail predates the current save.");
                 var bytes = File.ReadAllBytes(path);
                 if (bytes.Length == 0) return VNThumbnailLoadResult.Placeholder("Thumbnail file is empty.");
 

@@ -185,7 +185,7 @@ namespace ProjectAllTime.VN.SaveLoad
             return inspections;
         }
 
-        public VNAutoSlotAllocationResult AllocateNextAutoSlot()
+        public VNAutoSlotAllocationResult AllocateNextAutoSlot(Func<VNSaveSlotKey, SaveSlotData, bool> canOverwrite = null)
         {
             VNSaveSlotKey? oldestValidKey = null;
             DateTimeOffset oldestValidTimestamp = default;
@@ -197,6 +197,7 @@ namespace ProjectAllTime.VN.SaveLoad
                 if (result.State == VNSaveSlotState.Empty) return VNAutoSlotAllocationResult.Allocated(slotKey);
 
                 if (result.State != VNSaveSlotState.Valid) continue;
+                if (canOverwrite != null && !canOverwrite(slotKey, result.SaveData)) continue;
                 if (!VNSaveSerializer.TryParseUtcTimestamp(result.SaveData.savedAtUtcIso8601, out var timestamp))
                     continue;
 

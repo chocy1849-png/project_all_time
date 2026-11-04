@@ -20,13 +20,20 @@ namespace ProjectAllTime.VN.SaveLoad
             if (!TryResolveLinePresenter(dialogueRunner, out var presenter, out var diagnostic))
                 return VNLinePresenterLoadBarrierResult.Failure(diagnostic);
 
+            var settledFrames = 0;
             for (var frame = 0; frame <= MaximumWaitFrames; frame++)
             {
-                if (IsQuiescent(presenter, out diagnostic))
-                    return VNLinePresenterLoadBarrierResult.Success();
+                if (IsQuiescent(presenter, out diagnostic) && VNAsyncCommandRegistry.IsIdle(dialogueRunner))
+                {
+                    // Yarn wraps each command coroutine with another coroutine.
+                    // Let its completion callback observe the stopped runner
+                    // before a new dialogue cancellation token is installed.
+                    if (++settledFrames >= 4) return VNLinePresenterLoadBarrierResult.Success();
+                }
+                else settledFrames = 0;
 
                 if (frame == MaximumWaitFrames)
-                    return VNLinePresenterLoadBarrierResult.Failure("Timed out waiting for the previous LinePresenter visual dismissal: " + diagnostic);
+                    return VNLinePresenterLoadBarrierResult.Failure("Timed out waiting for the previous LinePresenter and Yarn commands to settle: " + diagnostic);
 
                 await YarnTask.Yield();
             }
