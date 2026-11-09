@@ -1,0 +1,26 @@
+var scene = UnityEngine.SceneManagement.SceneManager.GetSceneByPath("Assets/_Project/Scenes/VN_Main.unity");
+string Path(UnityEngine.Transform transform) { var names = new System.Collections.Generic.List<string>(); while (transform != null) { names.Add(transform.name); transform = transform.parent; } names.Reverse(); return "/" + string.Join("/", names); }
+string ObjectPath(UnityEngine.Object value) { if (value is UnityEngine.Component component) return Path(component.transform); if (value is UnityEngine.GameObject gameObject) return Path(gameObject.transform); return value == null ? "<null>" : UnityEditor.AssetDatabase.GetAssetPath(value); }
+var rows = new System.Collections.Generic.List<string>();
+void Add(UnityEngine.Object owner, string field) { var property = new UnityEditor.SerializedObject(owner).FindProperty(field); var value = property == null ? null : property.objectReferenceValue; rows.Add(Path(((UnityEngine.Component)owner).transform) + " | " + owner.GetType().Name + "." + field + " | " + ObjectPath(value)); }
+var runner = scene.GetRootGameObjects().SelectMany(x=>x.GetComponentsInChildren<Yarn.Unity.DialogueRunner>(true)).Single();
+var lifecycle = scene.GetRootGameObjects().SelectMany(x=>x.GetComponentsInChildren<ProjectAllTime.VN.Dialogue.VNLineLifecyclePresenter>(true)).Single();
+var bridge = scene.GetRootGameObjects().SelectMany(x=>x.GetComponentsInChildren<ProjectAllTime.VN.Dialogue.VNLineAdvancerInputBridge>(true)).Single();
+var save = scene.GetRootGameObjects().SelectMany(x=>x.GetComponentsInChildren<ProjectAllTime.VN.SaveLoad.VNSaveLoadController>(true)).Single();
+var presentation = scene.GetRootGameObjects().SelectMany(x=>x.GetComponentsInChildren<ProjectAllTime.VN.Presentation.VNPresentationController>(true)).Single(x=>x.name=="PresentationRuntime");
+var audio = scene.GetRootGameObjects().SelectMany(x=>x.GetComponentsInChildren<ProjectAllTime.VN.Audio.VNAudioController>(true)).Single();
+var settings = scene.GetRootGameObjects().SelectMany(x=>x.GetComponentsInChildren<ProjectAllTime.VN.Settings.VNSettingsRuntimeBootstrap>(true)).Single();
+var meta = scene.GetRootGameObjects().SelectMany(x=>x.GetComponentsInChildren<ProjectAllTime.VN.MetaProgress.VNMetaProgressRuntimeBootstrap>(true)).Single();
+var records = scene.GetRootGameObjects().SelectMany(x=>x.GetComponentsInChildren<ProjectAllTime.VN.Records.VNRecordsRuntimeBootstrap>(true)).Single();
+var replay = scene.GetRootGameObjects().SelectMany(x=>x.GetComponentsInChildren<ProjectAllTime.VN.Records.Replay.UI.VNReplayController>(true)).Single();
+var replayView = scene.GetRootGameObjects().SelectMany(x=>x.GetComponentsInChildren<ProjectAllTime.VN.Records.Replay.UI.VNReplayView>(true)).Single();
+var profile = scene.GetRootGameObjects().SelectMany(x=>x.GetComponentsInChildren<ProjectAllTime.VN.Presentation.VNProfileBrowser>(true)).Single();
+var info = scene.GetRootGameObjects().SelectMany(x=>x.GetComponentsInChildren<ProjectAllTime.VN.Presentation.VNInformationOverlay>(true)).Single();
+var panels = scene.GetRootGameObjects().SelectMany(x=>x.GetComponentsInChildren<ProjectAllTime.VN.Presentation.VNProloguePanels>(true)).Single();
+var router = scene.GetRootGameObjects().SelectMany(x=>x.GetComponentsInChildren<ProjectAllTime.VN.Dialogue.VNConvenienceInputRouter>(true)).Single();
+var ui = scene.GetRootGameObjects().SelectMany(x=>x.GetComponentsInChildren<UnityEngine.InputSystem.UI.InputSystemUIInputModule>(true)).Single();
+Add(runner,"yarnProject"); Add(runner,"lineProvider"); Add(lifecycle,"linePresenter"); Add(lifecycle,"sessionState"); Add(bridge,"sessionState"); Add(bridge,"interactionGate"); Add(save,"dialogueRunner"); Add(save,"presentationCatalog"); Add(save,"interactionGate"); Add(save,"informationOverlay"); Add(save,"prologuePanels"); Add(presentation,"catalog"); Add(audio,"catalog"); Add(audio,"bgmSourceA"); Add(audio,"bgmSourceB"); Add(audio,"sfxSource"); Add(settings,"dialogueRunner"); Add(settings,"settingsPanel"); Add(settings,"audioMixer"); Add(settings,"inputActions"); Add(meta,"dialogueRunner"); Add(records,"metaProgressBootstrap"); Add(records,"yarnProject"); Add(records,"replayYarnProject"); Add(records,"presentationCatalog"); Add(records,"timelineCatalog"); Add(records,"galleryCatalog"); Add(records,"archiveCatalog"); Add(records,"achievementCatalog"); Add(records,"unlockMapping"); Add(replay,"recordsModal"); Add(replay,"replaySessionHost"); Add(replay,"replayViewTemplate"); Add(replayView,"presentationController"); Add(replayView,"linePresenter"); Add(profile,"interactionGate"); Add(profile,"saveLoad"); Add(info,"titleText"); Add(info,"bodyText"); Add(info,"visibility"); Add(info,"saveLoad"); Add(panels,"dialogueRunner"); Add(panels,"saveLoad"); Add(panels,"diagram"); Add(panels,"endTitle"); Add(router,"advanceAction"); Add(router,"toggleAutoAction"); Add(router,"skipHoldAction"); Add(router,"toggleHideAction"); Add(router,"quickSaveAction"); Add(router,"quickLoadAction"); Add(router,"cancelAction");
+var lines = string.Join("\n", rows);
+var path = System.IO.Path.Combine(System.Environment.GetEnvironmentVariable("PROJECT_ALL_TIME_TEST_ROOT"),"serialized_inventory.txt");
+System.IO.File.WriteAllText(path,lines);
+return "rows="+rows.Count+" path="+path+"\n"+lines;
