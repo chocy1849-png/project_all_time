@@ -21,7 +21,7 @@ S001–S008 are implemented. The user-reported M10-13 QA Play Gate passed on 202
 | M10-11 | Unity Wiring Audit Complete | [Wiring audit](Production/M10_11_UNITY_WIRING_FINAL_AUDIT.md), [PRs #59](https://github.com/chocy1849-png/project_all_time/pull/59) and [#60](https://github.com/chocy1849-png/project_all_time/pull/60) |
 | M10-12 | Final Technical Validation Complete | [Technical validation](Production/M10_12_FINAL_TECHNICAL_VALIDATION_REPORT.md), [PR #61](https://github.com/chocy1849-png/project_all_time/pull/61) |
 | M10-13 | User QA Play Gate Passed | [User acceptance report](Production/M10_13_USER_PLAY_GATE_REPORT.md), [PR #62](https://github.com/chocy1849-png/project_all_time/pull/62) |
-| M10-14 | Documentation Closure Ready for Review; not merged | [Closure report](Production/M10_14_PROLOGUE_MILESTONE_CLOSURE_REPORT.md), final PR pending |
+| M10-14 | Documentation Closure Ready for Review; not merged | [Closure report](Production/M10_14_PROLOGUE_MILESTONE_CLOSURE_REPORT.md), [PR #63](https://github.com/chocy1849-png/project_all_time/pull/63) (open, not merged) |
 
 The current closure report consolidates implementation, media, provenance, validation, and follow-up evidence. Historical reports below retain what was known at their milestone boundaries; their earlier pending statements do not override the later completion reports linked above. M10-12's **518 passed / 0 failed / 0 skipped** EditMode result and Windows Development/Release build results are historical validation, not new M10-14 runs.
 

@@ -38,7 +38,7 @@ M10-14 was branched from that verified merge commit. The changes in this milesto
 | M10-11 | Unity Wiring Audit Complete | [Wiring audit](M10_11_UNITY_WIRING_FINAL_AUDIT.md), [PRs #59](https://github.com/chocy1849-png/project_all_time/pull/59) and [#60](https://github.com/chocy1849-png/project_all_time/pull/60) |
 | M10-12 | Final Technical Validation Complete | [Technical validation](M10_12_FINAL_TECHNICAL_VALIDATION_REPORT.md), [PR #61](https://github.com/chocy1849-png/project_all_time/pull/61) |
 | M10-13 | User QA Play Gate Passed | [User Play Gate report](M10_13_USER_PLAY_GATE_REPORT.md), [PR #62](https://github.com/chocy1849-png/project_all_time/pull/62) |
-| M10-14 | Documentation Closure Ready for Review; not merged | This report; final PR is the M10-14 review vehicle |
+| M10-14 | Documentation Closure Ready for Review; not merged | This report; [PR #63](https://github.com/chocy1849-png/project_all_time/pull/63) (open, not merged) |
 
 The older M10-01–M10-13 reports remain execution records. Their handoff and `PENDING` statements describe what was known at that milestone; later completion reports linked here supersede those earlier current-state summaries without rewriting the historical evidence.
 
@@ -238,4 +238,11 @@ The documentation diff passes `git diff --check`; the local Markdown link scan r
 
 The prototype milestone can close with a passed overall user Play Gate while retaining known media and engineering follow-up. Before public distribution, complete or explicitly approve final media substitutions, decide the table-glimpse composition, verify per-file provenance and applicable commercial-use rights, resolve the font identity and notice, and review the technical follow-ups against the target platform. No claim is made that the game or future story chapters are complete.
 
-M10-14 changes are limited to implementation-state and architecture summaries, the current vertical-slice status, asset manifest status, point-in-time report annotations, and this closure report. The final M10-14 branch/commit and PR URL are recorded in the review delivery metadata; this report is not a merge declaration.
+### Review delivery metadata
+
+- Branch: `feat/m10-14-prologue-milestone-closure`
+- Base: `main` at `6f130c33a257d0dd83a0b0657528d900de34e73c`
+- Documentation payload commit: [`4cd4391a65bd715a43c32d451a6437983275bd75`](https://github.com/chocy1849-png/project_all_time/commit/4cd4391a65bd715a43c32d451a6437983275bd75)
+- Review PR: [#63](https://github.com/chocy1849-png/project_all_time/pull/63), open and not merged.
+
+M10-14 changes are limited to implementation-state and architecture summaries, the current vertical-slice status, asset manifest status, point-in-time report annotations, and this closure report. The linked PR displays the branch's current review head; this report is not a merge declaration.
