@@ -6,6 +6,8 @@ Authority: source → [Docs/05 canon/invariants](../05_PROLOGUE_VERTICAL_SLICE.m
 
 Companion: [Master Asset Gap List](M10_MASTER_ASSET_GAP_LIST.md). Every beat and requirement reference is a mutable documentation key, **not** a node, line, checkpoint, persistent key, final asset ID or filename. No Unity hierarchy, class/API/command, slot assignment, duration/curve, BPM/instrument specification, pixel/color value or generation prompt is frozen. Source, Yarn, C#, runtime assets, catalogs and schemas remain unchanged. No production generation or user asset request is made. Actual repository inventory has NOT yet been compared; that is M10-03.
 
+**Historical M10-02 planning note:** The statements above record the mapping milestone before production inventory and implementation. M10-03 compared the repository inventory; M10-05 through M10-13 implemented and validated the prologue. Current implementation and release status is in [Docs/05](../05_PROLOGUE_VERTICAL_SLICE.md) and the [M10-14 closure report](M10_14_PROLOGUE_MILESTONE_CLOSURE_REPORT.md). This frozen map remains the presentation-beat and semantic-requirement authority.
+
 ## Frozen presentation vocabulary
 
 | Mode | Player-facing communication | Reading / focus / history contract |

@@ -99,7 +99,7 @@ Authors do not call a Yarn command to mark dialogue read. The authorized line-co
 
 `M8_META_PROGRESS_START` and its M8 IDs are reserved technical/non-canon verification content. The production `VN_Main` Start Node remains `M2_UI_START`. The M8 phase-boundary statement that Gallery, Archive, and Achievement UIs remained future consumers is superseded by M9 below; M8 remains the sole durable MetaProgress authority.
 
-M9 implements the Records shell, Timeline, CG Gallery, Archive, Achievements UI, and isolated Replay v1. The production catalogs are intentionally empty, so real populated-content UX remains deferred. Chapter Select as gameplay navigation, Ending Gallery, a general completion-percentage UI, platform achievements, cloud sync, Meta reset, and New Game / Save Delete UI where still unimplemented remain future work.
+At the M9 boundary, the Records shell, Timeline, CG Gallery, Archive, Achievements UI, and isolated Replay v1 were implemented while production catalogs were intentionally empty. M10-10 later populated the production catalogs and authored two Replay excerpts; see the [M10-10 report](Production/M10_10_PRODUCTION_RECORDS_REPORT.md). Chapter Select as gameplay navigation, Ending Gallery, a general completion-percentage UI, platform achievements, cloud sync, Meta reset, and New Game / Save Delete UI where still unimplemented remain future work.
 
 ## M9 Records / Replay authoring
 
@@ -143,7 +143,7 @@ The content validator checks the compiled root and its reachable node closure an
 
 M9 technical Replay fixtures are non-canon. Keep production story start at `M2_UI_START`; do not change it to an M9 smoke or Replay node.
 
-The M9 Records framework is complete, but production catalogs are intentionally empty. Populated Records entries and their player-facing UX remain deferred until real story content is authored. Later work may still add Chapter Select gameplay navigation, Ending Gallery, a general completion-percentage UI, platform achievements, cloud sync, Meta reset, and New Game / Save Delete UI where those remain unimplemented. Re-run the relevant human UX checks when those production records are populated.
+At the M9 milestone boundary, the Records framework was complete while production catalogs were intentionally empty. M10-10 later populated the current Timeline, Gallery, Archive and Achievement catalogs and authored Replay excerpts; the [M10-14 closure report](Production/M10_14_PROLOGUE_MILESTONE_CLOSURE_REPORT.md) records their current counts and validation history. Chapter Select as gameplay navigation, Ending Gallery, a general completion-percentage UI, platform achievements, cloud sync, Meta reset, and New Game / Save Delete UI where still unimplemented remain future work. Re-run relevant human UX checks if those separate future systems are added.
 
 ## M10-05 production facts and black opening
 

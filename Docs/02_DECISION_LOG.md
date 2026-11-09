@@ -282,7 +282,7 @@ Status: ACCEPTED
 - Stable Records content IDs use lowercase ASCII snake_case. Central Records validation checks IDs and cross-domain references, checks Yarn line and node references against the assigned YarnProject, and resolves Gallery CG references through `VNPresentationCatalog`.
 - M8 `VNMetaProgressService` remains the sole durable Records progress authority. M9 adds no fourth persistence root or Records progress store.
 - Records views consume spoiler-safe service projections, not raw catalog or MetaProgress internals. Authored disclosure policy controls locked metadata exposure.
-- Historical scope note: DEC-027's final bullet records the M8 boundary. M9 supersedes its Gallery, Archive, and Achievement UI future-consumer claims; the M9 system is implemented while the production catalogs remain intentionally empty. The other listed future consumers remain future work.
+- Historical scope note: DEC-027's final bullet records the M8 boundary. M9 superseded its Gallery, Archive, and Achievement UI future-consumer claims. Production catalogs were intentionally empty at the M9 boundary; M10-10 later populated the existing Timeline, Gallery, Archive and Achievement catalogs and added two isolated Replay excerpts. The other listed future consumers remain future work.
 
 ## DEC-029 — M9 Timeline and isolated Replay contract
 
@@ -310,6 +310,6 @@ Status: ACCEPTED
 Status: ACCEPTED
 
 - `VNRecordsRuntimeBootstrap` composes Records from the existing M8 MetaProgress runtime. MetaProgress remains at execution order `-2`; Records uses `-1`. Settings also uses `-1` but is independent of Records; no ordering between those two components is assumed. The production DialogueRunner remains default-order Start and `VN_Main` starts at `M2_UI_START`.
-- `VN_Main` contains the production Records wiring and four intentionally empty production catalogs. M9-13 Scene/Prefab wiring was authored through Unity Editor operations, not manual YAML edits.
+- At the M9-13 boundary, `VN_Main` contained the production Records wiring and four intentionally empty production catalogs. M10-10 later populated those catalogs; the original Scene/Prefab wiring was authored through Unity Editor operations, not manual YAML edits.
 - M9-14 Technical Validation passed, and M9-15 User Play Gate passed. M9 is recorded COMPLETE by the M9-16 reconciliation.
-- `DEFERRED_CONTENT_POPULATION` means the M9 framework and runtime are complete while the production catalogs contain no actual story Records content. This is not unfinished M9 architecture. Human UX rechecks are required when real Records content is authored.
+- `DEFERRED_CONTENT_POPULATION` recorded the M9 boundary: the framework/runtime were complete while the production catalogs had no story Records content. M10-10 later populated them; that historical label is not the current M10 catalog state. Human UX checks remain specific to future Records content or UI changes.

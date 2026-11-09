@@ -2,6 +2,8 @@
 
 **Status: M10-11 UNITY WIRING / FINAL AUDIT READY FOR REVIEW**
 
+**Historical status note:** M10-11 deferred technical validation and user acceptance to later milestones. M10-12 completed the technical validation, and M10-13 recorded the user's overall QA prototype pass. See the [M10-12 report](M10_12_FINAL_TECHNICAL_VALIDATION_REPORT.md), [M10-13 acceptance report](M10_13_USER_PLAY_GATE_REPORT.md), and current [M10-14 closure report](M10_14_PROLOGUE_MILESTONE_CLOSURE_REPORT.md).
+
 ## 1. Baseline and scope
 
 | Item | Result |

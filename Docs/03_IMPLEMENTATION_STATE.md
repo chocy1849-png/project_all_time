@@ -1,6 +1,35 @@
 # Implementation State
 
+## M10 — Prologue Vertical Slice (current status)
+
+**M10 PROLOGUE VERTICAL SLICE — IMPLEMENTATION AND USER QA COMPLETE**
+
+S001–S008 are implemented. The user-reported M10-13 QA Play Gate passed on 2026-11-09, and PR #62 is merged at `6f130c33a257d0dd83a0b0657528d900de34e73c`. The current scope is the QA prototype. Final media choices, source provenance, distribution rights, and the technical follow-ups below remain open for public release.
+
+| Milestone | Final disposition | Evidence |
+| --- | --- | --- |
+| M10-01 | Story Authority Complete | [Frozen Korean story source](Story/ALL_TIME_PROLOGUE_S001_S008_SOURCE_KO.txt), [PR #47](https://github.com/chocy1849-png/project_all_time/pull/47) |
+| M10-02 | Presentation Mapping Complete | [Presentation map](Production/M10_PROLOGUE_PRESENTATION_MAP.md), [PR #48](https://github.com/chocy1849-png/project_all_time/pull/48) |
+| M10-03 | Asset Inventory / ID Freeze Complete | [Inventory](Production/M10_CURRENT_ASSET_INVENTORY.md), [ID map](Production/M10_PRODUCTION_ID_MAP.md), [PR #49](https://github.com/chocy1849-png/project_all_time/pull/49) |
+| M10-04 | Technical Spikes Complete | [Spike report](Production/M10_04_TECHNICAL_SPIKE_RESULTS.md), [PR #50](https://github.com/chocy1849-png/project_all_time/pull/50) |
+| M10-05 | S001–S003 Implementation Complete | [Playable report](Production/M10_05_S001_S003_PLAYABLE_REPORT.md), [PR #51](https://github.com/chocy1849-png/project_all_time/pull/51) |
+| M10-06 | S004–S006 Implementation Complete | [Playable report](Production/M10_06_S004_S006_PLAYABLE_REPORT.md), [initial PR #52](https://github.com/chocy1849-png/project_all_time/pull/52), [completion PR #53](https://github.com/chocy1849-png/project_all_time/pull/53) |
+| M10-07 | S007–S008 Implementation Complete | [Playable report](Production/M10_07_S007_S008_PLAYABLE_REPORT.md), [PR #54](https://github.com/chocy1849-png/project_all_time/pull/54) |
+| M10-08 | Production Media Integration Complete; documented placeholders remain | [Integration report](Production/M10_08_FINAL_MEDIA_INTEGRATION_REPORT.md), [hardening report](Production/M10_08_POST_MERGE_HARDENING_REPORT.md), [PRs #55](https://github.com/chocy1849-png/project_all_time/pull/55) and [#56](https://github.com/chocy1849-png/project_all_time/pull/56) |
+| M10-09 | VN-style Exact-Line Save/Load Complete | [Integration report](Production/M10_09_SAVE_LOAD_INTEGRATION_REPORT.md), [PR #57](https://github.com/chocy1849-png/project_all_time/pull/57) |
+| M10-10 | Production Records Integration Complete | [Records report](Production/M10_10_PRODUCTION_RECORDS_REPORT.md), [PR #58](https://github.com/chocy1849-png/project_all_time/pull/58) |
+| M10-11 | Unity Wiring Audit Complete | [Wiring audit](Production/M10_11_UNITY_WIRING_FINAL_AUDIT.md), [PRs #59](https://github.com/chocy1849-png/project_all_time/pull/59) and [#60](https://github.com/chocy1849-png/project_all_time/pull/60) |
+| M10-12 | Final Technical Validation Complete | [Technical validation](Production/M10_12_FINAL_TECHNICAL_VALIDATION_REPORT.md), [PR #61](https://github.com/chocy1849-png/project_all_time/pull/61) |
+| M10-13 | User QA Play Gate Passed | [User acceptance report](Production/M10_13_USER_PLAY_GATE_REPORT.md), [PR #62](https://github.com/chocy1849-png/project_all_time/pull/62) |
+| M10-14 | Documentation Closure Ready for Review; not merged | [Closure report](Production/M10_14_PROLOGUE_MILESTONE_CLOSURE_REPORT.md), final PR pending |
+
+The current closure report consolidates implementation, media, provenance, validation, and follow-up evidence. Historical reports below retain what was known at their milestone boundaries; their earlier pending statements do not override the later completion reports linked above. M10-12's **518 passed / 0 failed / 0 skipped** EditMode result and Windows Development/Release build results are historical validation, not new M10-14 runs.
+
+**Prototype status:** `PROTOTYPE_PLAY_GATE_PASS`. **Commercial release status:** `COMMERCIAL_RELEASE_CLEARANCE_PENDING` until final media, provenance, rights, and release-readiness review are complete.
+
 ## Phase 0
+
+This section is the original project bootstrap snapshot; later M1–M10 sections supersede its “not present” implementation statements.
 
 - Unity project created with Unity 6000.3.21f1.
 - 2D project using the Universal Render Pipeline (URP).
@@ -11,6 +40,8 @@
 - No custom VN UI is present.
 
 ## M1 Narrative Runtime
+
+This section records the M1 baseline; its deferrals were completed by later milestones documented below.
 
 - Yarn Spinner 3.2.7 is installed through OpenUPM as `dev.yarnspinner.unity`.
 - `Assets/_Project/Yarn/GameNarrative.yarnproject` includes the M1 Yarn source files.
@@ -103,7 +134,7 @@ The original Auto perceptibility finding is resolved: M7-12 widened only the pos
 
 ### M8 phase-history note
 
-The preceding future-consumer statement describes the M8 phase boundary and remains historical evidence. M9 later adds the Records catalog, projection, Timeline, Replay, Gallery, Archive, Achievement, and production UI/runtime composition described below. M8 MetaProgress remains the sole durable progress authority; M9 production catalogs are intentionally empty.
+The preceding future-consumer statement describes the M8 phase boundary and remains historical evidence. M9 later adds the Records catalog, projection, Timeline, Replay, Gallery, Archive, Achievement, and production UI/runtime composition described below. M8 MetaProgress remains the sole durable progress authority. Production catalogs were empty at the M8/M9 boundary; M10-10 later populated the existing catalogs, as recorded below and in the [M10-10 report](Production/M10_10_PRODUCTION_RECORDS_REPORT.md).
 
 ## M9 — Records / Replay — COMPLETE
 
@@ -115,7 +146,7 @@ The preceding future-consumer statement describes the M8 phase boundary and rema
 - M9-05 / PR #33 added the qualitative Timeline runtime model; M9-06 / PR #34 added derived Achievement evaluation.
 - M9-07 / PR #35 added the Records modal and tab navigation; M9-08 / PR #36 added the Timeline UI; M9-09 / PR #38 integrated isolated Timeline Replay.
 - M9-10 / PR #39 added the CG Gallery UI; M9-11 / PR #40 added the Archive UI; M9-12 / PR #41 added the Achievements UI.
-- M9-13 / PR #43 wired the production Records runtime and intentionally empty catalogs into `VN_Main`.
+- M9-13 / PR #43 wired the production Records runtime and intentionally empty catalogs into `VN_Main` at the M9 boundary. M10-10 later populated those catalogs.
 
 ### M9-14 TECHNICAL VALIDATION — PASS
 
@@ -135,7 +166,7 @@ The preceding future-consumer statement describes the M8 phase boundary and rema
 
 ### DEFERRED_CONTENT_POPULATION
 
-The four production catalogs are intentionally empty. The following populated-content states therefore have automated M9 coverage but were not human-verified with production content:
+**Historical M9 boundary:** At this point the four production catalogs were intentionally empty. The following populated-content states had automated M9 coverage but were not human-verified with production content:
 
 - Discovered/completed Timeline entries and populated Timeline topology.
 - Replay button, start, Next, and Close with authored Replay content.
@@ -143,7 +174,7 @@ The four production catalogs are intentionally empty. The following populated-co
 - Archive locked/unlocked entries and populated detail content.
 - Achievement visible-locked, secret-locked, and unlocked content states.
 
-This is a content-population limitation, not unfinished M9 implementation. Repeat user-facing UX checks when real production Records content is authored in M10/M11 or later.
+This was a content-population limitation, not unfinished M9 implementation. M10-10 later populated production Timeline, Gallery, Archive and Achievement catalogs and authored two isolated Replay excerpts; M10-13 later accepted the overall QA prototype. Per-item media/provenance and commercial release remain separate. See the [M10-10 report](Production/M10_10_PRODUCTION_RECORDS_REPORT.md) and [M10-14 closure report](Production/M10_14_PROLOGUE_MILESTONE_CLOSURE_REPORT.md).
 
 ## M7-02 Settings Persistence Kernel — COMPLETE
 

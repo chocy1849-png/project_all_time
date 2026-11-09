@@ -2,6 +2,8 @@
 
 **Status: M10-12 FINAL TECHNICAL VALIDATION READY FOR REVIEW**
 
+**Historical scope note:** M10-12 preceded and deferred the user Play Gate and documentation closure. The user-reported M10-13 prototype acceptance is recorded in the [M10-13 report](M10_13_USER_PLAY_GATE_REPORT.md); current M10 status, open risks and release conditions are consolidated in the [M10-14 closure report](M10_14_PROLOGUE_MILESTONE_CLOSURE_REPORT.md). The test and build results below remain historical M10-12 evidence.
+
 **Validation date:** 2026-11-09
 **Scope:** Windows release-candidate verification for the integrated S001–S008 production slice. This is not M10-13 user acceptance or M10-14 closure.
 
@@ -213,7 +215,7 @@ Do these checks with the user and record acceptance; none is marked accepted by 
 
 ## 11. M10-14 documentation and closure handoff
 
-M10-14 was not started. After M10-13, update milestone documentation with the user’s Play Gate decisions, close the remaining media/provenance evidence, record any approved replacements against the frozen IDs, and produce the final technical/content handoff. Do not treat this report as M10-14 closure.
+At the time of M10-12, M10-14 was not started. PR #62 has since merged, and this documentation closure is recorded in the [M10-14 report](M10_14_PROLOGUE_MILESTONE_CLOSURE_REPORT.md). Remaining media/provenance follow-up is listed there; this technical report retains its historical validation scope.
 
 ## 12. Evidence files and reproduction assets
 

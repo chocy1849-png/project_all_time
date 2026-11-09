@@ -2,6 +2,8 @@
 
 Status: **PRODUCTION STABLE IDs FROZEN / READY FOR REVIEW**. 2026-10-07 Asia/Seoul; base `e2dec902c3c99ae9c0222cdb3bfbe44197d60f1f`. This freezes lookup identities, not installed catalog entries. Every new resource is **PLANNED**, Current Asset **NONE**. No final art/audio exists; no fixture is silently relabeled. [Inventory](M10_CURRENT_ASSET_INVENTORY.md), [temporary mapping](M10_TEMPORARY_ASSET_MAPPING.md), [master requirements](M10_MASTER_ASSET_GAP_LIST.md) and [manifest](../07_ASSET_MANIFEST.md) form the handoff.
 
+**Historical M10-03 status note:** The planned/none media state above records the ID-freeze baseline, not the current catalog. M10-08 later assigned media to 37 of the 43 global IDs; six remain technical placeholders. The frozen IDs and ownership rules below remain current. See the [asset manifest](../07_ASSET_MANIFEST.md) and [M10-14 closure report](M10_14_PROLOGUE_MILESTONE_CLOSURE_REPORT.md) for present media and release status.
+
 ## Identity and ownership rules
 
 Use ASCII `^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$`. Character IDs use semantic romanized names; BG/CG/BGM/SFX use `bg_` / `cg_` / `bgm_` / `sfx_` plus a reusable narrative role. Localized display text, file names and temporary material never define identity. `REQ-*` and presentation beat keys remain documentation references. This is not a freeze of node, line, checkpoint, Records or MetaProgress IDs.

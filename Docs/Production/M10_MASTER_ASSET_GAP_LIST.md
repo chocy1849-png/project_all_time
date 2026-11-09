@@ -2,6 +2,8 @@
 
 Status: **84/84 REQUIREMENTS AUDITED / READY FOR REVIEW**. Actual Unity AssetDatabase and current Scene/catalog inspection are recorded in [Inventory](M10_CURRENT_ASSET_INVENTORY.md). [Temporary Mapping](M10_TEMPORARY_ASSET_MAPPING.md) defines reversible technical treatment; [Production ID Map](M10_PRODUCTION_ID_MAP.md) freezes lookup identities; [Docs/07](../07_ASSET_MANIFEST.md) contains 43 PLANNED resources. The frozen [Presentation Map](M10_PROLOGUE_PRESENTATION_MAP.md) still supplies 103 beats; every original Requirement Ref, meaning and constraint remains traceable. No production media, Yarn or runtime implementation is created.
 
+**Historical M10-03 status note:** “43 PLANNED resources” and “No production media” describe the inventory-freeze milestone. M10-08 later integrated media for 37 global IDs and recorded six temporary references; M10-13 later passed the overall prototype Play Gate. The current disposition is in [Docs/07](../07_ASSET_MANIFEST.md) and the [M10-14 closure report](M10_14_PROLOGUE_MILESTONE_CLOSURE_REPORT.md). The requirement priorities and semantic constraints below remain the frozen source of truth.
+
 Date: 2026-10-07 Asia/Seoul. M10-03 base: `e2dec902c3c99ae9c0222cdb3bfbe44197d60f1f`, merged PR #48 included. Canonical source original authoring SHA-256: `8413E847DD66D7D45585847A935B9C384D91FACFE9724EE27084F3D86FF977E9`; source and Presentation Map unchanged. Inventory availability does not override canon.
 
 ## Planning policy and request timing
