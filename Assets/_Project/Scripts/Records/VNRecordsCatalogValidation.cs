@@ -4,6 +4,7 @@ using ProjectAllTime.VN.Presentation;
 using ProjectAllTime.VN.Records.Achievements;
 using ProjectAllTime.VN.Records.Archive;
 using ProjectAllTime.VN.Records.Gallery;
+using ProjectAllTime.VN.Records.Replay;
 using ProjectAllTime.VN.Records.Timeline;
 using UnityEngine;
 using Yarn.Unity;
@@ -19,15 +20,18 @@ namespace ProjectAllTime.VN.Records
         private readonly HashSet<string> knownEndingIds;
 
         public YarnProject YarnProject { get; }
+        public YarnProject ReplayYarnProject { get; }
         public VNPresentationCatalog PresentationCatalog { get; }
         public bool HasKnownEndingIds { get; }
 
         public VNRecordsCatalogValidationContext(
             YarnProject yarnProject,
             VNPresentationCatalog presentationCatalog,
-            IEnumerable<string> knownEndingIds = null)
+            IEnumerable<string> knownEndingIds = null,
+            YarnProject replayYarnProject = null)
         {
             YarnProject = yarnProject;
+            ReplayYarnProject = replayYarnProject ?? yarnProject;
             PresentationCatalog = presentationCatalog;
             if (knownEndingIds == null) return;
 
@@ -68,8 +72,9 @@ namespace ProjectAllTime.VN.Records
             HashSet<string> yarnLineIds;
             try
             {
-                yarnNodes = new HashSet<string>(context.YarnProject.NodeNames ?? Array.Empty<string>(), StringComparer.Ordinal);
-                yarnLineIds = new HashSet<string>(context.YarnProject.GetLineIDsForNodes(yarnNodes), StringComparer.Ordinal);
+                var productionNodes = new HashSet<string>(context.YarnProject.NodeNames ?? Array.Empty<string>(), StringComparer.Ordinal);
+                yarnLineIds = new HashSet<string>(context.YarnProject.GetLineIDsForNodes(productionNodes), StringComparer.Ordinal);
+                yarnNodes = new HashSet<string>(context.ReplayYarnProject.NodeNames ?? Array.Empty<string>(), StringComparer.Ordinal);
             }
             catch (Exception exception)
             {
@@ -79,6 +84,14 @@ namespace ProjectAllTime.VN.Records
             if (!TryValidateGallery(gallery, context.PresentationCatalog, out diagnostic)) return false;
             if (!TryValidateArchive(archive, out diagnostic)) return false;
             if (!TryValidateTimeline(timeline, gallery, yarnNodes, yarnLineIds, out diagnostic)) return false;
+            if (!ReferenceEquals(context.ReplayYarnProject, context.YarnProject))
+                foreach (var entry in timeline.Entries)
+                    if (!string.IsNullOrEmpty(entry.ReplayNode))
+                    {
+                        var result = VNReplayContentValidator.Validate(context.ReplayYarnProject, entry.ReplayNode,
+                            new VNReplayContentPolicy(new[] { entry.ReplayNode }));
+                        if (!result.IsValid) return Fail($"Replay '{entry.ReplayNode}' is invalid: {result.Diagnostic}", out diagnostic);
+                    }
             return TryValidateAchievements(timeline, gallery, archive, achievements, context, out diagnostic);
         }
 

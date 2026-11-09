@@ -98,7 +98,16 @@ namespace ProjectAllTime.VN.SaveLoad
         public string StorageRoot => storageRoot;
         public static string ProductionStorageRoot => Path.Combine(Application.persistentDataPath, SaveDirectoryName);
 
-        public VNSaveRepository() : this(ProductionStorageRoot) { }
+        public VNSaveRepository() : this(DefaultStorageRoot()) { }
+
+        private static string DefaultStorageRoot()
+        {
+#if UNITY_EDITOR
+            var isolated = Environment.GetEnvironmentVariable("PROJECT_ALL_TIME_TEST_ROOT");
+            if (!string.IsNullOrWhiteSpace(isolated)) return Path.Combine(isolated, SaveDirectoryName);
+#endif
+            return ProductionStorageRoot;
+        }
 
         private VNSaveRepository(string rootDirectory)
         {

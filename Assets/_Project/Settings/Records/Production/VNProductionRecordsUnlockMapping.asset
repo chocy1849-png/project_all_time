@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 852cdaf0ce24e4e47b29ccb35c13748e, type: 3}
+  m_Name: VNProductionRecordsUnlockMapping
+  m_EditorClassIdentifier: Assembly-CSharp::ProjectAllTime.VN.Records.VNRecordsUnlockMapping
+  rules:
+  - readLineId: line:prologue_s001_001
+    kind: 0
+    targetId: prologue_part_01
+    sourceScene: S001
+    justification: "\uCCAB \uC544\uCE68 \uB300\uD654"
+  - readLineId: line:prologue_s001_034
+    kind: 1
+    targetId: cg_worn_child_shoe
+    sourceScene: S001
+    justification: "\uB0A1\uC740 \uC2E0\uBC1C \uC7A5\uBA74"
+  - readLineId: line:prologue_s002_009
+    kind: 1
+    targetId: cg_beach_photo_child
+    sourceScene: S002
+    justification: "\uC900\uD638\uC758 \uBC14\uB2F7\uAC00 \uC0AC\uC9C4"
+  - readLineId: line:prologue_s002_025
+    kind: 1
+    targetId: cg_beach_photo_sea
+    sourceScene: S002
+    justification: "\uBC14\uB2E4 \uC0AC\uC9C4"
+  - readLineId: line:prologue_s004_037
+    kind: 1
+    targetId: cg_returned_bag_contents
+    sourceScene: S004
+    justification: "\uB3CC\uC544\uC628 \uAC00\uBC29\uC758 \uB0B4\uC6A9\uBB3C"
+  - readLineId: line:prologue_s004_049
+    kind: 1
+    targetId: cg_unused_new_shoe
+    sourceScene: S004
+    justification: "\uC0C8 \uC2E0\uBC1C"
+  - readLineId: line:prologue_s006_035
+    kind: 1
+    targetId: cg_present_table_glimpse
+    sourceScene: S006
+    justification: "\uC2DD\uD0C1 \uC7A5\uBA74 \uC9C1\uD6C4"
+  - readLineId: line:prologue_s006_016
+    kind: 2
+    targetId: rope
+    sourceScene: S006
+    justification: "\uADC0\uD658 \uB4A4 \uB85C\uD504\uC758 \uC548\uB0B4"
+  - readLineId: line:prologue_s007_028
+    kind: 2
+    targetId: awakening_exhaustion
+    sourceScene: S007
+    justification: "\uB3C4\uACBD\uC758 \uCD08\uAE30 \uC18C\uACAC"
+  - readLineId: line:prologue_s007_040
+    kind: 2
+    targetId: era_immersion
+    sourceScene: S007
+    justification: "\uB3C4\uACBD\uC758 \uCE58\uB8CC \uC81C\uC548"
+  - readLineId: line:prologue_s008_006
+    kind: 2
+    targetId: companions
+    sourceScene: S008
+    justification: "\uC740\uC815\uC758 \uB3D9\uD589\uC790 \uC124\uBA85"
+  - readLineId: line:prologue_s008_028
+    kind: 2
+    targetId: session_conditions
+    sourceScene: S008
+    justification: "\uC815\uC0C1 \uC885\uB8CC\uC640 \uC911\uB2E8 \uC124\uBA85"

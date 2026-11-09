@@ -22,11 +22,13 @@ namespace ProjectAllTime.VN.Records
     {
         [SerializeField] private VNMetaProgressRuntimeBootstrap metaProgressBootstrap;
         [SerializeField] private YarnProject yarnProject;
+        [SerializeField] private YarnProject replayYarnProject;
         [SerializeField] private VNPresentationCatalog presentationCatalog;
         [SerializeField] private VNTimelineCatalog timelineCatalog;
         [SerializeField] private VNCGGalleryCatalog galleryCatalog;
         [SerializeField] private VNArchiveCatalog archiveCatalog;
         [SerializeField] private VNAchievementCatalog achievementCatalog;
+        [SerializeField] private VNRecordsUnlockMapping unlockMapping;
         [SerializeField] private VNTimelineView timelineView;
         [SerializeField] private VNCGGalleryView galleryView;
         [SerializeField] private VNArchiveView archiveView;
@@ -39,6 +41,7 @@ namespace ProjectAllTime.VN.Records
         private VNArchiveService archiveService;
         private VNAchievementService achievementService;
         private VNAchievementEvaluator achievementEvaluator;
+        private VNRecordsUnlockReconciler unlockReconciler;
         private bool initializationAttempted;
 
         public bool IsInitialized { get; private set; }
@@ -75,7 +78,8 @@ namespace ProjectAllTime.VN.Records
 
         private bool TryValidateCatalogs(out string diagnostic) =>
             VNRecordsCatalogValidator.TryValidate(timelineCatalog, galleryCatalog, archiveCatalog,
-                achievementCatalog, new VNRecordsCatalogValidationContext(yarnProject, presentationCatalog), out diagnostic);
+                achievementCatalog, new VNRecordsCatalogValidationContext(yarnProject, presentationCatalog,
+                    replayYarnProject: replayYarnProject), out diagnostic);
 
         // Start owns the single attempt; callers cannot initialize from Awake before M8 loads.
         private void Initialize()
@@ -91,8 +95,15 @@ namespace ProjectAllTime.VN.Records
             if (!TryValidateCatalogs(out diagnostic)) { LastDiagnostic = diagnostic; return; }
 
             VNAchievementEvaluator candidateEvaluator = null;
+            VNRecordsUnlockReconciler candidateReconciler = null;
             try
             {
+                if (unlockMapping != null)
+                {
+                    candidateReconciler = new VNRecordsUnlockReconciler(unlockMapping, progress);
+                    if (!candidateReconciler.Initialize(yarnProject, timelineCatalog, galleryCatalog, archiveCatalog))
+                        throw new InvalidOperationException(candidateReconciler.LastDiagnostic);
+                }
                 var candidateTimelineService = new VNTimelineService(timelineCatalog, progress);
                 var candidateTimelineRuntime = new VNTimelineRuntime(timelineCatalog, candidateTimelineService, progress);
                 var candidateGalleryService = new VNCGGalleryService(galleryCatalog, presentationCatalog, progress);
@@ -103,6 +114,7 @@ namespace ProjectAllTime.VN.Records
                 {
                     LastDiagnostic = candidateEvaluator.LastDiagnostic ?? "Achievement evaluator initialization failed.";
                     candidateEvaluator.Dispose();
+                    candidateReconciler?.Dispose();
                     return;
                 }
 
@@ -110,7 +122,7 @@ namespace ProjectAllTime.VN.Records
                 Require(galleryView.Initialize(candidateGalleryService), "Gallery View", galleryView.LastDiagnostic);
                 Require(archiveView.Initialize(candidateArchiveService), "Archive View", archiveView.LastDiagnostic);
                 Require(achievementsView.Initialize(candidateAchievementService), "Achievements View", achievementsView.LastDiagnostic);
-                Require(replayController.Initialize(candidateTimelineRuntime, timelineCatalog, yarnProject),
+                Require(replayController.Initialize(candidateTimelineRuntime, timelineCatalog, replayYarnProject != null ? replayYarnProject : yarnProject),
                     "Replay Controller", replayController.LastDiagnostic);
                 Require(timelineView.InitializeReplay(replayController), "Timeline Replay", timelineView.LastDiagnostic);
 
@@ -120,12 +132,14 @@ namespace ProjectAllTime.VN.Records
                 archiveService = candidateArchiveService;
                 achievementService = candidateAchievementService;
                 achievementEvaluator = candidateEvaluator;
+                unlockReconciler = candidateReconciler;
                 IsInitialized = true;
                 LastDiagnostic = null;
             }
             catch (Exception exception)
             {
                 candidateEvaluator?.Dispose();
+                candidateReconciler?.Dispose();
                 ClearRuntimeOwnership();
                 LastDiagnostic = "Records initialization failed: " + exception.Message;
             }
@@ -139,12 +153,14 @@ namespace ProjectAllTime.VN.Records
         private void OnDestroy()
         {
             achievementEvaluator?.Dispose();
+            unlockReconciler?.Dispose();
             ClearRuntimeOwnership();
         }
 
         private void ClearRuntimeOwnership()
         {
             achievementEvaluator = null;
+            unlockReconciler = null;
             achievementService = null;
             archiveService = null;
             galleryService = null;

@@ -12,4 +12,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f467d7d708546a449ae9fac94d58a994, type: 3}
   m_Name: VNAchievementCatalog
   m_EditorClassIdentifier: Assembly-CSharp::ProjectAllTime.VN.Records.Achievements.VNAchievementCatalog
-  achievements: []
+  achievements:
+  - achievementId: first_steps
+    displayTitle: "\uCCAB \uC7A5\uBA74"
+    description: "\uD504\uB864\uB85C\uADF8\uB97C \uC2DC\uC791\uD588\uB2E4."
+    optionalIcon: {fileID: 0}
+    sortOrder: 0
+    hiddenBeforeUnlock: 0
+    conditionType: 2
+    conditionTargetId: prologue_part_01
+    threshold: 0
+    prerequisiteAchievementIds: []
+  - achievementId: first_memory
+    displayTitle: "\uAE30\uC5B5\uC758 \uD55C \uC7A5"
+    description: "\uADF8\uB9BC \uD55C \uC7A5\uC744 \uBC1C\uACAC\uD588\uB2E4."
+    optionalIcon: {fileID: 0}
+    sortOrder: 1
+    hiddenBeforeUnlock: 0
+    conditionType: 3
+    conditionTargetId: 
+    threshold: 1
+    prerequisiteAchievementIds: []
+  - achievementId: notes_gathered
+    displayTitle: "\uAE30\uB85D \uBAA8\uC73C\uAE30"
+    description: "\uAE30\uB85D \uC138 \uAC1C\uB97C \uBC1C\uACAC\uD588\uB2E4."
+    optionalIcon: {fileID: 0}
+    sortOrder: 2
+    hiddenBeforeUnlock: 0
+    conditionType: 4
+    conditionTargetId: 
+    threshold: 3
+    prerequisiteAchievementIds: []
+  - achievementId: all_memories
+    displayTitle: "\uAE30\uC5B5\uC758 \uC7A5\uBA74\uB4E4"
+    description: "\uD504\uB864\uB85C\uADF8\uC758 \uADF8\uB9BC\uC744 \uBAA8\uB450
+      \uBC1C\uACAC\uD588\uB2E4."
+    optionalIcon: {fileID: 0}
+    sortOrder: 3
+    hiddenBeforeUnlock: 1
+    conditionType: 5
+    conditionTargetId: 
+    threshold: 0
+    prerequisiteAchievementIds: []

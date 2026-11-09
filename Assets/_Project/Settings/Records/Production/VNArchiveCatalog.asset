@@ -12,5 +12,68 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d062d0be21bb13842a29c14a033732bf, type: 3}
   m_Name: VNArchiveCatalog
   m_EditorClassIdentifier: Assembly-CSharp::ProjectAllTime.VN.Records.Archive.VNArchiveCatalog
-  categories: []
-  entries: []
+  categories:
+  - categoryId: people
+    displayTitle: "\uC778\uBB3C"
+    sortOrder: 0
+    showCompletionCount: 0
+  - categoryId: care
+    displayTitle: "\uC9C4\uB8CC\uC640 \uD68C\uCC28"
+    sortOrder: 1
+    showCompletionCount: 0
+  entries:
+  - archiveId: rope
+    categoryId: people
+    displayTitle: "\uB85C\uD504"
+    summary: "\uC9C0\uD6C8\uACFC \uD568\uAED8\uD558\uB294 \uB85C\uD504."
+    body: "\uB85C\uD504\uB294 \uC811\uC18D \uC911 \uC9C0\uD6C8\uC5D0\uAC8C \uC815\uBCF4\uB97C
+      \uC804\uD558\uACE0, \uADC0\uD658 \uB4A4 \uD658\uC790\uC758 \uC5F0\uACB0 \uD574\uC81C\uC640
+      \uC678\uBD80 \uBC18\uC751 \uD655\uC778\uC744 \uB3D5\uB294\uB2E4."
+    optionalImage: {fileID: 0}
+    sortOrder: 0
+    showTitleWhenLocked: 0
+  - archiveId: awakening_exhaustion
+    categoryId: care
+    displayTitle: "\uAC01\uC131\uACE0\uAC08\uC99D"
+    summary: "\uB3C4\uACBD\uC774 \uC9C0\uD6C8\uC5D0\uAC8C \uC124\uBA85\uD55C \uCD08\uAE30
+      \uC18C\uACAC."
+    body: "\uB3C4\uACBD\uC740 \uC9C0\uD6C8\uC5D0\uAC8C \uAC01\uC131\uACE0\uAC08\uC99D\uC758
+      \uCD08\uAE30 \uC18C\uACAC\uC774 \uC788\uC73C\uBA70 \uC544\uC9C1 \uD68C\uBCF5
+      \uAC00\uB2A5\uD55C \uB2E8\uACC4\uB77C\uACE0 \uB9D0\uD55C\uB2E4."
+    optionalImage: {fileID: 0}
+    sortOrder: 1
+    showTitleWhenLocked: 0
+  - archiveId: era_immersion
+    categoryId: care
+    displayTitle: "\uC2DC\uB300 \uBAB0\uC785"
+    summary: "\uC9C0\uD6C8\uC5D0\uAC8C \uC81C\uC548\uB41C \uCE58\uB8CC \uD68C\uCC28."
+    body: "\uB3C4\uACBD\uC740 \uAC10\uAC01 \uACBD\uB85C \uD655\uC778\uACFC \uD68C\uBCF5
+      \uAE30\uAC04\uC744 \uAC70\uCE5C \uB4A4 \uC2DC\uB300 \uBAB0\uC785 \uC138 \uD68C\uCC28\uB97C
+      \uC81C\uC548\uD55C\uB2E4."
+    optionalImage: {fileID: 0}
+    sortOrder: 2
+    showTitleWhenLocked: 0
+  - archiveId: companions
+    categoryId: care
+    displayTitle: "\uB3D9\uD589\uC790"
+    summary: "\uC774\uBC88 \uD68C\uCC28\uC758 \uB3D9\uD589 \uBC29\uC2DD."
+    body: "\uC740\uC815\uC740 \uB3D9\uD589\uC790\uAC00 \uC0DD\uC131 \uBC18\uC751\uACFC
+      \uC775\uBA85 \uC778\uAC04 \uC870\uB825\uC790\uC758 \uCC38\uC5EC\uB85C \uC6B4\uC601\uB418\uBA70
+      \uAC1C\uC778 \uC2E0\uC6D0\uC740 \uACF5\uAC1C\uD558\uC9C0 \uC54A\uB294\uB2E4\uACE0
+      \uC124\uBA85\uD55C\uB2E4."
+    optionalImage: {fileID: 0}
+    sortOrder: 3
+    showTitleWhenLocked: 0
+  - archiveId: session_conditions
+    categoryId: care
+    displayTitle: "\uC815\uC0C1 \uC885\uB8CC \uD655\uC778"
+    summary: "\uD68C\uCC28\uC758 \uC815\uC0C1 \uC885\uB8CC\uB97C \uD655\uC778\uD558\uB294
+      \uC138 \uD56D\uBAA9."
+    body: "\uACF5\uB3D9 \uACFC\uC81C \uD574\uACB0, \uB3D9\uD589\uC790\uC640\uC758
+      \uC2E0\uB8B0\xB7\uD611\uB825 \uD615\uC131, \uCE58\uB8CC \uB300\uC0C1\uC790\uC758
+      \uC790\uBC1C\uC801 \uAD00\uC2EC \uBC18\uC751\uC744 \uD568\uAED8 \uD655\uC778\uD55C\uB2E4.
+      \uC0C1\uD0DC\uAC00 \uB098\uBE60\uC9C0\uBA74 \uC870\uAC74\uC744 \uCC44\uC6B0\uC9C0
+      \uC54A\uC544\uB3C4 \uB3CC\uC544\uC62C \uC218 \uC788\uB2E4."
+    optionalImage: {fileID: 0}
+    sortOrder: 4
+    showTitleWhenLocked: 0

@@ -11,6 +11,8 @@ namespace ProjectAllTime.Tests.Editor
 {
     public sealed class M10ProductionResumeGraphTests
     {
+        // Captured after importing the merged M10-09 LF manifest and production project.
+        private const string ApprovedGraphFingerprint = "cd43ce5bca1f245f359e90f71297e64232261c5c4b4ee6163790fa1cd3bef0b9";
         [Serializable] private sealed class Manifest { public Entry[] entries; }
         [Serializable] private sealed class Entry
         {
@@ -47,7 +49,7 @@ namespace ProjectAllTime.Tests.Editor
                 {
                     Assert.That(valid, Is.True, entry.runtimeLineId + ": " + diagnostic);
                     Assert.That(resolved, Is.EqualTo(entry.resumeEntryNode));
-                    Assert.That(fingerprint, Has.Length.EqualTo(64));
+                    Assert.That(fingerprint, Is.EqualTo(ApprovedGraphFingerprint), entry.runtimeLineId);
                 }
                 else
                 {

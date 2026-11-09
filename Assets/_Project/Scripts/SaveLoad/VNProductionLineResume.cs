@@ -103,19 +103,57 @@ namespace ProjectAllTime.VN.SaveLoad
                 diagnostic = "The approved exact-line resume entry does not match the compiled program.";
                 return false;
             }
+            if (!TryGetManifestRepresentations(asset.bytes, out var canonical, out _))
+            {
+                diagnostic = "Production line-resume manifest is not valid UTF-8.";
+                return false;
+            }
+            node = match.resumeEntryNode;
+            graphVersion = Fingerprint(project.compiledYarnProgram, canonical);
+            diagnostic = null;
+            return true;
+        }
+
+        /// <summary>Accept only the current graph's canonical LF or historical CRLF fingerprint.</summary>
+        public static bool IsCompatibleGraphVersion(string lineId, YarnProject project, string savedVersion,
+            out string node, out string diagnostic)
+        {
+            if (!TryResolve(lineId, project, out node, out var canonicalVersion, out diagnostic)) return false;
+            if (string.Equals(savedVersion, canonicalVersion, StringComparison.Ordinal)) return true;
+            var asset = Resources.Load<TextAsset>("M10_09_LINE_RESUME_MANIFEST");
+            if (asset != null && TryGetManifestRepresentations(asset.bytes, out _, out var crlf) &&
+                string.Equals(savedVersion, Fingerprint(project.compiledYarnProgram, crlf), StringComparison.Ordinal))
+                return true;
+            diagnostic = "Exact-line resume metadata does not match this narrative graph.";
+            return false;
+        }
+
+        private static bool TryGetManifestRepresentations(byte[] bytes, out byte[] canonical, out byte[] crlf)
+        {
+            canonical = null;
+            crlf = null;
+            try
+            {
+                var utf8 = new UTF8Encoding(false, true);
+                var text = utf8.GetString(bytes).Replace("\r\n", "\n");
+                canonical = utf8.GetBytes(text);
+                crlf = utf8.GetBytes(text.Replace("\n", "\r\n"));
+                return true;
+            }
+            catch (DecoderFallbackException) { return false; }
+        }
+
+        private static string Fingerprint(byte[] program, byte[] manifest)
+        {
             using var sha = SHA256.Create();
             using var content = new MemoryStream();
-            content.Write(project.compiledYarnProgram, 0, project.compiledYarnProgram.Length);
-            var manifestBytes = asset.bytes;
-            content.Write(manifestBytes, 0, manifestBytes.Length);
+            content.Write(program, 0, program.Length);
+            content.Write(manifest, 0, manifest.Length);
             content.Position = 0;
             var hash = sha.ComputeHash(content);
             var result = new StringBuilder(hash.Length * 2);
             foreach (var value in hash) result.Append(value.ToString("x2"));
-            node = match.resumeEntryNode;
-            graphVersion = result.ToString();
-            diagnostic = null;
-            return true;
+            return result.ToString();
         }
     }
 }
