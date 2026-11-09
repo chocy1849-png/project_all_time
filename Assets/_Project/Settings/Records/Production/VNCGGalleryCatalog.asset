@@ -12,4 +12,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cf60939812160146a4e80ca0e50d776, type: 3}
   m_Name: VNCGGalleryCatalog
   m_EditorClassIdentifier: Assembly-CSharp::ProjectAllTime.VN.Records.Gallery.VNCGGalleryCatalog
-  entries: []
+  entries:
+  - cgId: cg_worn_child_shoe
+    displayTitle: "\uB2F3\uC740 \uC544\uC774 \uC2E0\uBC1C"
+    sortOrder: 0
+    showTitleWhenLocked: 0
+  - cgId: cg_beach_photo_child
+    displayTitle: "\uBC14\uB2F7\uAC00\uC758 \uC900\uD638"
+    sortOrder: 1
+    showTitleWhenLocked: 0
+  - cgId: cg_beach_photo_sea
+    displayTitle: "\uBC14\uB2E4 \uC0AC\uC9C4"
+    sortOrder: 2
+    showTitleWhenLocked: 0
+  - cgId: cg_returned_bag_contents
+    displayTitle: "\uB3CC\uC544\uC628 \uAC00\uBC29"
+    sortOrder: 3
+    showTitleWhenLocked: 0
+  - cgId: cg_unused_new_shoe
+    displayTitle: "\uC0C8 \uC2E0\uBC1C"
+    sortOrder: 4
+    showTitleWhenLocked: 0
+  - cgId: cg_present_table_glimpse
+    displayTitle: "\uC2DD\uD0C1\uC758 \uC21C\uAC04"
+    sortOrder: 5
+    showTitleWhenLocked: 0

@@ -34256,11 +34256,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ProjectAllTime.VN.Records.VNRecordsRuntimeBootstrap
   metaProgressBootstrap: {fileID: 1444090798}
   yarnProject: {fileID: 7545569452688597077, guid: c6e164ddc9efe2d4f8761bf2c5e13d48, type: 3}
+  replayYarnProject: {fileID: 7545569452688597077, guid: e26ba57c09322a64ab5c9da62966f033, type: 3}
   presentationCatalog: {fileID: 11400000, guid: 8cc24f7387355284cbe3e06af3067684, type: 2}
   timelineCatalog: {fileID: 11400000, guid: 655982406f684734fa8385e6d9abe9eb, type: 2}
   galleryCatalog: {fileID: 11400000, guid: 27f8d1688f46a894abdb38ef671436ad, type: 2}
   archiveCatalog: {fileID: 11400000, guid: fa10a73a1e7dd434b822ed8344a362a2, type: 2}
   achievementCatalog: {fileID: 11400000, guid: 2e6ac52fc2d74d94d84b09a54c7c2c6a, type: 2}
+  unlockMapping: {fileID: 11400000, guid: 185ab3d7cfe756841a02db9ecd60add4, type: 2}
   timelineView: {fileID: 1638679957}
   galleryView: {fileID: 1850161839}
   archiveView: {fileID: 2044409060}

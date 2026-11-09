@@ -350,9 +350,9 @@ namespace ProjectAllTime.VN.SaveLoad
                     presenter.canvasGroup == null || presenter.lineText == null)
                     return VNYarnLoadValidationResult.Failure(VNYarnLoadValidationStatus.InvalidDependencies,
                         "Exact-line loading requires the session, input gate and authoritative line presenter.");
-                if (!VNProductionLineResume.TryResolve(readResult.SaveData.resumeLineId, dialogueRunner.YarnProject,
-                        out var node, out var graphVersion, out var lineDiagnostic) ||
-                    node != readResult.SaveData.resumeEntryNode || graphVersion != readResult.SaveData.resumeGraphVersion)
+                if (!VNProductionLineResume.IsCompatibleGraphVersion(readResult.SaveData.resumeLineId, dialogueRunner.YarnProject,
+                        readResult.SaveData.resumeGraphVersion, out var node, out var lineDiagnostic) ||
+                    node != readResult.SaveData.resumeEntryNode)
                     return VNYarnLoadValidationResult.Failure(VNYarnLoadValidationStatus.InvalidCheckpoint,
                         lineDiagnostic ?? "Exact-line resume metadata does not match this narrative graph.");
                 if (!VNProductionLineResume.TryGetPresentationContext(readResult.SaveData.resumeLineId, out linePresentation) ||

@@ -12,5 +12,106 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43e6479e9521d6a42a9429a14f669c10, type: 3}
   m_Name: VNTimelineCatalog
   m_EditorClassIdentifier: Assembly-CSharp::ProjectAllTime.VN.Records.Timeline.VNTimelineCatalog
-  chapters: []
-  entries: []
+  chapters:
+  - chapterId: prologue_part_01
+    displayTitle: "1\uBD80 \u2014 \uAE68\uC6B0\uB294 \uC0AC\uB78C"
+    sortOrder: 0
+    showWhenLocked: 0
+  entries:
+  - entryId: prologue_s001
+    chapterId: prologue_part_01
+    displayTitle: "\uB2E4\uC12F \uC0AC\uB78C\uC774 \uBA39\uB294 \uC544\uCE68"
+    sortOrder: 1
+    discoveryLineId: line:prologue_s001_001
+    completionLineId: line:prologue_s001_042
+    milestoneLineIds:
+    - line:prologue_s001_001
+    - line:prologue_s001_042
+    parentEntryId: 
+    replayNode: REPLAY_S001_MORNING
+    relatedCgId: 
+  - entryId: prologue_s002
+    chapterId: prologue_part_01
+    displayTitle: "\uB3CC\uC544\uC628 \uB2E4\uC74C\uC758 \uC77C\uC774 \uC5C6\uB294
+      \uC5EC\uD589"
+    sortOrder: 2
+    discoveryLineId: line:prologue_s002_001
+    completionLineId: line:prologue_s002_042
+    milestoneLineIds:
+    - line:prologue_s002_001
+    - line:prologue_s002_042
+    parentEntryId: 
+    replayNode: REPLAY_S002_PHOTO
+    relatedCgId: 
+  - entryId: prologue_s003
+    chapterId: prologue_part_01
+    displayTitle: "\uAC15\uC544\uC9C0\uAC00 \uBD80\uB974\uB294 \uC774\uB984"
+    sortOrder: 3
+    discoveryLineId: line:prologue_s003_001
+    completionLineId: line:prologue_s003_027
+    milestoneLineIds:
+    - line:prologue_s003_001
+    - line:prologue_s003_027
+    parentEntryId: 
+    replayNode: 
+    relatedCgId: 
+  - entryId: prologue_s004
+    chapterId: prologue_part_01
+    displayTitle: "\uC0C8 \uC2E0\uBC1C\uC774 \uC788\uB294 \uBC29"
+    sortOrder: 4
+    discoveryLineId: line:prologue_s004_001
+    completionLineId: line:prologue_s004_057
+    milestoneLineIds:
+    - line:prologue_s004_001
+    - line:prologue_s004_057
+    parentEntryId: 
+    replayNode: 
+    relatedCgId: 
+  - entryId: prologue_s005
+    chapterId: prologue_part_01
+    displayTitle: "\uC131\uACF5\uD55C \uC791\uBCC4"
+    sortOrder: 5
+    discoveryLineId: line:prologue_s005_001
+    completionLineId: line:prologue_s005_069
+    milestoneLineIds:
+    - line:prologue_s005_001
+    - line:prologue_s005_069
+    parentEntryId: 
+    replayNode: 
+    relatedCgId: 
+  - entryId: prologue_s006
+    chapterId: prologue_part_01
+    displayTitle: "\uD770 \uBB38, \uB2EB\uD78C \uC9C4\uB8CC"
+    sortOrder: 6
+    discoveryLineId: line:prologue_s006_001
+    completionLineId: line:prologue_s006_046
+    milestoneLineIds:
+    - line:prologue_s006_001
+    - line:prologue_s006_046
+    parentEntryId: 
+    replayNode: 
+    relatedCgId: 
+  - entryId: prologue_s007
+    chapterId: prologue_part_01
+    displayTitle: "\uC0B6\uC744 \uBB3B\uB294 \uAC80\uC0AC"
+    sortOrder: 7
+    discoveryLineId: line:prologue_s007_001
+    completionLineId: line:prologue_s007_055
+    milestoneLineIds:
+    - line:prologue_s007_001
+    - line:prologue_s007_055
+    parentEntryId: 
+    replayNode: 
+    relatedCgId: 
+  - entryId: prologue_s008
+    chapterId: prologue_part_01
+    displayTitle: "\uAC00\uC7A5 \uD3B8\uD560 \uAC83 \uAC19\uC740 \uC5EC\uC790"
+    sortOrder: 8
+    discoveryLineId: line:prologue_s008_001
+    completionLineId: line:prologue_s008_041
+    milestoneLineIds:
+    - line:prologue_s008_001
+    - line:prologue_s008_041
+    parentEntryId: 
+    replayNode: 
+    relatedCgId: 

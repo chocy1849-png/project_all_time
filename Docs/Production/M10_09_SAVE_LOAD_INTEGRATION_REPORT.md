@@ -1,4 +1,6 @@
-# M10-09 Save/Load Integration — Work in Progress
+# M10-09 Save/Load Integration — Completed Technical Report
+
+The investigation below is historical. Its final integration section records the merged exact-line production implementation; legacy schema-v1 checkpoints remain supported separately.
 
 The following initial investigation is historical. Option A was rejected; the later Option C implementation and validation sections supersede its status and candidates.
 

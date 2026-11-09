@@ -1,0 +1,7 @@
+{
+  "projectFileVersion": 4,
+  "sourceFiles": ["**/*.yarn"],
+  "excludeFiles": [],
+  "baseLanguage": "ko",
+  "compilerOptions": { "diagnosticsSeverity": {} }
+}

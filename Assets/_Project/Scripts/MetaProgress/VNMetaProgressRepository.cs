@@ -84,7 +84,16 @@ namespace ProjectAllTime.VN.MetaProgress
         public string CanonicalFilePath => Path.Combine(storageRoot, CanonicalFileName);
         public static string ProductionStorageRoot => Path.Combine(Application.persistentDataPath, MetaProgressDirectoryName);
 
-        public VNMetaProgressRepository() : this(ProductionStorageRoot, null) { }
+        public VNMetaProgressRepository() : this(DefaultStorageRoot(), null) { }
+
+        private static string DefaultStorageRoot()
+        {
+#if UNITY_EDITOR
+            var isolated = Environment.GetEnvironmentVariable("PROJECT_ALL_TIME_TEST_ROOT");
+            if (!string.IsNullOrWhiteSpace(isolated)) return Path.Combine(isolated, MetaProgressDirectoryName);
+#endif
+            return ProductionStorageRoot;
+        }
 
         private VNMetaProgressRepository(string rootDirectory, Action successfulWriteObserver)
         {

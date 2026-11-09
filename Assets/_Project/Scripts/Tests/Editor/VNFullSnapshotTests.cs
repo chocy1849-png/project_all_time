@@ -74,9 +74,43 @@ namespace ProjectAllTime.Tests.Editor
             Assert.That(session.CurrentLineId, Is.EqualTo("line:prologue_s001_016"));
             linePresenter.canvasGroup = canvasGroup;
             Assert.That(coordinator.ValidateLoad(key).Status, Is.EqualTo(VNYarnLoadValidationStatus.Valid));
+            Assert.That(save.resumeGraphVersion, Is.EqualTo("cd43ce5bca1f245f359e90f71297e64232261c5c4b4ee6163790fa1cd3bef0b9"));
+            // Persist both historical newline representations through the real repository.
+            foreach (var fingerprint in new[] {
+                "cd43ce5bca1f245f359e90f71297e64232261c5c4b4ee6163790fa1cd3bef0b9",
+                "9aefad0924fffae848c25a23081b48606a0cfd2c51d637bb6da4386a65883980" })
+            {
+                save.resumeGraphVersion = fingerprint;
+                Assert.That(repository.Write(key, save).Succeeded, Is.True);
+                Assert.That(coordinator.ValidateLoad(key).Status, Is.EqualTo(VNYarnLoadValidationStatus.Valid), fingerprint);
+                Assert.That(session.CurrentLineId, Is.EqualTo("line:prologue_s001_016"));
+            }
+            var program = (byte[])runner.YarnProject.compiledYarnProgram.Clone();
+            var manifest = Resources.Load<TextAsset>("M10_09_LINE_RESUME_MANIFEST").bytes;
+            string Hash(byte[] p, byte[] m)
+            {
+                using var sha = System.Security.Cryptography.SHA256.Create();
+                using var stream = new MemoryStream();
+                stream.Write(p, 0, p.Length); stream.Write(m, 0, m.Length);
+                return BitConverter.ToString(sha.ComputeHash(stream.ToArray())).Replace("-", "").ToLowerInvariant();
+            }
+            var changedProgram = (byte[])program.Clone(); changedProgram[0] ^= 1;
+            var changedManifest = (byte[])manifest.Clone(); changedManifest[changedManifest.Length / 2] ^= 1;
+            foreach (var fingerprint in new[] { Hash(changedProgram, manifest), Hash(program, changedManifest), new string('a', 64) })
+            {
+                save.resumeGraphVersion = fingerprint;
+                Assert.That(repository.Write(key, save).Succeeded, Is.True);
+                Assert.That(coordinator.ValidateLoad(key).Status, Is.EqualTo(VNYarnLoadValidationStatus.InvalidCheckpoint));
+                Assert.That(session.CurrentLineId, Is.EqualTo("line:prologue_s001_016"));
+            }
+            save.resumeGraphVersion = "cd43ce5bca1f245f359e90f71297e64232261c5c4b4ee6163790fa1cd3bef0b9";
             save.resumeEntryNode = "PROLOGUE_S001_P01";
             Assert.That(repository.Write(key, save).Succeeded, Is.True);
             Assert.That(coordinator.ValidateLoad(key).Status, Is.EqualTo(VNYarnLoadValidationStatus.InvalidCheckpoint));
+            Assert.That(session.CurrentLineId, Is.EqualTo("line:prologue_s001_016"));
+            Assert.That(repository.TryGetSlotPath(key, out var path), Is.True);
+            File.WriteAllText(path, "{\"schemaVersion\":2, broken json");
+            Assert.That(coordinator.ValidateLoad(key).Status, Is.EqualTo(VNYarnLoadValidationStatus.ReadFailed));
             Assert.That(session.CurrentLineId, Is.EqualTo("line:prologue_s001_016"));
         }
 

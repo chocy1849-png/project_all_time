@@ -180,7 +180,7 @@ namespace ProjectAllTime.Tests.Editor
         }
 
         [Test]
-        public void ProductionCatalogs_AreTheFourAuthoritativeEmptyAssetsAndValidate()
+        public void ProductionCatalogs_AreTheFourAuthoritativePopulatedAssetsAndValidate()
         {
             var bootstrap = Single<VNRecordsRuntimeBootstrap>();
             var timeline = Catalog<VNTimelineCatalog>(bootstrap,"timelineCatalog");
@@ -193,11 +193,13 @@ namespace ProjectAllTime.Tests.Editor
             var production = All<VNPresentationController>().Single(p=>!p.transform.IsChildOf(Single<VNRecordsModal>().transform));
             var presentation = Ref<VNPresentationCatalog>(bootstrap,"presentationCatalog");
             Assert.That(presentation, Is.SameAs(Ref<VNPresentationCatalog>(production,"catalog")));
-            Assert.That(timeline.Chapters, Is.Empty); Assert.That(timeline.Entries, Is.Empty);
-            Assert.That(gallery.Entries, Is.Empty); Assert.That(archive.Categories, Is.Empty); Assert.That(archive.Entries, Is.Empty);
-            Assert.That(achievements.Achievements, Is.Empty);
+            Assert.That(timeline.Chapters.Count, Is.EqualTo(1)); Assert.That(timeline.Entries.Count, Is.EqualTo(8));
+            Assert.That(gallery.Entries.Count, Is.EqualTo(6)); Assert.That(archive.Categories.Count, Is.EqualTo(2)); Assert.That(archive.Entries.Count, Is.EqualTo(5));
+            Assert.That(achievements.Achievements.Count, Is.EqualTo(4));
+            var replay = Ref<YarnProject>(bootstrap,"replayYarnProject");
+            Assert.That(Ref<VNRecordsUnlockMapping>(bootstrap,"unlockMapping"), Is.Not.Null);
             Assert.That(VNRecordsCatalogValidator.TryValidate(timeline,gallery,archive,achievements,
-                new VNRecordsCatalogValidationContext(yarn,presentation),out var diagnostic), Is.True, diagnostic);
+                new VNRecordsCatalogValidationContext(yarn,presentation,replayYarnProject: replay),out var diagnostic), Is.True, diagnostic);
         }
 
         [Test]

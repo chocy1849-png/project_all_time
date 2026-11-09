@@ -6,6 +6,7 @@ using System.Reflection;
 using NUnit.Framework;
 using ProjectAllTime.VN.MetaProgress;
 using ProjectAllTime.VN.Presentation;
+using ProjectAllTime.VN.Records;
 using ProjectAllTime.VN.Records.Achievements;
 using ProjectAllTime.VN.Records.Archive;
 using ProjectAllTime.VN.Records.Gallery;
@@ -52,6 +53,43 @@ namespace ProjectAllTime.Tests.Editor
                 if (ownedObjects[index] != null) UnityEngine.Object.DestroyImmediate(ownedObjects[index]);
             ownedObjects.Clear();
             if (Directory.Exists(temporaryRoot)) Directory.Delete(temporaryRoot, true);
+        }
+
+        [Test]
+        public void UnlockMapping_UsesCommittedHistoryAndCatchesUpIdempotently()
+        {
+            var mapping = ScriptableObject.CreateInstance<VNRecordsUnlockMapping>();
+            ownedObjects.Add(mapping);
+            var serialized = new SerializedObject(mapping);
+            var rules = serialized.FindProperty("rules");
+            rules.arraySize = 2;
+            var first = rules.GetArrayElementAtIndex(0);
+            first.FindPropertyRelative("readLineId").stringValue = DiscoveryLine;
+            first.FindPropertyRelative("kind").enumValueIndex = (int)VNRecordsUnlockKind.Chapter;
+            first.FindPropertyRelative("targetId").stringValue = "chapter_one";
+            var second = rules.GetArrayElementAtIndex(1);
+            second.FindPropertyRelative("readLineId").stringValue = CompletionLine;
+            second.FindPropertyRelative("kind").enumValueIndex = (int)VNRecordsUnlockKind.CG;
+            second.FindPropertyRelative("targetId").stringValue = "m3_cg";
+            serialized.ApplyModifiedPropertiesWithoutUndo();
+            var timeline = CreateTimelineCatalog(new VNTimelineChapterDefinition("chapter_one", "Chapter"));
+            var gallery = CreateGalleryCatalog(new VNCGGalleryEntryDefinition("m3_cg", "CG"));
+            var archive = CreateArchiveCatalog();
+            var yarn = AssetDatabase.LoadAssetAtPath<YarnProject>("Assets/_Project/Yarn/GameNarrative.yarnproject");
+            Assert.That(metaProgress.TryRecordReadLine(DiscoveryLine), Is.True);
+            using var reconciler = new VNRecordsUnlockReconciler(mapping, metaProgress);
+            Assert.That(reconciler.Initialize(yarn, timeline, gallery, archive), Is.True, reconciler.LastDiagnostic);
+            Assert.That(metaProgress.IsChapterUnlocked("chapter_one"), Is.True);
+            Assert.That(metaProgress.IsCGUnlocked("m3_cg"), Is.False);
+            Assert.That(metaProgress.TryRecordReadLine(CompletionLine), Is.True);
+            Assert.That(metaProgress.IsCGUnlocked("m3_cg"), Is.True);
+            var committedWrites = writes;
+            Assert.That(reconciler.Reconcile(), Is.True);
+            Assert.That(writes, Is.EqualTo(committedWrites));
+            var reloaded = new VNMetaProgressService(VNMetaProgressRepository.CreateForTesting(temporaryRoot));
+            reloaded.Load();
+            Assert.That(reloaded.IsChapterUnlocked("chapter_one"), Is.True);
+            Assert.That(reloaded.IsCGUnlocked("m3_cg"), Is.True);
         }
 
         [Test]
