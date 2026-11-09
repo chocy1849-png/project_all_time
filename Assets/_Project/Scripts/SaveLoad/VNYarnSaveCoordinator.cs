@@ -33,6 +33,7 @@ namespace ProjectAllTime.VN.SaveLoad
         internal VNPresentationRestorePlan PresentationRestorePlan { get; }
         internal VNAudioRestorePlan AudioRestorePlan { get; }
         internal float PlayedSeconds { get; }
+        internal VNProductionLineResume.PresentationContext LinePresentation { get; private set; }
 
         private VNYarnLoadValidationResult(
             VNYarnLoadValidationStatus status,
@@ -60,8 +61,10 @@ namespace ProjectAllTime.VN.SaveLoad
             VNYarnVariableRestorePlan restorePlan,
             VNPresentationRestorePlan presentationRestorePlan,
             VNAudioRestorePlan audioRestorePlan,
-            float playedSeconds)
-            => new(VNYarnLoadValidationStatus.Valid, saveData, checkpoint, restorePlan, presentationRestorePlan, audioRestorePlan, playedSeconds, null);
+            float playedSeconds,
+            VNProductionLineResume.PresentationContext linePresentation = default)
+            => new VNYarnLoadValidationResult(VNYarnLoadValidationStatus.Valid, saveData, checkpoint, restorePlan, presentationRestorePlan, audioRestorePlan, playedSeconds, null)
+                { LinePresentation = linePresentation };
 
         public static VNYarnLoadValidationResult Failure(VNYarnLoadValidationStatus status, string diagnostic)
             => new(status, null, default, null, null, null, 0f, diagnostic);
@@ -98,6 +101,10 @@ namespace ProjectAllTime.VN.SaveLoad
         private readonly VNPresentationController presentationController;
         private readonly VNTransitionController transitionController;
         private readonly VNAudioController audioController;
+        private readonly VNDialogueSessionState sessionState;
+        private readonly VNInteractionGate interactionGate;
+        private readonly VNInformationOverlay informationOverlay;
+        private readonly VNProloguePanels prologuePanels;
         private readonly VNLinePresenterLoadBarrier linePresenterLoadBarrier = new();
 
         /// <summary>
@@ -115,7 +122,11 @@ namespace ProjectAllTime.VN.SaveLoad
             VNPlayTimeTracker playTimeTracker,
             VNPresentationController presentationController,
             VNTransitionController transitionController,
-            VNAudioController audioController)
+            VNAudioController audioController,
+            VNDialogueSessionState sessionState = null,
+            VNInteractionGate interactionGate = null,
+            VNInformationOverlay informationOverlay = null,
+            VNProloguePanels prologuePanels = null)
         {
             this.repository = repository;
             this.checkpointService = checkpointService;
@@ -124,6 +135,10 @@ namespace ProjectAllTime.VN.SaveLoad
             this.presentationController = presentationController;
             this.transitionController = transitionController;
             this.audioController = audioController;
+            this.sessionState = sessionState;
+            this.interactionGate = interactionGate;
+            this.informationOverlay = informationOverlay;
+            this.prologuePanels = prologuePanels;
         }
 
         /// <summary>
@@ -132,6 +147,9 @@ namespace ProjectAllTime.VN.SaveLoad
         /// invalidation and UI refresh around the authoritative JSON write.
         /// </summary>
         public bool TryComposeCompleteSave(VNSaveSlotKey slotKey, out SaveSlotData saveData, out string diagnostic)
+            => TryComposeCompleteSave(slotKey, false, out saveData, out diagnostic);
+
+        private bool TryComposeCompleteSave(VNSaveSlotKey slotKey, bool allowLegacyCheckpointEvent, out SaveSlotData saveData, out string diagnostic)
         {
             saveData = null;
             if (!slotKey.IsValid)
@@ -141,7 +159,40 @@ namespace ProjectAllTime.VN.SaveLoad
             }
 
             if (!TryGetCoreDependencies(out diagnostic)) return false;
-            if (!checkpointService.TryGetCurrentCheckpoint(out var checkpoint))
+            if (interactionGate != null && (interactionGate.IsStoryInteractionActive || interactionGate.IsLoadInProgress))
+            {
+                diagnostic = "Saving is unavailable during the current interaction.";
+                return false;
+            }
+            if (sessionState != null && !sessionState.IsLineActive && !allowLegacyCheckpointEvent)
+            {
+                diagnostic = "Saving is unavailable until an active dialogue paragraph is displayed.";
+                return false;
+            }
+            var isProductionLine = sessionState != null && sessionState.IsLineActive &&
+                sessionState.CurrentLineId.StartsWith("line:prologue_", StringComparison.Ordinal);
+            var checkpoint = default(VNCheckpointContext);
+            string exactNode = null;
+            string graphVersion = null;
+            if (isProductionLine)
+            {
+                if (sessionState.OptionsActive || sessionState.IsManualAdvanceRequired || sessionState.IsCurrentLineConsumed ||
+                    interactionGate == null || interactionGate.IsStoryInteractionActive || interactionGate.IsLoadInProgress)
+                {
+                    diagnostic = "Saving is unavailable during the current interaction.";
+                    return false;
+                }
+                if (!VNProductionLineResume.TryResolve(sessionState.CurrentLineId, dialogueRunner.YarnProject,
+                    out exactNode, out graphVersion, out diagnostic)) return false;
+                if (!VNProductionLineResume.TryGetPresentationContext(sessionState.CurrentLineId, out var context) ||
+                    (!string.IsNullOrEmpty(context.Facts) && (informationOverlay == null || !informationOverlay.CanRestore)) ||
+                    (context.Diagram && (prologuePanels == null || !prologuePanels.CanRestoreDiagram)))
+                {
+                    diagnostic = "Saving is unavailable because the line's information presentation cannot be restored.";
+                    return false;
+                }
+            }
+            else if (!checkpointService.TryGetCurrentCheckpoint(out checkpoint))
             {
                 diagnostic = "No validated checkpoint is currently active.";
                 return false;
@@ -173,7 +224,7 @@ namespace ProjectAllTime.VN.SaveLoad
 
             saveData = new SaveSlotData
             {
-                schemaVersion = VNSaveSerializer.CurrentSchemaVersion,
+                schemaVersion = isProductionLine ? VNSaveSerializer.ExactLineSchemaVersion : VNSaveSerializer.CurrentSchemaVersion,
                 slotType = slotKey.ToSerializedSlotType(),
                 slotIndex = slotKey.SlotIndex,
                 checkpointId = checkpoint.CheckpointId,
@@ -181,8 +232,12 @@ namespace ProjectAllTime.VN.SaveLoad
                 yarnVariables = yarnVariables,
                 presentationState = presentationState,
                 audioState = audioState,
-                chapterId = checkpoint.ChapterId,
-                sceneTitle = checkpoint.SceneTitle,
+                saveMode = isProductionLine ? VNSaveSerializer.ExactLineSaveMode : string.Empty,
+                resumeLineId = isProductionLine ? sessionState.CurrentLineId : string.Empty,
+                resumeEntryNode = exactNode ?? string.Empty,
+                resumeGraphVersion = graphVersion ?? string.Empty,
+                chapterId = isProductionLine ? "prologue" : checkpoint.ChapterId,
+                sceneTitle = isProductionLine ? "프롤로그 " + sessionState.CurrentLineId.Substring("line:prologue_".Length, 4).ToUpperInvariant() : checkpoint.SceneTitle,
                 playedSeconds = playTimeTracker.PlayedSeconds,
                 savedAtUtcIso8601 = VNSaveSerializer.CreateUtcTimestamp(),
                 thumbnailFileName = thumbnailFileName,
@@ -218,6 +273,21 @@ namespace ProjectAllTime.VN.SaveLoad
             return writeResult;
         }
 
+        internal VNSaveOperationResult TryWriteLegacyCheckpointAutoSave(VNSaveSlotKey slotKey, out SaveSlotData saveData)
+        {
+            saveData = null;
+            if (!TryComposeCompleteSave(slotKey, true, out saveData, out var diagnostic))
+                return VNSaveOperationResult.Failure(diagnostic);
+            if (saveData.schemaVersion != VNSaveSerializer.CurrentSchemaVersion)
+            {
+                saveData = null;
+                return VNSaveOperationResult.Failure("Checkpoint autosave requires a legacy checkpoint snapshot.");
+            }
+            var result = repository.Write(slotKey, saveData);
+            if (!result.Succeeded) saveData = null;
+            return result;
+        }
+
         /// <summary>
         /// Unwired backend-only autosave capability. It uses the identical full
         /// composition path as all future save UI and never creates a partial
@@ -235,7 +305,10 @@ namespace ProjectAllTime.VN.SaveLoad
             writtenKey = default;
             saveData = null;
             if (!TryGetCoreDependencies(out var dependencyDiagnostic)) return VNSaveOperationResult.Failure(dependencyDiagnostic);
-            var allocation = repository.AllocateNextAutoSlot();
+            var allocation = repository.AllocateNextAutoSlot((key, existing) =>
+                (existing.schemaVersion == VNSaveSerializer.CurrentSchemaVersion && ValidateLoad(key).Status == VNYarnLoadValidationStatus.Valid) ||
+                (VNProductionLineResume.TryResolve(existing.resumeLineId, dialogueRunner.YarnProject,
+                    out var node, out var graph, out _) && node == existing.resumeEntryNode && graph == existing.resumeGraphVersion));
             if (allocation.Status != VNAutoSlotAllocationStatus.Allocated || !allocation.SlotKey.HasValue)
                 return VNSaveOperationResult.Failure(allocation.Diagnostic);
 
@@ -268,7 +341,27 @@ namespace ProjectAllTime.VN.SaveLoad
                 return VNYarnLoadValidationResult.Failure(VNYarnLoadValidationStatus.ReadFailed, diagnostic);
             }
 
-            if (!checkpointService.TryValidateSavedCheckpoint(readResult.SaveData, dialogueRunner, out var checkpoint, out var checkpointDiagnostic))
+            var checkpoint = default(VNCheckpointContext);
+            var linePresentation = default(VNProductionLineResume.PresentationContext);
+            if (readResult.SaveData.schemaVersion == VNSaveSerializer.ExactLineSchemaVersion)
+            {
+                if (sessionState == null || interactionGate == null ||
+                    !VNLinePresenterLoadBarrier.TryResolveLinePresenter(dialogueRunner, out var presenter, out _) ||
+                    presenter.canvasGroup == null || presenter.lineText == null)
+                    return VNYarnLoadValidationResult.Failure(VNYarnLoadValidationStatus.InvalidDependencies,
+                        "Exact-line loading requires the session, input gate and authoritative line presenter.");
+                if (!VNProductionLineResume.TryResolve(readResult.SaveData.resumeLineId, dialogueRunner.YarnProject,
+                        out var node, out var graphVersion, out var lineDiagnostic) ||
+                    node != readResult.SaveData.resumeEntryNode || graphVersion != readResult.SaveData.resumeGraphVersion)
+                    return VNYarnLoadValidationResult.Failure(VNYarnLoadValidationStatus.InvalidCheckpoint,
+                        lineDiagnostic ?? "Exact-line resume metadata does not match this narrative graph.");
+                if (!VNProductionLineResume.TryGetPresentationContext(readResult.SaveData.resumeLineId, out linePresentation) ||
+                    (!string.IsNullOrEmpty(linePresentation.Facts) && (informationOverlay == null || !informationOverlay.CanRestore)) ||
+                    (linePresentation.Diagram && (prologuePanels == null || !prologuePanels.CanRestoreDiagram)))
+                    return VNYarnLoadValidationResult.Failure(VNYarnLoadValidationStatus.InvalidDependencies,
+                        "The saved line's information presentation cannot be restored.");
+            }
+            else if (!checkpointService.TryValidateSavedCheckpoint(readResult.SaveData, dialogueRunner, out checkpoint, out var checkpointDiagnostic))
                 return VNYarnLoadValidationResult.Failure(VNYarnLoadValidationStatus.InvalidCheckpoint, checkpointDiagnostic);
 
             if (!VNYarnVariableSnapshot.TryPrepareRestore(readResult.SaveData.yarnVariables, out var yarnRestorePlan, out var variablesDiagnostic))
@@ -286,7 +379,7 @@ namespace ProjectAllTime.VN.SaveLoad
             if (!VNPlayTimeTracker.IsValidPlayedSeconds(readResult.SaveData.playedSeconds))
                 return VNYarnLoadValidationResult.Failure(VNYarnLoadValidationStatus.InvalidPlayTime, "Saved play time is invalid.");
 
-            return VNYarnLoadValidationResult.Valid(readResult.SaveData, checkpoint, yarnRestorePlan, presentationRestorePlan, audioRestorePlan, readResult.SaveData.playedSeconds);
+            return VNYarnLoadValidationResult.Valid(readResult.SaveData, checkpoint, yarnRestorePlan, presentationRestorePlan, audioRestorePlan, readResult.SaveData.playedSeconds, linePresentation);
         }
 
         /// <summary>
@@ -333,9 +426,16 @@ namespace ProjectAllTime.VN.SaveLoad
 
                 // This is after the destructive boundary, but before the
                 // re-entry node can issue any subsequent checkpoint command.
-                checkpointService.AdoptValidatedContext(validation.Checkpoint);
-                VNConvenienceDiagnostics.Log($"[M6-LOAD] StartDialogue begin: {validation.Checkpoint.ResumeNode}");
-                await dialogueRunner.StartDialogue(validation.Checkpoint.ResumeNode);
+                var isLineResume = validation.SaveData.schemaVersion == VNSaveSerializer.ExactLineSchemaVersion;
+                if (!isLineResume) checkpointService.AdoptValidatedContext(validation.Checkpoint);
+                var resumeNode = isLineResume ? validation.SaveData.resumeEntryNode : validation.Checkpoint.ResumeNode;
+                VNConvenienceDiagnostics.Log($"[M6-LOAD] StartDialogue begin: {resumeNode}");
+                await dialogueRunner.StartDialogue(resumeNode);
+                if (isLineResume && !string.IsNullOrEmpty(validation.LinePresentation.Facts) &&
+                    !informationOverlay.RestoreForLoad(validation.LinePresentation.Title, validation.LinePresentation.Facts))
+                    return VNYarnLoadExecutionResult.Failure(crossedStopBoundary, "Validated information presentation could not be restored.");
+                if (isLineResume && validation.LinePresentation.Diagram && !prologuePanels.RestoreDiagramForLoad())
+                    return VNYarnLoadExecutionResult.Failure(crossedStopBoundary, "Validated medical diagram could not be restored.");
                 VNConvenienceDiagnostics.Log("[M6-LOAD] StartDialogue complete");
                 return VNYarnLoadExecutionResult.Success(crossedStopBoundary);
             }

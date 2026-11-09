@@ -7,12 +7,15 @@ using UnityEngine;
 namespace ProjectAllTime.VN.SaveLoad
 {
     /// <summary>
-    /// JsonUtility serialization and storage-level validation for schema v1.
+    /// JsonUtility serialization and storage-level validation for schemas v1 and v2.
     /// Catalog and runtime-system validation intentionally belong to later M5 work.
     /// </summary>
     public static class VNSaveSerializer
     {
         public const int CurrentSchemaVersion = 1;
+        public const int ExactLineSchemaVersion = 2;
+        public const int LatestSupportedSchemaVersion = ExactLineSchemaVersion;
+        public const string ExactLineSaveMode = "exact_line";
 
         public static bool TrySerialize(SaveSlotData saveData, VNSaveSlotKey requestedKey, out string json, out string diagnostic)
         {
@@ -54,7 +57,7 @@ namespace ProjectAllTime.VN.SaveLoad
             }
 
             if (saveData == null) return VNSaveReadResult.Corrupted("Save JSON did not contain a root object.");
-            if (saveData.schemaVersion > CurrentSchemaVersion)
+            if (saveData.schemaVersion > LatestSupportedSchemaVersion)
                 return VNSaveReadResult.Unsupported("Save schema is newer than this build supports.");
 
             if (!TryValidate(saveData, requestedKey, out var diagnostic)) return VNSaveReadResult.Corrupted(diagnostic);
@@ -75,7 +78,7 @@ namespace ProjectAllTime.VN.SaveLoad
                 return false;
             }
 
-            if (saveData.schemaVersion != CurrentSchemaVersion)
+            if (saveData.schemaVersion != CurrentSchemaVersion && saveData.schemaVersion != ExactLineSchemaVersion)
             {
                 diagnostic = "Save schema version is not supported for this operation.";
                 return false;
@@ -94,9 +97,17 @@ namespace ProjectAllTime.VN.SaveLoad
                 return false;
             }
 
-            if (!HasText(saveData.checkpointId) || !HasText(saveData.resumeNode))
+            if (saveData.schemaVersion == CurrentSchemaVersion && (!HasText(saveData.checkpointId) || !HasText(saveData.resumeNode)))
             {
                 diagnostic = "Save checkpoint data is incomplete.";
+                return false;
+            }
+
+            if (saveData.schemaVersion == ExactLineSchemaVersion &&
+                (saveData.saveMode != ExactLineSaveMode || !HasRuntimeLineId(saveData.resumeLineId) ||
+                 !HasText(saveData.resumeEntryNode) || !IsGraphFingerprint(saveData.resumeGraphVersion)))
+            {
+                diagnostic = "Exact-line save metadata is incomplete or invalid.";
                 return false;
             }
 
@@ -252,13 +263,23 @@ namespace ProjectAllTime.VN.SaveLoad
         }
 
         private static bool HasText(string value) => !string.IsNullOrWhiteSpace(value);
+        private static bool HasRuntimeLineId(string value) =>
+            HasText(value) && value.StartsWith("line:", StringComparison.Ordinal) && value.Length > 5 &&
+            value.IndexOfAny(new[] { ' ', '\t', '\r', '\n' }) < 0;
+        private static bool IsGraphFingerprint(string value)
+        {
+            if (value == null || value.Length != 64) return false;
+            foreach (var c in value)
+                if (!((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f'))) return false;
+            return true;
+        }
         private static bool IsFinite(float value) => !float.IsNaN(value) && !float.IsInfinity(value);
         private static bool IsNonNegativeFinite(float value) => IsFinite(value) && value >= 0f;
         private static bool IsPositiveFinite(float value) => IsFinite(value) && value > 0f;
 
         private static bool IsValidSlot(string value)
         {
-            return value == "far_left" || value == "left" || value == "center" || value == "right" || value == "far_right";
+            return value == "far_left" || value == "left" || value == "center" || value == "right" || value == "far_right" || value == "outer_far_right";
         }
 
         private static bool IsValidFacing(string value) => value == "left" || value == "right";

@@ -215,7 +215,7 @@ namespace ProjectAllTime.Tests.Editor
             Assert.That(coordinator.ValidateLoad(key).Status, Is.EqualTo(VNYarnLoadValidationStatus.ReadFailed));
             AssertRuntimeStatePreserved(service, runner);
 
-            WriteRaw(key, "{\"schemaVersion\":2}");
+            WriteRaw(key, "{\"schemaVersion\":3}");
             Assert.That(coordinator.ValidateLoad(key).Status, Is.EqualTo(VNYarnLoadValidationStatus.ReadFailed));
             AssertRuntimeStatePreserved(service, runner);
         }

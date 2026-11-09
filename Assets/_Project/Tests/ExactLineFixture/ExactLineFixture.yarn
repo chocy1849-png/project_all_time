@@ -1,0 +1,20 @@
+title: EXACT_FIXTURE_START
+---
+<<declare $exact_before = 0>>
+<<declare $exact_after = 0>>
+<<set $exact_before = $exact_before + 1>>
+<<exact_fixture_sfx>>
+<<jump EXACT_FIXTURE_LINE_A>>
+===
+
+title: EXACT_FIXTURE_LINE_A
+---
+First fixture paragraph. #line:exact_fixture_a
+<<set $exact_after = $exact_after + 1>>
+<<jump EXACT_FIXTURE_LINE_B>>
+===
+
+title: EXACT_FIXTURE_LINE_B
+---
+Second fixture paragraph. #line:exact_fixture_b
+===

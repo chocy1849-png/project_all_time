@@ -12,6 +12,13 @@ namespace ProjectAllTime.VN.Presentation
         [SerializeField] private CanvasGroup diagram;
         [SerializeField] private CanvasGroup endTitle;
         private bool registered;
+        public bool CanRestoreDiagram => isActiveAndEnabled && diagram != null && saveLoad != null;
+        public bool RestoreDiagramForLoad()
+        {
+            if (!CanRestoreDiagram || !saveLoad.IsLoadInProgress) return false;
+            ShowDiagram();
+            return true;
+        }
 
         private void OnEnable()
         {

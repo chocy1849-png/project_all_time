@@ -1,4 +1,5 @@
 using System.Collections;
+using ProjectAllTime.VN.SaveLoad;
 using UnityEngine;
 using Yarn.Unity;
 
@@ -45,11 +46,11 @@ namespace ProjectAllTime.VN.Audio
             handlersRegistered = false;
         }
 
-        private IEnumerator CrossfadeBgm(string bgmId, float duration) => audioController.CrossfadeBgm(bgmId, duration);
-        private IEnumerator PauseBgm(float duration) => audioController.PauseBgm(duration);
-        private IEnumerator ResumeBgm(float duration) => audioController.ResumeBgm(duration);
-        private IEnumerator StopBgm(float duration) => audioController.FadeStopBgm(duration);
-        private IEnumerator WaitForSfxPlayback() => audioController.WaitForSfxPlayback();
+        private IEnumerator CrossfadeBgm(string bgmId, float duration) => VNAsyncCommandRegistry.Track(dialogueRunner, audioController.CrossfadeBgm(bgmId, duration));
+        private IEnumerator PauseBgm(float duration) => VNAsyncCommandRegistry.Track(dialogueRunner, audioController.PauseBgm(duration));
+        private IEnumerator ResumeBgm(float duration) => VNAsyncCommandRegistry.Track(dialogueRunner, audioController.ResumeBgm(duration));
+        private IEnumerator StopBgm(float duration) => VNAsyncCommandRegistry.Track(dialogueRunner, audioController.FadeStopBgm(duration));
+        private IEnumerator WaitForSfxPlayback() => VNAsyncCommandRegistry.Track(dialogueRunner, audioController.WaitForSfxPlayback());
         private void PlayBgm(string bgmId) => audioController.PlayBgm(bgmId);
         private void PlaySfx(string sfxId) => audioController.PlaySfx(sfxId);
     }

@@ -40,9 +40,8 @@ namespace ProjectAllTime.VN.SaveLoad
                     if (state == VNSaveSlotState.Empty) return VNSaveSlotInteraction.WriteManual;
                     return state == VNSaveSlotState.Valid ? VNSaveSlotInteraction.ConfirmManualOverwrite : VNSaveSlotInteraction.Disabled;
                 case VNSaveLoadCategory.Quick:
-                    // QuickSave intentionally overwrites quick_00, including a
-                    // malformed prior quick sidecar/JSON state.
-                    return VNSaveSlotInteraction.WriteQuick;
+                    return state == VNSaveSlotState.Empty || state == VNSaveSlotState.Valid
+                        ? VNSaveSlotInteraction.WriteQuick : VNSaveSlotInteraction.Disabled;
                 default:
                     return VNSaveSlotInteraction.Disabled;
             }

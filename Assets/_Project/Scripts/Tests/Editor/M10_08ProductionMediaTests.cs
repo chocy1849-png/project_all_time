@@ -224,7 +224,10 @@ namespace ProjectAllTime.Tests.Editor
             Assert.That(dropOnsetAfterHandoff, Is.LessThan(handoffDuration));
 
             var yarn = File.ReadAllText("Assets/_Project/Yarn/PROLOGUE_S007_S008.yarn").Replace("\r\n", "\n");
-            var p12 = GetNode(yarn, "PROLOGUE_S008_P12");
+            Assert.That(GetNode(yarn, "PROLOGUE_S008_P12"), Does.Contain("<<jump PROLOGUE_LINE_S008_038>>"));
+            Assert.That(GetNode(yarn, "PROLOGUE_LINE_S008_038"), Does.Contain("<<jump PROLOGUE_LINE_S008_039>>"));
+            Assert.That(GetNode(yarn, "PROLOGUE_LINE_S008_039"), Does.Contain("<<jump PROLOGUE_LINE_S008_040>>"));
+            var p12 = GetNode(yarn, "PROLOGUE_LINE_S008_040");
             var transitionStart = p12.IndexOf("<<vn_fade_to_black 0.8>>", StringComparison.Ordinal);
             Assert.That(transitionStart, Is.GreaterThanOrEqualTo(0));
             var transition = p12.Substring(transitionStart);
@@ -246,7 +249,8 @@ namespace ProjectAllTime.Tests.Editor
             Assert.That(computedBusOnset, Is.GreaterThan(dropOnsetAfterHandoff));
             Assert.That(computedBusOnset, Is.GreaterThanOrEqualTo(handoffDuration), "The finite handoff completes before the bus cue begins; drop duration is read from the current catalog clip.");
 
-            var p13 = GetNode(yarn, "PROLOGUE_S008_P13");
+            Assert.That(GetNode(yarn, "PROLOGUE_S008_P13"), Does.Contain("<<jump PROLOGUE_LINE_S008_041>>"));
+            var p13 = GetNode(yarn, "PROLOGUE_LINE_S008_041");
             var narrationLine = p13.IndexOf("#line:prologue_s008_041", StringComparison.Ordinal);
             var endingWait = p13.IndexOf("<<sfx_wait>>", StringComparison.Ordinal);
             var p13Jump = p13.IndexOf("<<jump PROLOGUE_S008_P14>>", StringComparison.Ordinal);
