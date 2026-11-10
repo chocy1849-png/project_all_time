@@ -118,17 +118,13 @@ namespace ProjectAllTime.VN.SaveLoad
         public static bool IsCompatibleGraphVersion(string lineId, YarnProject project, string savedVersion,
             out string node, out string diagnostic)
         {
-            if (!TryResolve(lineId, project, out node, out var canonicalVersion, out diagnostic)) return false;
-            if (string.Equals(savedVersion, canonicalVersion, StringComparison.Ordinal)) return true;
-            var asset = Resources.Load<TextAsset>("M10_09_LINE_RESUME_MANIFEST");
-            if (asset != null && TryGetManifestRepresentations(asset.bytes, out _, out var crlf) &&
-                string.Equals(savedVersion, Fingerprint(project.compiledYarnProgram, crlf), StringComparison.Ordinal))
-                return true;
-            diagnostic = "Exact-line resume metadata does not match this narrative graph.";
-            return false;
+            var result = VNResumeCompatibilityRegistry.Evaluate(lineId, project, savedVersion);
+            node = result.ResumeNode;
+            diagnostic = result.Diagnostic;
+            return result.IsCompatible;
         }
 
-        private static bool TryGetManifestRepresentations(byte[] bytes, out byte[] canonical, out byte[] crlf)
+        internal static bool TryGetManifestRepresentations(byte[] bytes, out byte[] canonical, out byte[] crlf)
         {
             canonical = null;
             crlf = null;
@@ -143,7 +139,7 @@ namespace ProjectAllTime.VN.SaveLoad
             catch (DecoderFallbackException) { return false; }
         }
 
-        private static string Fingerprint(byte[] program, byte[] manifest)
+        internal static string Fingerprint(byte[] program, byte[] manifest)
         {
             using var sha = SHA256.Create();
             using var content = new MemoryStream();

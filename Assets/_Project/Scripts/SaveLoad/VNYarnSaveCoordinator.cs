@@ -306,9 +306,7 @@ namespace ProjectAllTime.VN.SaveLoad
             saveData = null;
             if (!TryGetCoreDependencies(out var dependencyDiagnostic)) return VNSaveOperationResult.Failure(dependencyDiagnostic);
             var allocation = repository.AllocateNextAutoSlot((key, existing) =>
-                (existing.schemaVersion == VNSaveSerializer.CurrentSchemaVersion && ValidateLoad(key).Status == VNYarnLoadValidationStatus.Valid) ||
-                (VNProductionLineResume.TryResolve(existing.resumeLineId, dialogueRunner.YarnProject,
-                    out var node, out var graph, out _) && node == existing.resumeEntryNode && graph == existing.resumeGraphVersion));
+                existing != null && ValidateLoad(key).Status == VNYarnLoadValidationStatus.Valid);
             if (allocation.Status != VNAutoSlotAllocationStatus.Allocated || !allocation.SlotKey.HasValue)
                 return VNSaveOperationResult.Failure(allocation.Diagnostic);
 

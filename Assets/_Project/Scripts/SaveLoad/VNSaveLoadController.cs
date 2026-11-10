@@ -456,12 +456,8 @@ namespace ProjectAllTime.VN.SaveLoad
 
         private bool IsCompatibleOverwrite(VNSaveSlotKey key, SaveSlotData data)
         {
-            if (data == null) return false;
-            if (data.schemaVersion == VNSaveSerializer.CurrentSchemaVersion)
-                return saveCoordinator != null && saveCoordinator.ValidateLoad(key).Status == VNYarnLoadValidationStatus.Valid;
-            return dialogueRunner != null &&
-                VNProductionLineResume.TryResolve(data.resumeLineId, dialogueRunner.YarnProject, out var node, out var graph, out _) &&
-                node == data.resumeEntryNode && graph == data.resumeGraphVersion;
+            return data != null && saveCoordinator != null &&
+                saveCoordinator.ValidateLoad(key).Status == VNYarnLoadValidationStatus.Valid;
         }
 
         private void SuppressDialogueAdvanceInput()
