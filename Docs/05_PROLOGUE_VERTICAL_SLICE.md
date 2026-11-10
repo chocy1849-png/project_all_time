@@ -1,15 +1,17 @@
 # Prologue Vertical Slice
 
-Status: DEFINED / CANON SOURCE IMPORTED / PRESENTATION MAPPED / ASSETS AUDITED / PRODUCTION IDs FROZEN / TECHNICAL SPIKES REVIEWABLE
-Story Canon: READY
-Presentation Mapping: READY
-Master Asset Requirements: READY
-Current Asset Inventory: READY
-Temporary Mapping: READY
-Production Stable IDs: FROZEN
-Technical Presentation Spikes: READY — M10-05 provisional steady-volume fallback in use; final adaptation acceptance pending
-Yarn Implementation: S001–S008 TECHNICAL DRAFT.
-Production Implementation Ready: S001–S008 technical playable draft; production media and final narrative/audio acceptance pending.
+## Current M10 status
+
+**M10 PROLOGUE VERTICAL SLICE — IMPLEMENTATION AND USER QA COMPLETE**
+
+- S001–S008 are implemented; the frozen story source remains authoritative and unchanged.
+- The production content has **103 presentation beats**, **379 canonical paragraphs**, and **541 unique explicit compiled Yarn IDs**, with zero implicit or duplicate IDs in the validated M10-12 project result.
+- Production media is integrated where suitable sources were available. Six global IDs still use technical placeholders; final media substitutions and distribution rights remain pending.
+- Schema-v2 exact-line Save/Load, Records unlock integration, and two isolated Replay excerpts are integrated.
+- Windows standalone Development and Release technical builds passed in M10-12. The QA prototype was built and launched for M10-13; the user reported a complete S001–S008 playthrough, Save/Load, restart persistence, and overall visual/audio acceptance with no problems.
+- The user Play Gate applies to the QA prototype. It is not per-asset approval or commercial distribution clearance.
+
+See the [M10-14 closure report](Production/M10_14_PROLOGUE_MILESTONE_CLOSURE_REPORT.md) for the reconciled evidence, outstanding media and rights, and technical follow-up. The milestone sections that follow preserve their original point-in-time handoffs; their earlier PENDING and draft labels are historical snapshots superseded by this current summary and later milestone reports.
 
 ## Story authority and source fidelity
 

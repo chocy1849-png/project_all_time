@@ -2,6 +2,8 @@
 
 M10-10 is technically ready for review, subject to the provenance and physical-input limitations recorded below. M10-13 user acceptance has not been performed. Implementation commit: `2aaee1b`.
 
+**Historical status note:** The M10-10 statement above records its point-in-time review boundary. M10-13 later recorded the user's overall prototype acceptance; it did not clear per-file media rights or distribution. See the [M10-13 report](M10_13_USER_PLAY_GATE_REPORT.md) and current [M10-14 closure report](M10_14_PROLOGUE_MILESTONE_CLOSURE_REPORT.md).
+
 ## Execution checklist
 
 - [x] Populate and wire the four existing production catalogs and M8 unlock mapping.

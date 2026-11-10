@@ -4,6 +4,8 @@
 
 **PASS — USER-REPORTED QA PLAY GATE ACCEPTANCE** · 수락일: 2026-11-09 · 기본 커밋: bdaf1dea39ff2e31ea72ed078cee9a0ea8c6eab6 · 브랜치: feat/m10-13-user-play-gate.
 
+The report's final note that M10-14 had to wait for PR #62 is a point-in-time prerequisite. PR #62 has since merged at `6f130c33a257d0dd83a0b0657528d900de34e73c`; documentation closure is tracked in the [M10-14 report](M10_14_PROLOGUE_MILESTONE_CLOSURE_REPORT.md).
+
 ## 사용자 직접 평가 및 수락 범위
 
 사용자는 현재 대화의 M10-13 완료 요청에서 다음 결과를 직접 보고했습니다: “I personally played the entire prologue from beginning to end. I tested saving, loading, and restarting the game. Everything worked without problems. I also checked the sound and other aspects, and found no issues.” 사용자는 현재 QA 프롤로그 경험을 승인했습니다.

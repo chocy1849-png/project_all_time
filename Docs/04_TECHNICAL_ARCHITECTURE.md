@@ -10,6 +10,37 @@
 - Yarn Spinner 3.2.7 runtime through `dev.yarnspinner.unity`
 - Official Dialogue System with built-in InMemoryVariableStorage for M1 smoke testing
 
+## Current integrated production architecture (M10)
+
+The following describes the merged M10 production path. The M5 checkpoint sections later in this document remain accurate for the separately supported legacy schema-v1 technical-save path; production story saves use the M10 schema-v2 exact-line path.
+
+### Dialogue and exact-line Save/Load
+
+- `Assets/_Project/Yarn/GameNarrative.yarnproject` compiles the canonical production Yarn files. The production `DialogueRunner` and its single enabled `LinePresenter` remain authoritative; production `LinePresenter` ownership is resolved explicitly, without creating a parallel presenter.
+- Each of the 379 canonical production paragraphs has a stable explicit line ID and a `PROLOGUE_LINE_Sxxx_nnn` resume entry. Normal play reaches that line after its authored presentation and audio commands, and the entry routes to the original successor flow.
+- Production schema v2 persists the current unconsumed line ID, approved resume node and `saveMode=exact_line`, plus validated Yarn variables, presentation, BGM, slot metadata and play time. The resume fingerprint covers the compiled production program and resume manifest. Incompatible fingerprints and line/node pairs fail before runtime mutation; there is no automatic v1-to-v2 migration.
+- Fingerprint compatibility canonicalizes manifest CRLF to LF for new fingerprints and recognizes the validated historical LF and CRLF fingerprints. Schema v1 remains on its distinct checkpoint validation path.
+- Load preflights the slot and runtime dependencies, acquires load ownership, stops the old runner, waits for presenter and tracked command quiescence, restores the current line context and stable presentation/BGM state, then starts the approved resume node. Transient effects are normalized, and the original line successor remains intact.
+- The manifest carries authored passive information-panel and medical-diagram context. Existing scene owners reconstruct those overlays during load; they do not become dialogue, Backlog entries or persistent overlay state.
+
+### Convenience, input ownership and Settings
+
+- M6 owns Auto, Skip, Hide, Backlog and convenience-modal coordination. Input ownership and modal arbitration prevent story advance and conflicting convenience actions while Save/Load, Settings, Records or another interaction owns input.
+- M7 Settings owns persisted display, text/Auto speed, audio, gameplay and input-rebinding preferences. Production audio remains under the existing audio controller and mixer; Save/Load does not take ownership of user settings.
+
+### MetaProgress, Records and Replay
+
+- M8 `ReadHistory` remains the durable progress authority. Backlog is session-only. Committed story line reads feed the existing Records unlock reconciler; save slots and Replay do not become alternate progress authorities.
+- M10-10 populates the existing production catalogs: 8 Timeline scene entries, 6 Gallery CG entries, 5 Archive entries, 4 Achievements and 12 unlock rules. The catalog entries and unlock mapping are project assets, not a new persistent Records store.
+- Replay content compiles in the separate `Assets/_Project/RecordsReplay/Yarn/PrologueReplay.yarnproject`. The two production prologue excerpts use a Replay-owned runner, presenter and presentation state; Replay is not a production Yarn resume route and leaves production SaveData and MetaProgress unchanged.
+
+### Presentation and Audio
+
+- Production catalogs resolve the 43 frozen global resource IDs. Character presentation has six fixed scene slots. `rope_memory` (ordinary Rope in the connection) and `rope` (cyber-dog reveal after S006 L924) are separate presentation definitions for the same character identity and must never appear as two dogs.
+- Production Yarn commands use the existing catalog-backed presentation and audio owners. Passive information overlays, the localized S006 door effect, S004 manual-only hold, S008 profile browser, medical diagram, and ending title are owned by their existing scene components; their transient state is cleaned up or reconstructed by the established load lifecycle.
+- The production audio catalog routes the two BGM tracks and one-shot SFX through the existing mixer/controller authority. Timed BGM transitions are awaited; finite one-shot cues remain distinct from continuous BGM. The finite equipment-to-rain handoff uses the SFX catalog and does not add an Ambient subsystem.
+- Six global IDs retain a technical placeholder: the mechanical Rope marker and five silent SFX fallbacks. Their runtime references are valid, but these fallbacks are not final media. Nineteen character-scoped expression keys stay inside the nine character definitions; they are not extra global asset IDs.
+
 ## M2 core VN play screen
 
 - Project-owned uGUI objects and prefabs provide the VN play-screen layout.
@@ -23,7 +54,9 @@
 - Convenience UX is deferred to M6.
 - Settings application and UI are deferred to M7.
 
-## PLANNED — NOT IMPLEMENTED
+## M2 historical planning snapshot — superseded by M3–M10
+
+The following list recorded the M2 baseline only. Implemented production contracts are summarized under [Current integrated production architecture (M10)](#current-integrated-production-architecture-m10).
 
 Future domains:
 
@@ -253,7 +286,7 @@ M5 SaveData, M7 Settings, and M8 MetaProgress remain independent subsystems; no 
 
 The verified runtime is Yarn Spinner `dev.yarnspinner.unity` 3.2.7. Command collision handling depends on the installed 3.2.7 command-dispatcher behavior; any Yarn package upgrade must revalidate MetaProgress handler collision/registration behavior before adoption. M8 supplies a persistence foundation only; Gallery, Chapter Select, Archive, Achievement, Ending, completion percentage, platform achievement, cloud-sync, Meta reset, New Game, and Save Delete interfaces remain future consumers.
 
-The preceding sentence records the M8 architecture boundary. M9 supersedes the Gallery, Archive, and Achievement UI future-consumer claims with the Records architecture below. Production content remains deferred because the four production catalogs are intentionally empty; the remaining future consumers listed above stay out of M9.
+The preceding sentence records the M8 architecture boundary. M9 supersedes the Gallery, Archive, and Achievement UI future-consumer claims with the Records architecture below. The statement that production catalogs were empty describes the M8/M9 boundary; M10-10 later populated the existing production catalogs as summarized in the current M10 architecture section above.
 
 ## M9 Records / Replay architecture
 
@@ -381,9 +414,9 @@ Records is a participant in the existing `VNConvenienceModalController` arbitrat
 
 M9 implements the Records shell, Timeline projections/runtime/UI, isolated Replay v1, CG Gallery UI, Archive UI, Achievements UI/evaluator, and production scene-session composition.
 
-`DEFERRED_CONTENT_POPULATION` describes intentionally empty production catalogs, not incomplete M9 architecture. Populated Timeline states/topology, authored Replay controls/content, Gallery locked/unlocked/viewer states, Archive locked/unlocked/detail states, and Achievement locked/secret/unlocked states have automated coverage but await real production content and later human UX rechecks.
+At the M9 milestone boundary, `DEFERRED_CONTENT_POPULATION` described intentionally empty production catalogs, not incomplete M9 architecture. M10-10 later populated the production Timeline, Gallery, Archive and Achievement catalogs and authored two isolated Replay excerpts. The M9 milestone report remains a historical account of its then-current scope.
 
-M9 does not add interactive Replay choices or branching Replay gameplay, Replay audio/voice/transitions, platform achievements, cloud sync, Meta reset, populated production Records content, a general completion-percentage UI, Ending Gallery, or Chapter Select as gameplay navigation. New Game and Save Delete UI remain future only where not implemented elsewhere.
+M9 did not add interactive Replay choices or branching Replay gameplay, Replay audio/voice/transitions, platform achievements, cloud sync, Meta reset, a general completion-percentage UI, Ending Gallery, or Chapter Select as gameplay navigation. Those remain outside the M10 implementation; New Game and Save Delete UI remain future only where not implemented elsewhere.
 
 ## M10-09 exact-line production persistence
 

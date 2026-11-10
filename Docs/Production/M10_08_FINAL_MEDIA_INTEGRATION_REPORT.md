@@ -2,6 +2,8 @@
 
 **Status: M10-08 IN PROGRESS — SPECIFIC MEDIA GAPS REMAIN.** The supplied candidate media has been imported, assigned, and runtime-checked wherever a suitable source exists. Six frozen IDs still resolve to technical fallbacks; final artistic, rights, and audible-output acceptance is not claimed. This report does not mark M10 complete or the M10-13 user Play Gate passed.
 
+**Historical status note:** This report records the M10-08 media-integration boundary. M10-09 through M10-13 later completed; the user-reported M10-13 prototype gate passed and is recorded in the [M10-13 report](M10_13_USER_PLAY_GATE_REPORT.md). The six fallbacks and per-file provenance gaps remain open; see the current [M10-14 closure report](M10_14_PROLOGUE_MILESTONE_CLOSURE_REPORT.md).
+
 ## Baseline and scope
 
 - Base commit: `afc6b02a02da305590453c98e4f27b91471aaa91` (M10-07 / PR #54).

@@ -4,6 +4,8 @@
 
 **PRODUCTION MEDIA ACCEPTANCE PENDING**
 
+**Historical status note:** This was the M10-08 technical and media review state. The overall M10-13 QA prototype gate later passed; it did not approve each media item as final. Current media, provenance, and release status is reconciled in the [M10-14 closure report](M10_14_PROLOGUE_MILESTONE_CLOSURE_REPORT.md).
+
 ## Scope and baseline
 
 - Repository: project_all_time

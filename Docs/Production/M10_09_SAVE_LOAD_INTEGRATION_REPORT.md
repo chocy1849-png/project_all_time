@@ -2,6 +2,8 @@
 
 The investigation below is historical. Its final integration section records the merged exact-line production implementation; legacy schema-v1 checkpoints remain supported separately.
 
+The report predates M10-13 user acceptance and M10-14 documentation closure. The user-reported prototype gate is recorded in the [M10-13 report](M10_13_USER_PLAY_GATE_REPORT.md); current milestone and release disposition is in the [M10-14 closure report](M10_14_PROLOGUE_MILESTONE_CLOSURE_REPORT.md).
+
 The following initial investigation is historical. Option A was rejected; the later Option C implementation and validation sections supersede its status and candidates.
 
 ## Baseline
