@@ -115,5 +115,45 @@ namespace ProjectAllTime.Tests.Editor
             }
             finally { EditorSceneManager.CloseScene(scene, true); }
         }
+
+        [Test]
+        public void ReviewCorrections_KeepControlsRightAlignedAndBacklogWithinViewport()
+        {
+            var scene = EditorSceneManager.OpenScene("Assets/_Project/Scenes/VN_Main.unity", OpenSceneMode.Additive);
+            try
+            {
+                VNQuickControlBar bar = null;
+                VNBacklogModal backlog = null;
+                foreach (var root in scene.GetRootGameObjects())
+                {
+                    bar ??= root.GetComponentInChildren<VNQuickControlBar>(true);
+                    backlog ??= root.GetComponentInChildren<VNBacklogModal>(true);
+                }
+                Assert.That(bar, Is.Not.Null);
+                Assert.That(backlog, Is.Not.Null);
+                var layout = bar.GetComponent<HorizontalLayoutGroup>();
+                Assert.That(layout.childAlignment, Is.EqualTo(TextAnchor.MiddleRight));
+                var barRect = (RectTransform)bar.transform;
+                Assert.That(barRect.anchorMin.x, Is.EqualTo(1));
+                Assert.That(barRect.anchorMax.x, Is.EqualTo(1));
+                Assert.That(bar.transform.childCount, Is.EqualTo(9));
+                var dialoguePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/UI/VNDialoguePanel.prefab");
+                var marker = (RectTransform)dialoguePrefab.transform.Find("DialoguePanel/ContinueIndicator");
+                Assert.That(marker.anchoredPosition.y, Is.EqualTo(76).Within(.01f));
+                var content = (RectTransform)backlog.transform.Find("Panel/ScrollView/Viewport/Content");
+                Assert.That(content.sizeDelta.x, Is.EqualTo(0).Within(.01f));
+                Assert.That(content.anchoredPosition.x, Is.EqualTo(0).Within(.01f));
+                var panel = backlog.transform.Find("Panel").GetComponent<Image>();
+                Assert.That(panel.color, Is.EqualTo((Color)new Color32(37, 43, 50, 250)));
+                var item = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/UI/M6/BacklogItem.prefab");
+                var speaker = item.transform.Find("SpeakerContainer/SpeakerNameText").GetComponent<TMP_Text>();
+                var body = item.transform.Find("DialogueText").GetComponent<TMP_Text>();
+                Assert.That(speaker.rectTransform.anchorMin, Is.EqualTo(Vector2.zero));
+                Assert.That(speaker.rectTransform.anchorMax, Is.EqualTo(Vector2.one));
+                Assert.That(speaker.color, Is.EqualTo((Color)new Color32(229, 202, 162, 255)));
+                Assert.That(body.textWrappingMode, Is.EqualTo(TextWrappingModes.Normal));
+            }
+            finally { EditorSceneManager.CloseScene(scene, true); }
+        }
     }
 }

@@ -25,3 +25,7 @@ The nine icon controls are Next, Hide, Backlog, Skip, Auto, Save, Load, Settings
 ## Review
 
 The scene captures and actual validation results are documented in `M11_UI_VISUAL_VALIDATION_REPORT.md`. The report includes before and after story-state captures. User visual approval remains outstanding; no visual acceptance is implied.
+
+## Visual review adjustment
+
+The nine quick controls align to the existing bar’s right edge, approximately 25 reference pixels inside the dialogue frame. The continue marker sits above the row to avoid overlapping Records. Backlog readability corrections and the deferred M13 design notes are recorded in the visual validation report.

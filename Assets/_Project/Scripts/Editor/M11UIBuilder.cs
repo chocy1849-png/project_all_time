@@ -41,6 +41,59 @@ namespace ProjectAllTime.Editor
         private static GameObject Instance(GameObject prefab, Transform parent)
         { var go = (GameObject)PrefabUtility.InstantiatePrefab(prefab, parent); return go; }
 
+        [MenuItem("All Time/M11/Apply visual review corrections")]
+        public static void ApplyVisualReviewCorrections()
+        {
+            var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+            if (EditorApplication.isPlayingOrWillChangePlaymode || scene.path != "Assets/_Project/Scenes/VN_Main.unity" || scene.isDirty)
+                throw new InvalidOperationException("Open a saved VN_Main scene outside Play mode before applying the corrections.");
+            var bar = UnityEngine.Object.FindFirstObjectByType<VNQuickControlBar>(FindObjectsInactive.Include);
+            var modal = UnityEngine.Object.FindFirstObjectByType<VNBacklogModal>(FindObjectsInactive.Include);
+            if (bar == null || modal == null) throw new InvalidOperationException("Production quick controls or Backlog are missing.");
+            var layout = bar.GetComponent<HorizontalLayoutGroup>();
+            var panel = modal.transform.Find("Panel");
+            var scroll = panel == null ? null : panel.Find("ScrollView");
+            var content = scroll == null ? null : scroll.Find("Viewport/Content") as RectTransform;
+            if (layout == null || panel == null || scroll == null || content == null || panel.GetComponent<Image>() == null || scroll.GetComponent<Image>() == null)
+                throw new InvalidOperationException("The existing production layout is incomplete.");
+
+            // The bar's existing right anchor already places its edge 25 reference pixels inside the dialogue frame.
+            layout.childAlignment = TextAnchor.MiddleRight;
+            panel.GetComponent<Image>().color = new Color32(37, 43, 50, 250);
+            scroll.GetComponent<Image>().color = Color.clear;
+            content.sizeDelta = new Vector2(0, content.sizeDelta.y);
+            content.anchoredPosition = new Vector2(0, content.anchoredPosition.y);
+
+            const string itemPath = "Assets/_Project/Prefabs/UI/M6/BacklogItem.prefab";
+            var item = PrefabUtility.LoadPrefabContents(itemPath);
+            try
+            {
+                var speaker = item.transform.Find("SpeakerContainer/SpeakerNameText")?.GetComponent<TMP_Text>();
+                var dialogue = item.transform.Find("DialogueText")?.GetComponent<TMP_Text>();
+                if (speaker == null || dialogue == null) throw new InvalidOperationException("Backlog text references are missing.");
+                Stretch(speaker.rectTransform);
+                speaker.color = new Color32(229, 202, 162, 255);
+                speaker.alignment = TextAlignmentOptions.MidlineLeft;
+                dialogue.color = new Color32(247, 244, 239, 255);
+                dialogue.textWrappingMode = TextWrappingModes.Normal;
+                PrefabUtility.SaveAsPrefabAsset(item, itemPath);
+            }
+            finally { PrefabUtility.UnloadPrefabContents(item); }
+            const string dialoguePath = "Assets/_Project/Prefabs/UI/VNDialoguePanel.prefab";
+            var dialogueRoot = PrefabUtility.LoadPrefabContents(dialoguePath);
+            try
+            {
+                var marker = dialogueRoot.transform.Find("DialoguePanel/ContinueIndicator") as RectTransform;
+                if (marker == null) throw new InvalidOperationException("Dialogue continue marker is missing.");
+                marker.anchoredPosition = new Vector2(marker.anchoredPosition.x, 76);
+                PrefabUtility.SaveAsPrefabAsset(dialogueRoot, dialoguePath);
+            }
+            finally { PrefabUtility.UnloadPrefabContents(dialogueRoot); }
+            EditorSceneManager.MarkSceneDirty(scene);
+            if (!EditorSceneManager.SaveScene(scene)) throw new InvalidOperationException("Failed to save VN_Main.");
+            AssetDatabase.SaveAssets();
+        }
+
         [MenuItem("All Time/M11/Apply theme bindings")]
         public static void ApplyThemeBindings()
         {

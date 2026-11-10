@@ -34,3 +34,22 @@ The original 1920 × 1080 CanvasScaler used a broad translucent gray lower panel
 ## Remaining work
 
 User visual review and explicit acceptance remain outstanding. The application has not been declared visually accepted.
+
+## Post-review corrections
+
+The nine existing buttons now use the existing right-anchored bar with right-aligned children. At 1920 × 1080, the Records edge is at x=1780 and the dialogue frame edge is at x=1804.8: an inset of 24.8 reference pixels. The continue marker was moved above the row because its former position overlapped Records. No button order or action owner changed.
+
+- Same S001 state, before: [1080p](M11_Evidence/final_s001.jpg) and [720p](M11_Evidence/final_1280.jpg); after: [1080p](M11_Evidence/review_corrected_1080.jpg), [900p](M11_Evidence/review_corrected_900.jpg), [720p](M11_Evidence/review_corrected_720.jpg).
+- Records focus and Korean tooltip: [1080p](M11_Evidence/review_tooltip_1080.jpg), [720p](M11_Evidence/review_tooltip_720.jpg). At 720p the tooltip bounds were x=1120.67–1220.67, inside the 1280-pixel screen; Records keyboard selection and leftward navigation to Settings succeeded.
+- At 720p all nine button centers resolved by UI raycast to the intended button. The original 48 × 44 reference-unit hit targets scale to approximately 32 × 29 pixels at 720p; a person should confirm their comfort during the user recheck.
+- Connected Play used isolated save and meta-progress storage. Backlog, Settings, Records, Save, Load, Skip, Auto, Hide/restore, modal blocking and indicators were exercised. One Next invocation consumed S001 line 016 and advanced to line 017 exactly once.
+
+Backlog's former light translucent panel and a content rectangle 183 reference units wider than its viewport made text hard to read and allowed horizontal clipping. Its panel now uses near-opaque #252B32; body text uses #F7F4EF and speaker text #E5CAA2. Against the conservative worst-case panel composite over white, their calculated contrast ratios are respectively 12.32:1 and 8.56:1. The content width now matches the viewport, and a previously displaced speaker label is stretched within its container. Existing pooling, narration distinction, modal ownership and data remain unchanged. [Production entries](M11_Evidence/review_backlog_1080.jpg) and an [isolated long Korean test entry](M11_Evidence/review_backlog_long.jpg) were captured in Play. The test entry wrapped to its 470.41-unit preferred height; first and last entries could be brought inside the viewport at the scroll extremes.
+
+The Next icon's Korean tooltip is `다음`; the Save/Load modal separately has a `다음 >` page-navigation button. The inspected dialogue quick-control hierarchy contains one Next action, and the M2 smoke-test options remain authored Yarn options. The exact separately labeled control in the referenced technical screenshot was not supplied independently, so no authored option or pagination action was removed on appearance alone.
+
+### Deferred to M13
+
+The full Backlog redesign is out of scope for this correction. M13 should consider a large dark translucent overlay in the M11 palette, clearly separated chronological entries, stronger speaker/body hierarchy, comfortable Korean typography and spacing, a visible scroll region and scrollbar, close controls, and responsive PC layouts. Existing project-owned portraits are optional only if supported and approved. Do not copy reference-game assets, invent portraits, or add voice replay or rewind without separate approval.
+
+Focused M11 EditMode checks: **6 passed, 0 failed, 0 skipped**. Full unfiltered EditMode regression after the corrections: **530 passed, 0 failed, 0 skipped** (Unity 6000.3.21f1, 2026-11-10 08:19 UTC). The earlier 529-test result above is the pre-correction historical run.
