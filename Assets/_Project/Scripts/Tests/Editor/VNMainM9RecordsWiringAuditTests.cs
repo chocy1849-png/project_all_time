@@ -104,7 +104,9 @@ namespace ProjectAllTime.Tests.Editor
             Assert.That(buttons.Distinct().Count(), Is.EqualTo(9));
             foreach (var button in buttons) Assert.That(button.transform.IsChildOf(quick.transform), Is.True);
             Empty(buttons.Last());
-            Assert.That(buttons.Last().GetComponentInChildren<TMPro.TMP_Text>(true).text, Is.EqualTo("Records"));
+            var tooltip = buttons.Last().GetComponent<VNIconTooltip>();
+            Assert.That(tooltip, Is.Not.Null);
+            Assert.That(new SerializedObject(tooltip).FindProperty("label").stringValue, Is.EqualTo("기록"));
         }
 
         [Test]
