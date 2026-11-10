@@ -47,6 +47,12 @@ namespace ProjectAllTime.Tests.Editor
                     .Select(p => new VNResumeContractHash { name = p.Key, sha256 = Hash(p.Value.ToByteArray()) }).ToArray(),
                 variables = project.Program.InitialValues.OrderBy(p => p.Key, StringComparer.Ordinal)
                     .Select(p => new VNResumeContractHash { name = p.Key, sha256 = Hash(p.Value.ToByteArray()) }).ToArray(),
+                lineTexts = project.Program.Nodes.Values.SelectMany(n => n.Instructions)
+                    .Where(i => i.RunLine != null || i.AddOption != null)
+                    .Select(i => i.RunLine != null ? i.RunLine.LineID : i.AddOption.LineID)
+                    .Distinct(StringComparer.Ordinal).OrderBy(id => id, StringComparer.Ordinal)
+                    .Select(id => new VNResumeContractHash { name = id, sha256 = Hash(utf8.GetBytes(
+                        project.baseLocalization.GetLocalizedString(id) ?? throw new InvalidOperationException("Missing baseline text: " + id))) }).ToArray(),
             };
             File.WriteAllText(output, JsonUtility.ToJson(descriptor, true) + "\n", utf8);
         }

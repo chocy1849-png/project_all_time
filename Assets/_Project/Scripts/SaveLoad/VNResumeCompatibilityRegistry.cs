@@ -34,7 +34,7 @@ namespace ProjectAllTime.VN.SaveLoad
     /// <summary>Side-effect-free graph identity decision. Unknown epochs fail closed.</summary>
     public static class VNResumeCompatibilityRegistry
     {
-        private const string M10DescriptorSha256 = "ec495bc6800a04aad5794171a37b2f939d3ec64578593861b07d494537df2cbf";
+        private const string M10DescriptorSha256 = "126088f2c52fc7fc5c8eaa860c70240e345e937929578566a7967b59f984a8f0";
         private const string M10Lf = "cd43ce5bca1f245f359e90f71297e64232261c5c4b4ee6163790fa1cd3bef0b9";
         private const string M10CrLf = "9aefad0924fffae848c25a23081b48606a0cfd2c51d637bb6da4386a65883980";
         public static VNResumeCompatibilityDecision Evaluate(string lineId, YarnProject project, string savedVersion, TextAsset manifestAsset = null)
@@ -47,7 +47,8 @@ namespace ProjectAllTime.VN.SaveLoad
                 return new VNResumeCompatibilityDecision(VNResumeCompatibilityStatus.ExactMatch, node, null);
             var asset = manifestAsset != null ? manifestAsset : Resources.Load<TextAsset>("M10_09_LINE_RESUME_MANIFEST");
             if (asset != null && VNProductionLineResume.TryGetManifestRepresentations(asset.bytes, out _, out var crlf) &&
-                string.Equals(savedVersion, VNProductionLineResume.Fingerprint(project.compiledYarnProgram, crlf), StringComparison.Ordinal))
+                VNProductionLineResume.TryComputeGraphVersion(project, crlf, out var crlfVersion) &&
+                string.Equals(savedVersion, crlfVersion, StringComparison.Ordinal))
                 return new VNResumeCompatibilityDecision(VNResumeCompatibilityStatus.LegacyNewlineEquivalent, node, null);
             if (savedVersion == M10Lf || savedVersion == M10CrLf)
             {
@@ -75,7 +76,8 @@ namespace ProjectAllTime.VN.SaveLoad
                 if (baseline == null || baseline.descriptorVersion != 1 || baseline.epoch != "M10" ||
                     baseline.canonicalGraphFingerprint != M10Lf || baseline.crlfGraphFingerprint != M10CrLf ||
                     baseline.nodes == null || baseline.nodes.Length != 535 ||
-                    baseline.variables == null || baseline.variables.Length != 8) return false;
+                    baseline.variables == null || baseline.variables.Length != 8 ||
+                    baseline.lineTexts == null || baseline.lineTexts.Length != 541 || project.baseLocalization == null) return false;
                 var oldManifest = JsonUtility.FromJson<VNProductionLineResume.Manifest>(baseline.manifestJson);
                 var currentManifest = JsonUtility.FromJson<VNProductionLineResume.Manifest>(manifestAsset.text);
                 if (oldManifest?.entries == null || oldManifest.entries.Length != 379 || currentManifest?.entries == null) return false;
@@ -105,6 +107,13 @@ namespace ProjectAllTime.VN.SaveLoad
                 foreach (var contract in baseline.variables)
                     if (contract == null || string.IsNullOrEmpty(contract.name) || !names.Add(contract.name) ||
                         !project.Program.InitialValues.TryGetValue(contract.name, out var value) || Hash(value.ToByteArray()) != contract.sha256) return false;
+                names.Clear();
+                foreach (var contract in baseline.lineTexts)
+                {
+                    if (contract == null || string.IsNullOrEmpty(contract.name) || !names.Add(contract.name)) return false;
+                    var text = project.baseLocalization.GetLocalizedString(contract.name);
+                    if (text == null || Hash(Encoding.UTF8.GetBytes(text)) != contract.sha256) return false;
+                }
                 diagnostic = null;
                 return true;
             }
@@ -115,6 +124,28 @@ namespace ProjectAllTime.VN.SaveLoad
         {
             return TryGetOriginalM10Entries(out var entries) && entries.TryGetValue(current.runtimeLineId, out var entry) &&
                 JsonUtility.ToJson(entry) == JsonUtility.ToJson(current);
+        }
+
+        internal static bool AreM10TextsUnchanged(YarnProject project)
+        {
+            try
+            {
+                var evidence = Resources.Load<TextAsset>("M10_15_BASELINE_DESCRIPTOR");
+                if (project == null || project.baseLocalization == null || evidence == null ||
+                    !VNProductionLineResume.TryGetManifestRepresentations(evidence.bytes, out var bytes, out _) ||
+                    Hash(bytes) != M10DescriptorSha256) return false;
+                var baseline = JsonUtility.FromJson<VNResumeCompatibilityDescriptor>(Encoding.UTF8.GetString(bytes));
+                if (baseline?.lineTexts == null || baseline.lineTexts.Length != 541) return false;
+                var ids = new HashSet<string>(StringComparer.Ordinal);
+                foreach (var contract in baseline.lineTexts)
+                {
+                    if (contract == null || string.IsNullOrEmpty(contract.name) || !ids.Add(contract.name)) return false;
+                    var text = project.baseLocalization.GetLocalizedString(contract.name);
+                    if (text == null || Hash(Encoding.UTF8.GetBytes(text)) != contract.sha256) return false;
+                }
+                return true;
+            }
+            catch (Exception) { return false; }
         }
 
         internal static bool TryGetOriginalM10Entries(out Dictionary<string, VNProductionLineResume.Entry> entries)

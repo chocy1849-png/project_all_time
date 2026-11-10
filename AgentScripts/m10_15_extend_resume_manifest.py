@@ -12,7 +12,7 @@ import re
 
 ROOT = Path(__file__).resolve().parents[1]
 DESCRIPTOR = ROOT / 'Assets/_Project/Resources/M10_15_BASELINE_DESCRIPTOR.json'
-DESCRIPTOR_SHA = 'ec495bc6800a04aad5794171a37b2f939d3ec64578593861b07d494537df2cbf'
+DESCRIPTOR_SHA = '126088f2c52fc7fc5c8eaa860c70240e345e937929578566a7967b59f984a8f0'
 NODE = re.compile(r'(?ms)^title:\s*(\w+)\s*\r?\n---\s*\r?\n(.*?)^===\s*$')
 LINE = re.compile(r'#line:([A-Za-z0-9_]+)\b')
 JUMP = re.compile(r'<<\s*jump\s+(\w+)\s*>>')

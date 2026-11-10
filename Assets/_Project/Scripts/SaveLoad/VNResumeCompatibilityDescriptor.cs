@@ -15,6 +15,7 @@ namespace ProjectAllTime.VN.SaveLoad
         public string manifestJson;
         public VNResumeContractHash[] nodes;
         public VNResumeContractHash[] variables;
+        public VNResumeContractHash[] lineTexts;
     }
 
     [Serializable]

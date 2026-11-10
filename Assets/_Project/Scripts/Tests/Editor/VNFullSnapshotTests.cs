@@ -1,15 +1,21 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using Google.Protobuf;
 using NUnit.Framework;
 using ProjectAllTime.VN.Audio;
 using ProjectAllTime.VN.Dialogue;
+using ProjectAllTime.VN.MetaProgress;
 using ProjectAllTime.VN.Presentation;
 using ProjectAllTime.VN.SaveLoad;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.TestTools;
+using Yarn.Compiler;
 using Yarn.Unity;
 
 namespace ProjectAllTime.Tests.Editor
@@ -22,6 +28,8 @@ namespace ProjectAllTime.Tests.Editor
         private readonly List<UnityEngine.Object> ownedObjects = new();
         private string temporaryRoot;
         private VNSaveRepository repository;
+        private static bool integrationCompleted;
+        private static Exception integrationFailure;
 
         [SetUp]
         public void SetUp()
@@ -119,6 +127,21 @@ namespace ProjectAllTime.Tests.Editor
                 Assert.That(session.CurrentLineId, Is.EqualTo("line:prologue_s001_016"));
             }
             save.resumeGraphVersion = "cd43ce5bca1f245f359e90f71297e64232261c5c4b4ee6163790fa1cd3bef0b9";
+            save.presentationState.cgId = "missing_cg";
+            Assert.That(repository.Write(key, save).Succeeded, Is.True);
+            Assert.That(coordinator.ValidateLoad(key).Status, Is.EqualTo(VNYarnLoadValidationStatus.InvalidPresentation));
+            Assert.That(session.CurrentLineId, Is.EqualTo("line:prologue_s001_016"));
+            save.presentationState.cgId = string.Empty;
+            save.audioState.bgmId = "missing_bgm";
+            Assert.That(repository.Write(key, save).Succeeded, Is.True);
+            Assert.That(coordinator.ValidateLoad(key).Status, Is.EqualTo(VNYarnLoadValidationStatus.InvalidAudio));
+            Assert.That(session.CurrentLineId, Is.EqualTo("line:prologue_s001_016"));
+            save.audioState.bgmId = string.Empty;
+            save.yarnVariables.floats = new[] { new FloatVariableEntry { name = "$not_declared", value = 1f } };
+            Assert.That(repository.Write(key, save).Succeeded, Is.True);
+            Assert.That(coordinator.ValidateLoad(key).Status, Is.EqualTo(VNYarnLoadValidationStatus.InvalidVariables));
+            Assert.That(session.CurrentLineId, Is.EqualTo("line:prologue_s001_016"));
+            save.yarnVariables.floats = Array.Empty<FloatVariableEntry>();
             save.resumeEntryNode = "PROLOGUE_S001_P01";
             Assert.That(repository.Write(key, save).Succeeded, Is.True);
             Assert.That(coordinator.ValidateLoad(key).Status, Is.EqualTo(VNYarnLoadValidationStatus.InvalidCheckpoint));
@@ -127,6 +150,356 @@ namespace ProjectAllTime.Tests.Editor
             File.WriteAllText(path, "{\"schemaVersion\":2, broken json");
             Assert.That(coordinator.ValidateLoad(key).Status, Is.EqualTo(VNYarnLoadValidationStatus.ReadFailed));
             Assert.That(session.CurrentLineId, Is.EqualTo("line:prologue_s001_016"));
+        }
+
+        [UnityTest]
+        public IEnumerator ExpandedGraph_ValidatesAndRestoresReconstructedS005SaveThroughCoordinator()
+        {
+            UnityEditor.SceneManagement.EditorSceneManager.NewScene(
+                UnityEditor.SceneManagement.NewSceneSetup.EmptyScene,
+                UnityEditor.SceneManagement.NewSceneMode.Single);
+            yield return new EnterPlayMode();
+            var fixture = new VNFullSnapshotTests();
+            fixture.SetUp();
+            var host = new GameObject("M10-15 test coroutine").AddComponent<VNInteractionGate>();
+            integrationCompleted = false;
+            integrationFailure = null;
+            host.StartCoroutine(RunM1015Fixture(fixture, SetM1015Result));
+            yield return WaitForM1015(IsM1015Finished, "integration coroutine");
+            UnityEngine.Object.Destroy(host.gameObject);
+            if (integrationFailure != null) Assert.Fail(integrationFailure.ToString());
+            yield return new ExitPlayMode();
+        }
+
+        private static void SetM1015Result(Exception failure) { integrationFailure = failure; integrationCompleted = true; }
+        private static bool IsM1015Finished() => integrationCompleted;
+
+        private static IEnumerator RunM1015Fixture(VNFullSnapshotTests fixture, Action<Exception> finish)
+        {
+            var stack = new Stack<IEnumerator>();
+            stack.Push(fixture.RunExpandedGraphIntegration());
+            Exception failure = null;
+            while (stack.Count > 0)
+            {
+                object current = null;
+                var moved = false;
+                try { moved = stack.Peek().MoveNext(); if (moved) current = stack.Peek().Current; }
+                catch (Exception exception) { failure = exception; break; }
+                if (!moved) { (stack.Pop() as IDisposable)?.Dispose(); continue; }
+                if (current is IEnumerator nested) { stack.Push(nested); continue; }
+                yield return current;
+            }
+            try { fixture.TearDown(); } catch (Exception exception) { failure ??= exception; }
+            finish(failure);
+        }
+
+        public IEnumerator RunExpandedGraphIntegration()
+        {
+            Directory.CreateDirectory(temporaryRoot);
+            var source = Path.Combine(temporaryRoot, "m1015_fixture.yarn");
+            File.WriteAllText(source, "title: M10_15_INTEGRATION_SOURCE\n---\n<<jump M10_15_INTEGRATION_LINE>>\n===\n\n" +
+                "title: M10_15_INTEGRATION_LINE\n---\nFixture #line:m1015_integration\n<<jump M10_15_INTEGRATION_END>>\n===\n\n" +
+                "title: M10_15_INTEGRATION_END\n---\nEnd #line:m1015_integration_end\n===\n");
+            var projectFile = Path.GetFullPath("Assets/_Project/Yarn/GameNarrative.yarnproject");
+            var sourceProject = Yarn.Compiler.Project.LoadFromFile(projectFile, Directory.GetCurrentDirectory());
+            var job = CompilationJob.CreateFromFiles(sourceProject.SourceFiles.Concat(new[] { source }).ToArray());
+            job.LanguageVersion = sourceProject.FileVersion;
+            var compiled = Yarn.Compiler.Compiler.Compile(job);
+            Assert.That(compiled.Diagnostics.Where(d => d.Severity == Diagnostic.DiagnosticSeverity.Error), Is.Empty);
+            var original = AssetDatabase.LoadAssetAtPath<YarnProject>("Assets/_Project/Yarn/GameNarrative.yarnproject");
+            var expanded = ScriptableObject.CreateInstance<YarnProject>();
+            ownedObjects.Add(expanded);
+            expanded.compiledYarnProgram = compiled.Program.ToByteArray();
+            expanded.baseLocalization = UnityEngine.Object.Instantiate(original.baseLocalization);
+            ownedObjects.Add(expanded.baseLocalization);
+            expanded.baseLocalization.AddLocalizedString("line:m1015_integration", "Fixture");
+            expanded.baseLocalization.AddLocalizedString("line:m1015_integration_end", "End");
+            expanded.localizations = new SerializableDictionary<string, Localization>();
+            foreach (var locale in original.localizations) expanded.localizations.Add(locale.Key, expanded.baseLocalization);
+            expanded.lineMetadata = original.lineMetadata;
+            Assert.That(expanded.compiledYarnProgram, Is.Not.EqualTo(original.compiledYarnProgram));
+            var manifestText = Resources.Load<TextAsset>("M10_09_LINE_RESUME_MANIFEST").text;
+            var added = ", {\"runtimeLineId\":\"line:m1015_integration\",\"sourceYarnFile\":\"fixture.yarn\"," +
+                "\"sourceNode\":\"M10_15_INTEGRATION_SOURCE\",\"resumeEntryNode\":\"M10_15_INTEGRATION_LINE\"," +
+                "\"scene\":\"TEST\",\"presentationBeat\":\"M10_15_INTEGRATION_SOURCE\",\"eligibility\":\"SAVE_ELIGIBLE\"," +
+                "\"restrictionReason\":\"\",\"successorNodeOrFlow\":\"M10_15_INTEGRATION_END\"," +
+                "\"chapterId\":\"test\",\"sceneTitle\":\"Test\"}";
+            var manifest = new TextAsset(manifestText.Insert(manifestText.LastIndexOf(']'), added));
+            ownedObjects.Add(manifest);
+
+            var runner = CreateRunner();
+            runner.autoStart = false;
+            var productionPresentation = AssetDatabase.LoadAssetAtPath<VNPresentationCatalog>("Assets/_Project/Settings/Presentation/Production/M10_ProductionPresentationCatalog.asset");
+            Assert.That(productionPresentation, Is.Not.Null);
+            var presentation = CreatePresentationHarness(productionPresentation);
+            var productionAudio = AssetDatabase.LoadAssetAtPath<VNAudioCatalog>("Assets/_Project/Audio/M10_ProductionAudioCatalog.asset");
+            Assert.That(productionAudio, Is.Not.Null);
+            var audio = CreateAudioHarness(productionAudio);
+            var root = new GameObject("M10-15 integration session", typeof(VNDialogueSessionState), typeof(VNInteractionGate), typeof(CanvasGroup), typeof(AudioListener));
+            root.SetActive(false);
+            ownedObjects.Add(root);
+            var session = root.GetComponent<VNDialogueSessionState>();
+            var gate = root.GetComponent<VNInteractionGate>();
+            var presenter = root.AddComponent<LinePresenter>();
+            presenter.canvasGroup = root.GetComponent<CanvasGroup>();
+            presenter.canvasGroup.alpha = 0;
+            presenter.useFadeEffect = false;
+            var canvasObject = new GameObject("M10-15 canvas", typeof(RectTransform), typeof(Canvas));
+            ownedObjects.Add(canvasObject);
+            var textObject = new GameObject("M10-15 line", typeof(RectTransform), typeof(CanvasRenderer));
+            textObject.SetActive(false);
+            textObject.transform.SetParent(canvasObject.transform, false);
+            ownedObjects.Add(textObject);
+            presenter.lineText = textObject.AddComponent<TMPro.TextMeshProUGUI>();
+            presenter.lineText.font = AssetDatabase.LoadAssetAtPath<TMPro.TMP_FontAsset>("Assets/TextMesh Pro/Resources/Fonts & Materials/NotoSansKR-Regular SDF.asset");
+            Assert.That(presenter.lineText.font, Is.Not.Null);
+            presenter.lineText.maxVisibleCharacters = 0;
+            textObject.SetActive(true);
+            var lifecycle = root.AddComponent<VNLineLifecyclePresenter>();
+            SetPrivate(lifecycle, "sessionState", session);
+            SetPrivate(lifecycle, "linePresenter", presenter);
+            runner.DialoguePresenters = new DialoguePresenterBase[] { presenter, lifecycle };
+            root.SetActive(true);
+            var tracker = new VNPlayTimeTracker();
+            var key = new VNSaveSlotKey(VNSaveSlotType.Manual, 0);
+            var checkpoint = CreateCheckpointService();
+            var metaRepository = VNMetaProgressRepository.CreateForTesting(Path.Combine(temporaryRoot, "meta"));
+            var metaProgress = new VNMetaProgressService(metaRepository);
+            metaProgress.Load();
+            Assert.That(metaProgress.TryRecordReadLine("line:prologue_s001_001"), Is.True);
+            var metaBytes = File.ReadAllBytes(metaRepository.CanonicalFilePath);
+            var historyBridge = new VNPersistentReadHistoryBridge(session, metaProgress);
+            Assert.That(historyBridge.Initialize(), Is.True, historyBridge.LastDiagnostic);
+            var oldCoordinator = new VNYarnSaveCoordinator(repository, checkpoint, runner, tracker,
+                presentation.Controller, presentation.Transition, audio.Controller, session, gate);
+            SetPrivate(session, "isLineActive", true);
+            SetPrivate(session, "currentLineId", "line:prologue_s005_048");
+            Assert.That(audio.Controller.PlayBgm("bgm_quiet_farewell"), Is.True);
+            Assert.That(oldCoordinator.TryWriteCompleteSave(key, out var oldSave).Succeeded, Is.True);
+            Assert.That(oldSave.resumeGraphVersion, Is.EqualTo("cd43ce5bca1f245f359e90f71297e64232261c5c4b4ee6163790fa1cd3bef0b9"));
+            Assert.That(repository.TryGetSlotPath(key, out var savedPath), Is.True);
+            var savedBytes = File.ReadAllBytes(savedPath);
+            Assert.That(repository.TryGetThumbnailSidecarPath(key, oldSave.thumbnailFileName, out var oldThumbnail), Is.True);
+            File.WriteAllBytes(oldThumbnail, new byte[] { 1, 2, 3 });
+
+            runner.SetProject(expanded);
+            var upgraded = new VNYarnSaveCoordinator(repository, checkpoint, runner, tracker,
+                presentation.Controller, presentation.Transition, audio.Controller, session, gate, resumeManifest: manifest);
+            var validation = upgraded.ValidateLoad(key);
+            Assert.That(validation.Status, Is.EqualTo(VNYarnLoadValidationStatus.Valid), validation.Diagnostic);
+            Assert.That(upgraded.TryWriteCompleteSave(key, out _).Succeeded, Is.False);
+            CollectionAssert.AreEqual(savedBytes, File.ReadAllBytes(savedPath));
+            var uiRoot = new GameObject("M10-15 slot protection controller");
+            ownedObjects.Add(uiRoot);
+            var ui = uiRoot.AddComponent<VNSaveLoadController>();
+            SetPrivate(ui, "repository", repository);
+            SetPrivate(ui, "saveCoordinator", upgraded);
+            SetPrivate(ui, "sessionState", session);
+            uiRoot.SetActive(false);
+            uiRoot.SetActive(true);
+            Assert.That(ui.SaveManual(0).Status, Is.EqualTo(VNSaveLoadOperationStatus.ConfirmationRequired));
+            ui.CancelManualOverwrite();
+            CollectionAssert.AreEqual(savedBytes, File.ReadAllBytes(savedPath));
+            CollectionAssert.AreEqual(new byte[] { 1, 2, 3 }, File.ReadAllBytes(oldThumbnail));
+            oldSave.resumeGraphVersion = new string('a', 64);
+            Assert.That(repository.Write(key, oldSave).Succeeded, Is.True);
+            var unknownBytes = File.ReadAllBytes(savedPath);
+            Assert.That(upgraded.ValidateLoad(key).Status, Is.EqualTo(VNYarnLoadValidationStatus.InvalidCheckpoint));
+            Assert.That(session.CurrentLineId, Is.EqualTo("line:prologue_s005_048"));
+            Assert.That(audio.Controller.CurrentBgmId, Is.EqualTo("bgm_quiet_farewell"));
+            CollectionAssert.AreEqual(metaBytes, File.ReadAllBytes(metaRepository.CanonicalFilePath));
+            Assert.That(ui.SaveManual(0).Status, Is.EqualTo(VNSaveLoadOperationStatus.UnsupportedSave));
+            CollectionAssert.AreEqual(unknownBytes, File.ReadAllBytes(savedPath));
+            File.WriteAllBytes(savedPath, savedBytes);
+            var quickKey = new VNSaveSlotKey(VNSaveSlotType.Quick, 0);
+            Assert.That(repository.TryGetSlotPath(quickKey, out var quickPath), Is.True);
+            foreach (var protectedContent in new[] { "{ broken", "{\"schemaVersion\":3}" })
+            {
+                File.WriteAllText(quickPath, protectedContent);
+                var quickBytes = File.ReadAllBytes(quickPath);
+                Assert.That(ui.QuickSave().Status, Is.EqualTo(VNSaveLoadOperationStatus.UnsupportedSave));
+                CollectionAssert.AreEqual(quickBytes, File.ReadAllBytes(quickPath));
+            }
+            var autoBytes = new Dictionary<string, byte[]>();
+            for (var index = 0; index < 5; index++)
+            {
+                var autoKey = new VNSaveSlotKey(VNSaveSlotType.Auto, index);
+                Assert.That(repository.TryGetSlotPath(autoKey, out var autoPath), Is.True);
+                File.WriteAllText(autoPath, index % 2 == 0 ? "{ broken" : "{\"schemaVersion\":3}");
+                autoBytes.Add(autoPath, File.ReadAllBytes(autoPath));
+            }
+            Assert.That(upgraded.TryWriteCompleteAutoSave().Succeeded, Is.False);
+            foreach (var entry in autoBytes) CollectionAssert.AreEqual(entry.Value, File.ReadAllBytes(entry.Key));
+            Assert.That(repository.TryGetSlotPath(new VNSaveSlotKey(VNSaveSlotType.Auto, 0), out var emptyAutoPath), Is.True);
+            File.Delete(emptyAutoPath);
+            SetPrivate(session, "isLineActive", false);
+            SetPrivate(session, "currentLineId", string.Empty);
+            SetPrivate(ui, "loadInProgress", true);
+            var execution = upgraded.ExecuteValidatedLoad(validation);
+            yield return WaitForM1015(() => execution.IsCompleted(), "validated load");
+            var executionResult = execution.GetAwaiter().GetResult();
+            Assert.That(executionResult.Succeeded, Is.True, executionResult.Diagnostic);
+            yield return WaitForM1015(() => session.CurrentLineId == "line:prologue_s005_048", "restored line");
+            Assert.That(audio.Controller.CurrentBgmId, Is.EqualTo("bgm_quiet_farewell"));
+            Assert.That(audio.SfxSource.isPlaying, Is.False, "Resume must not replay an earlier one-shot.");
+            CollectionAssert.AreEqual(savedBytes, File.ReadAllBytes(savedPath));
+            Assert.That(File.Exists(emptyAutoPath), Is.False, "Load must not trigger a duplicate autosave.");
+            SetPrivate(ui, "loadInProgress", false);
+            runner.RequestNextLine();
+            yield return WaitForM1015(() => session.CurrentLineId == "line:prologue_s005_049", "successor line");
+            CollectionAssert.AreEqual(metaBytes, File.ReadAllBytes(metaRepository.CanonicalFilePath));
+            Assert.That(session.ReadHistory.IsRead("line:prologue_s001_001"), Is.True);
+            Assert.That(session.ReadHistory.IsRead("line:prologue_s005_048"), Is.False);
+            Assert.That(ui.SaveManual(0).Status, Is.EqualTo(VNSaveLoadOperationStatus.ConfirmationRequired));
+            Assert.That(ui.ConfirmManualOverwrite().Status, Is.EqualTo(VNSaveLoadOperationStatus.Succeeded));
+            Assert.That(File.Exists(oldThumbnail), Is.False, "The previous thumbnail must be removed before replacement.");
+            Assert.That(VNProductionLineResume.TryResolve("line:prologue_s005_049", expanded,
+                out _, out var expandedFingerprint, out var fingerprintDiagnostic, manifest), Is.True, fingerprintDiagnostic);
+            Assert.That(repository.Read(key).SaveData.resumeGraphVersion, Is.EqualTo(expandedFingerprint));
+            var stop = runner.Stop();
+            yield return WaitForM1015(() => stop.IsCompletedSuccessfully(), "dialogue stop");
+            SetPrivate(session, "isLineActive", true);
+            SetPrivate(session, "currentLineId", "line:m1015_integration");
+            var futureKey = new VNSaveSlotKey(VNSaveSlotType.Manual, 1);
+            Assert.That(upgraded.TryWriteCompleteSave(futureKey, out var futureSave).Succeeded, Is.True);
+            Assert.That(futureSave.chapterId, Is.EqualTo("test"));
+            Assert.That(futureSave.sceneTitle, Is.EqualTo("Test"));
+            Assert.That(futureSave.resumeGraphVersion, Is.EqualTo(expandedFingerprint));
+            var futureValidation = upgraded.ValidateLoad(futureKey);
+            Assert.That(futureValidation.Status, Is.EqualTo(VNYarnLoadValidationStatus.Valid), futureValidation.Diagnostic);
+            SetPrivate(session, "isLineActive", false);
+            SetPrivate(session, "currentLineId", string.Empty);
+            var futureExecution = upgraded.ExecuteValidatedLoad(futureValidation);
+            yield return WaitForM1015(() => futureExecution.IsCompleted(), "new line load");
+            var futureResult = futureExecution.GetAwaiter().GetResult();
+            Assert.That(futureResult.Succeeded, Is.True, futureResult.Diagnostic);
+            yield return WaitForM1015(() => session.CurrentLineId == "line:m1015_integration", "new line restored");
+            runner.RequestNextLine();
+            yield return WaitForM1015(() => session.CurrentLineId == "line:m1015_integration_end", "new line successor");
+            CollectionAssert.AreEqual(metaBytes, File.ReadAllBytes(metaRepository.CanonicalFilePath));
+            stop = runner.Stop();
+            yield return WaitForM1015(() => stop.IsCompletedSuccessfully(), "new dialogue stop");
+
+            var visibility = uiRoot.AddComponent<VNUIVisibilityController>();
+            var overlayObject = new GameObject("M10-15 information overlay", typeof(RectTransform), typeof(CanvasGroup));
+            overlayObject.SetActive(false);
+            overlayObject.transform.SetParent(canvasObject.transform, false);
+            ownedObjects.Add(overlayObject);
+            var overlay = overlayObject.AddComponent<VNInformationOverlay>();
+            var infoTitleObject = new GameObject("Information title", typeof(RectTransform), typeof(CanvasRenderer));
+            infoTitleObject.transform.SetParent(overlayObject.transform, false);
+            ownedObjects.Add(infoTitleObject);
+            var infoTitle = infoTitleObject.AddComponent<TMPro.TextMeshProUGUI>();
+            infoTitle.font = presenter.lineText.font;
+            var infoBodyObject = new GameObject("Information body", typeof(RectTransform), typeof(CanvasRenderer));
+            infoBodyObject.transform.SetParent(overlayObject.transform, false);
+            ownedObjects.Add(infoBodyObject);
+            var infoBody = infoBodyObject.AddComponent<TMPro.TextMeshProUGUI>();
+            infoBody.font = presenter.lineText.font;
+            SetPrivate(overlay, "root", overlayObject.GetComponent<CanvasGroup>());
+            SetPrivate(overlay, "titleText", infoTitle);
+            SetPrivate(overlay, "bodyText", infoBody);
+            SetPrivate(overlay, "visibility", visibility);
+            SetPrivate(overlay, "saveLoad", ui);
+            overlayObject.SetActive(true);
+            var cases = new[]
+            {
+                ("s001_016", "s001_017", "PROLOGUE_LINE_S001_016", "S001", "bg_family_kitchen_morning", "", ""),
+                ("s002_009", "s002_010", "PROLOGUE_LINE_S002_009", "S002", "", "cg_beach_photo_child", ""),
+                ("s005_048", "s005_049", "PROLOGUE_LINE_S005_048", "S005", "", "", "bgm_quiet_farewell"),
+                ("s007_008", "s007_009", "PROLOGUE_LINE_S007_008", "S007", "", "", ""),
+                ("s008_017", "s008_018", "PROLOGUE_LINE_S008_017", "S008", "", "", ""),
+            };
+            for (var index = 0; index < cases.Length; index++)
+            {
+                var (line, next, node, scene, background, cg, bgm) = cases[index];
+                var fixtureKey = new VNSaveSlotKey(VNSaveSlotType.Manual, index + 2);
+                var reconstructed = JsonUtility.FromJson<SaveSlotData>(JsonUtility.ToJson(oldSave));
+                reconstructed.slotIndex = fixtureKey.SlotIndex;
+                reconstructed.resumeLineId = "line:prologue_" + line;
+                reconstructed.resumeEntryNode = node;
+                reconstructed.resumeGraphVersion = "cd43ce5bca1f245f359e90f71297e64232261c5c4b4ee6163790fa1cd3bef0b9";
+                reconstructed.sceneTitle = "프롤로그 " + scene;
+                reconstructed.thumbnailFileName = string.Empty;
+                reconstructed.presentationState.backgroundId = background;
+                reconstructed.presentationState.cgId = cg;
+                reconstructed.presentationState.characters = line == "s001_016"
+                    ? new[] { Character("jinhee", "default", "left", "right", 1f) }
+                    : Array.Empty<CharacterSaveState>();
+                reconstructed.audioState.bgmId = bgm;
+                reconstructed.audioState.playbackSeconds = 0;
+                Assert.That(repository.Write(fixtureKey, reconstructed).Succeeded, Is.True, line);
+                Assert.That(repository.TryGetSlotPath(fixtureKey, out var fixturePath), Is.True);
+                var fixtureBytes = File.ReadAllBytes(fixturePath);
+                for (var expandedMode = 0; expandedMode < 2; expandedMode++)
+                {
+                    runner.SetProject(expandedMode == 0 ? original : expanded);
+                    var withOverlay = new VNYarnSaveCoordinator(repository, checkpoint, runner, tracker,
+                        presentation.Controller, presentation.Transition, audio.Controller, session, gate, overlay,
+                        resumeManifest: expandedMode == 0 ? null : manifest);
+                    var plan = withOverlay.ValidateLoad(fixtureKey);
+                    Assert.That(plan.Status, Is.EqualTo(VNYarnLoadValidationStatus.Valid), line + ": " + plan.Diagnostic);
+                    SetPrivate(ui, "loadInProgress", true);
+                    var load = withOverlay.ExecuteValidatedLoad(plan);
+                    yield return WaitForM1015(() => load.IsCompleted(), "load " + line);
+                    var loadResult = load.GetAwaiter().GetResult();
+                    Assert.That(loadResult.Succeeded, Is.True, line + ": " + loadResult.Diagnostic);
+                    yield return WaitForM1015(() => session.CurrentLineId == "line:prologue_" + line, "line " + line);
+                    Assert.That(presentation.Controller.CurrentBackgroundId ?? string.Empty, Is.EqualTo(background));
+                    Assert.That(presentation.Controller.CurrentCGId ?? string.Empty, Is.EqualTo(cg));
+                    Assert.That(audio.Controller.CurrentBgmId, Is.EqualTo(bgm));
+                    if (line == "s001_016") Assert.That(presentation.Controller.VisibleCharacters.ContainsKey("jinhee"), Is.True);
+                    if (line == "s007_008")
+                    {
+                        Assert.That(overlay.IsShown, Is.True);
+                        Assert.That(infoTitle.text, Is.EqualTo("최근 생활 기록"));
+                        Assert.That(infoBody.text, Is.EqualTo("수면\n식사"));
+                    }
+                    CollectionAssert.AreEqual(fixtureBytes, File.ReadAllBytes(fixturePath));
+                    SetPrivate(ui, "loadInProgress", false);
+                    runner.RequestNextLine();
+                    yield return WaitForM1015(() => session.CurrentLineId == "line:prologue_" + next, "successor " + line);
+                    stop = runner.Stop();
+                    yield return WaitForM1015(() => stop.IsCompletedSuccessfully(), "stop " + line);
+                    overlay.Hide();
+                }
+            }
+            runner.SetProject(original);
+            var legacyKey = new VNSaveSlotKey(VNSaveSlotType.Manual, 8);
+            var legacy = CreateSave(legacyKey, new PresentationState(), new AudioState());
+            Assert.That(repository.Write(legacyKey, legacy).Succeeded, Is.True);
+            Assert.That(repository.TryGetSlotPath(legacyKey, out var legacyPath), Is.True);
+            var legacyBytes = File.ReadAllBytes(legacyPath);
+            var legacyCoordinator = new VNYarnSaveCoordinator(repository, checkpoint, runner, tracker,
+                presentation.Controller, presentation.Transition, audio.Controller, session, gate, overlay);
+            var legacyPlan = legacyCoordinator.ValidateLoad(legacyKey);
+            Assert.That(legacyPlan.Status, Is.EqualTo(VNYarnLoadValidationStatus.Valid), legacyPlan.Diagnostic);
+            SetPrivate(ui, "loadInProgress", true);
+            var legacyLoad = legacyCoordinator.ExecuteValidatedLoad(legacyPlan);
+            yield return WaitForM1015(() => legacyLoad.IsCompleted(), "legacy checkpoint load");
+            var legacyResult = legacyLoad.GetAwaiter().GetResult();
+            Assert.That(legacyResult.Succeeded, Is.True, legacyResult.Diagnostic);
+            yield return WaitForM1015(() => session.CurrentLineId == "line:0230259", "legacy checkpoint line");
+            Assert.That(checkpoint.HasCurrentCheckpoint, Is.True);
+            CollectionAssert.AreEqual(legacyBytes, File.ReadAllBytes(legacyPath));
+            SetPrivate(ui, "loadInProgress", false);
+            stop = runner.Stop();
+            yield return WaitForM1015(() => stop.IsCompletedSuccessfully(), "legacy checkpoint stop");
+            CollectionAssert.AreEqual(metaBytes, File.ReadAllBytes(metaRepository.CanonicalFilePath));
+            Assert.That(File.Exists(emptyAutoPath), Is.False, "Loading historical lines must not allocate an autosave.");
+            historyBridge.Dispose();
+            Debug.Log("M10-15 integration: completed S005 restore and successor");
+        }
+
+        private static IEnumerator WaitForM1015(Func<bool> condition, string stage)
+        {
+            var timeout = System.Diagnostics.Stopwatch.StartNew();
+            while (timeout.Elapsed < TimeSpan.FromSeconds(30))
+            {
+                if (condition()) yield break;
+                yield return null;
+            }
+            Assert.Fail("M10-15 integration did not reach: " + stage);
         }
 
         [Test]
@@ -564,16 +937,20 @@ namespace ProjectAllTime.Tests.Editor
             return new PresentationHarness(controller, transition, viewsBySlot, screen, incoming, incomingFade, spriteA);
         }
 
-        private AudioHarness CreateAudioHarness()
+        private AudioHarness CreateAudioHarness(VNAudioCatalog existingCatalog = null)
         {
             var clipA = AudioClip.Create("Bgm A", 1000, 1, 1000, false);
             var clipB = AudioClip.Create("Bgm B", 1000, 1, 1000, false);
             ownedObjects.Add(clipA);
             ownedObjects.Add(clipB);
-            var catalog = ScriptableObject.CreateInstance<VNAudioCatalog>();
-            ownedObjects.Add(catalog);
-            SetPrivate(catalog, "bgm", new List<VNBgmCatalogEntry> { CreateBgmEntry("bgm_a", clipA, 0.7f, true), CreateBgmEntry("bgm_b", clipB, 0.4f, false) });
-            SetPrivate(catalog, "sfx", new List<VNSfxCatalogEntry> { CreateSfxEntry("sfx_test", clipA) });
+            var catalog = existingCatalog;
+            if (catalog == null)
+            {
+                catalog = ScriptableObject.CreateInstance<VNAudioCatalog>();
+                ownedObjects.Add(catalog);
+                SetPrivate(catalog, "bgm", new List<VNBgmCatalogEntry> { CreateBgmEntry("bgm_a", clipA, 0.7f, true), CreateBgmEntry("bgm_b", clipB, 0.4f, false) });
+                SetPrivate(catalog, "sfx", new List<VNSfxCatalogEntry> { CreateSfxEntry("sfx_test", clipA) });
+            }
 
             var root = new GameObject("Audio Controller");
             ownedObjects.Add(root);

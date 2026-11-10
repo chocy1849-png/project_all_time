@@ -2,6 +2,10 @@
 
 This is the current project guide for authoring Yarn with the verified Yarn Spinner 3.2.7 runtime. The established M1–M8 conventions below remain in force; M9 adds the Records and Replay authoring rules at the end.
 
+## M10-15 future narrative additions
+
+Keep existing line IDs and approved compatibility descriptors unchanged. New saveable lines need unique explicit IDs, compiled resume nodes and successors, chapter and scene labels, eligibility, restrictions and presentation context. `AgentScripts/m10_15_extend_resume_manifest.py` appends reviewed entries to a separate output without modifying Yarn or the baseline manifest; compile and validate the complete project afterward. Test historical saves and new lines against the expanded graph, including presentation, audio and slot protection. A changed historical execution contract or base-language text needs a separately reviewed migration; never regenerate the historical descriptor to conceal a mismatch. See the [compatibility report](Production/M10_15_SAVE_DATA_COMPATIBILITY_REPORT.md).
+
 ## M1 authoring foundations
 
 - Yarn files are plain `.yarn` text assets.
@@ -42,6 +46,8 @@ This is the current project guide for authoring Yarn with the verified Yarn Spin
 - `M4_AUDIO_TRANSITION_SMOKE` is technical non-canon test content. The M4 Play Gate passed; no production story or audio content is established here.
 
 ## M5 checkpoint authoring
+
+This section describes the legacy schema-v1 checkpoint path. M10 production dialogue also supports the separate schema-v2 exact-line path summarized in the compatibility report.
 
 - `<<vn_checkpoint checkpoint_id>>` is the only way Yarn establishes a saveable checkpoint. `checkpoint_id` must exactly match a unique lowercase-snake-case entry in the Unity-authored `VNCheckpointCatalog`.
 - Every production checkpoint must have a dedicated re-entry node whose first instruction is the matching `<<vn_checkpoint checkpoint_id>>` command. That node contains continuation only; it is safe to enter again after loading.

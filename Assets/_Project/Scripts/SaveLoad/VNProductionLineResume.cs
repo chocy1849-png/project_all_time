@@ -140,12 +140,14 @@ namespace ProjectAllTime.VN.SaveLoad
             var compiledLines = new HashSet<string>(StringComparer.Ordinal);
             foreach (var compiledNode in project.Program.Nodes.Values)
                 foreach (var instruction in compiledNode.Instructions)
-                    if (instruction.RunLine != null &&
-                        (string.IsNullOrWhiteSpace(instruction.RunLine.LineID) || !compiledLines.Add(instruction.RunLine.LineID)))
+                {
+                    var compiledId = instruction.RunLine != null ? instruction.RunLine.LineID : instruction.AddOption?.LineID;
+                    if (compiledId != null && (string.IsNullOrWhiteSpace(compiledId) || !compiledLines.Add(compiledId)))
                     {
                         diagnostic = "The compiled narrative contains duplicate or invalid runtime line IDs.";
                         return false;
                     }
+                }
             Dictionary<string, Entry> originalEntries = null;
             Entry match = null;
             foreach (var item in manifest.entries)
@@ -221,7 +223,12 @@ namespace ProjectAllTime.VN.SaveLoad
                 return false;
             }
             node = match.resumeEntryNode;
-            graphVersion = Fingerprint(project.compiledYarnProgram, canonical);
+            if (!TryComputeGraphVersion(project, canonical, out graphVersion))
+            {
+                node = null;
+                diagnostic = "Narrative text identity could not be validated.";
+                return false;
+            }
             diagnostic = null;
             return true;
         }
@@ -262,6 +269,54 @@ namespace ProjectAllTime.VN.SaveLoad
             var result = new StringBuilder(hash.Length * 2);
             foreach (var value in hash) result.Append(value.ToString("x2"));
             return result.ToString();
+        }
+
+        // Preserve the original M10 identity. New graphs also bind all line and
+        // option text, so editing localized narrative cannot retain an old hash.
+        internal static bool TryComputeGraphVersion(YarnProject project, byte[] manifest, out string version)
+        {
+            version = null;
+            try
+            {
+                var raw = Fingerprint(project.compiledYarnProgram, manifest);
+                if (raw == "cd43ce5bca1f245f359e90f71297e64232261c5c4b4ee6163790fa1cd3bef0b9" ||
+                    raw == "9aefad0924fffae848c25a23081b48606a0cfd2c51d637bb6da4386a65883980")
+                {
+                    if (!VNResumeCompatibilityRegistry.AreM10TextsUnchanged(project)) return false;
+                    version = raw;
+                    return true;
+                }
+                if (project.baseLocalization == null) return false;
+                var ids = new SortedSet<string>(StringComparer.Ordinal);
+                foreach (var node in project.Program.Nodes.Values)
+                    foreach (var instruction in node.Instructions)
+                    {
+                        var id = instruction.RunLine != null ? instruction.RunLine.LineID : instruction.AddOption?.LineID;
+                        if (id != null && (string.IsNullOrWhiteSpace(id) || !ids.Add(id))) return false;
+                    }
+                using var content = new MemoryStream();
+                using (var writer = new BinaryWriter(content, new UTF8Encoding(false, true), true))
+                {
+                    writer.Write("ProjectAllTime narrative graph with text v1");
+                    writer.Write(project.compiledYarnProgram.Length);
+                    writer.Write(project.compiledYarnProgram);
+                    writer.Write(manifest.Length);
+                    writer.Write(manifest);
+                    writer.Write(ids.Count);
+                    foreach (var id in ids)
+                    {
+                        var text = project.baseLocalization.GetLocalizedString(id);
+                        if (text == null) return false;
+                        writer.Write(id);
+                        writer.Write(text);
+                    }
+                }
+                using var sha = SHA256.Create();
+                content.Position = 0;
+                version = BitConverter.ToString(sha.ComputeHash(content)).Replace("-", "").ToLowerInvariant();
+                return true;
+            }
+            catch (Exception) { return false; }
         }
     }
 }

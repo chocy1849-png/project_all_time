@@ -49,6 +49,8 @@ namespace ProjectAllTime.Tests.Editor
             TextAsset expandedManifest = null;
             TextAsset alteredManifest = null;
             GameObject storageObject = null;
+            Localization expandedLocalization = null;
+            Localization changedLocalization = null;
             try
             {
                 File.WriteAllText(source, "title: M10_15_SOURCE\n---\n<<declare $m1015_new = 42>>\n<<jump M10_15_RESUME>>\n===\n\n" +
@@ -64,6 +66,10 @@ namespace ProjectAllTime.Tests.Editor
                 var program = result.Program;
                 expandedProject = ScriptableObject.CreateInstance<YarnProject>();
                 expandedProject.compiledYarnProgram = program.ToByteArray();
+                expandedLocalization = UnityEngine.Object.Instantiate(original.baseLocalization);
+                expandedLocalization.AddLocalizedString("line:m1015_test_only", "Test fixture.");
+                expandedLocalization.AddLocalizedString("line:m1015_test_end", "Test end.");
+                expandedProject.baseLocalization = expandedLocalization;
                 var originalManifest = Resources.Load<TextAsset>("M10_09_LINE_RESUME_MANIFEST").text;
                 var end = originalManifest.LastIndexOf(']');
                 Assert.That(end, Is.GreaterThan(0));
@@ -114,6 +120,7 @@ namespace ProjectAllTime.Tests.Editor
                 program.Nodes["PROLOGUE_LINE_S005_049"].Instructions[0].RunLine.LineID = "line:changed_test_contract";
                 alteredProject = ScriptableObject.CreateInstance<YarnProject>();
                 alteredProject.compiledYarnProgram = program.ToByteArray();
+                alteredProject.baseLocalization = expandedLocalization;
                 var rejected = VNResumeCompatibilityRegistry.Evaluate(Line, alteredProject, Canonical, expandedManifest);
                 Assert.That(rejected.IsCompatible, Is.False);
                 Assert.That(rejected.Diagnostic, Is.Not.Empty);
@@ -123,14 +130,35 @@ namespace ProjectAllTime.Tests.Editor
                 program.Nodes["PROLOGUE_S005_P01"].Instructions.Clear();
                 alteredProject = ScriptableObject.CreateInstance<YarnProject>();
                 alteredProject.compiledYarnProgram = program.ToByteArray();
+                alteredProject.baseLocalization = expandedLocalization;
                 rejected = VNResumeCompatibilityRegistry.Evaluate(Line, alteredProject, Canonical, expandedManifest);
                 Assert.That(rejected.Status, Is.EqualTo(VNResumeCompatibilityStatus.MigrationRequired));
+
+                UnityEngine.Object.DestroyImmediate(alteredProject);
+                program = Yarn.Program.Parser.ParseFrom(expandedProject.compiledYarnProgram);
+                var command = program.Nodes["PROLOGUE_S005_P01"].Instructions.First(i => i.RunCommand != null).RunCommand;
+                command.CommandText += " altered";
+                alteredProject = ScriptableObject.CreateInstance<YarnProject>();
+                alteredProject.compiledYarnProgram = program.ToByteArray();
+                alteredProject.baseLocalization = expandedLocalization;
+                rejected = VNResumeCompatibilityRegistry.Evaluate(Line, alteredProject, Canonical, expandedManifest);
+                Assert.That(rejected.Status, Is.EqualTo(VNResumeCompatibilityStatus.MigrationRequired));
+
+                UnityEngine.Object.DestroyImmediate(alteredProject);
+                program = Yarn.Program.Parser.ParseFrom(expandedProject.compiledYarnProgram);
+                program.Nodes["PROLOGUE_LINE_S005_048"].Instructions.First(i => i.RunNode != null).RunNode.NodeName = "PROLOGUE_LINE_S005_050";
+                alteredProject = ScriptableObject.CreateInstance<YarnProject>();
+                alteredProject.compiledYarnProgram = program.ToByteArray();
+                alteredProject.baseLocalization = expandedLocalization;
+                rejected = VNResumeCompatibilityRegistry.Evaluate(Line, alteredProject, Canonical, expandedManifest);
+                Assert.That(rejected.IsCompatible, Is.False);
 
                 UnityEngine.Object.DestroyImmediate(alteredProject);
                 program = Yarn.Program.Parser.ParseFrom(expandedProject.compiledYarnProgram);
                 program.InitialValues["$m1_trust"].StringValue = "changed type";
                 alteredProject = ScriptableObject.CreateInstance<YarnProject>();
                 alteredProject.compiledYarnProgram = program.ToByteArray();
+                alteredProject.baseLocalization = expandedLocalization;
                 rejected = VNResumeCompatibilityRegistry.Evaluate(Line, alteredProject, Canonical, expandedManifest);
                 Assert.That(rejected.Status, Is.EqualTo(VNResumeCompatibilityStatus.MigrationRequired));
 
@@ -140,6 +168,24 @@ namespace ProjectAllTime.Tests.Editor
                 Assert.That(alteredManifest.text, Is.Not.EqualTo(expandedManifest.text));
                 rejected = VNResumeCompatibilityRegistry.Evaluate(Line, expandedProject, Canonical, alteredManifest);
                 Assert.That(rejected.IsCompatible, Is.False);
+                UnityEngine.Object.DestroyImmediate(alteredManifest);
+                alteredManifest = new TextAsset(expandedManifest.text.Replace("최근 생활 기록", "changed information"));
+                Assert.That(alteredManifest.text, Is.Not.EqualTo(expandedManifest.text));
+                rejected = VNResumeCompatibilityRegistry.Evaluate(Line, expandedProject, Canonical, alteredManifest);
+                Assert.That(rejected.IsCompatible, Is.False);
+
+                UnityEngine.Object.DestroyImmediate(alteredProject);
+                changedLocalization = UnityEngine.Object.Instantiate(original.baseLocalization);
+                changedLocalization.AddLocalizedString("line:m1015_test_only", "Test fixture.");
+                changedLocalization.AddLocalizedString("line:m1015_test_end", "Test end.");
+                changedLocalization.AddLocalizedString(Line, "Changed historical dialogue.");
+                alteredProject = ScriptableObject.CreateInstance<YarnProject>();
+                alteredProject.compiledYarnProgram = expandedProject.compiledYarnProgram;
+                alteredProject.baseLocalization = changedLocalization;
+                rejected = VNResumeCompatibilityRegistry.Evaluate(Line, alteredProject, Canonical, expandedManifest);
+                Assert.That(rejected.Status, Is.EqualTo(VNResumeCompatibilityStatus.MigrationRequired));
+                rejected = VNResumeCompatibilityRegistry.Evaluate("line:m1015_test_only", alteredProject, newFingerprint, expandedManifest);
+                Assert.That(rejected.IsCompatible, Is.False, "A text rewrite must change the current graph identity.");
             }
             finally
             {
@@ -147,6 +193,8 @@ namespace ProjectAllTime.Tests.Editor
                 if (alteredProject != null) UnityEngine.Object.DestroyImmediate(alteredProject);
                 if (expandedManifest != null) UnityEngine.Object.DestroyImmediate(expandedManifest);
                 if (alteredManifest != null) UnityEngine.Object.DestroyImmediate(alteredManifest);
+                if (expandedLocalization != null) UnityEngine.Object.DestroyImmediate(expandedLocalization);
+                if (changedLocalization != null) UnityEngine.Object.DestroyImmediate(changedLocalization);
                 if (storageObject != null) UnityEngine.Object.DestroyImmediate(storageObject);
                 if (File.Exists(source)) File.Delete(source);
             }

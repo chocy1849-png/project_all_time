@@ -273,9 +273,12 @@ namespace ProjectAllTime.VN.SaveLoad
 
         /// <summary>Composes and durably writes one complete slot snapshot.</summary>
         public VNSaveOperationResult TryWriteCompleteSave(VNSaveSlotKey slotKey, out SaveSlotData saveData)
+            => TryWriteCompleteSave(slotKey, false, out saveData);
+
+        internal VNSaveOperationResult TryWriteCompleteSave(VNSaveSlotKey slotKey, bool confirmedManualOverwrite, out SaveSlotData saveData)
         {
             saveData = null;
-            if (!CanReplaceSlot(slotKey, out var overwriteDiagnostic))
+            if (!CanReplaceSlot(slotKey, confirmedManualOverwrite, out var overwriteDiagnostic))
                 return VNSaveOperationResult.Failure(overwriteDiagnostic);
             if (!TryComposeCompleteSave(slotKey, out saveData, out var diagnostic))
                 return VNSaveOperationResult.Failure(diagnostic);
@@ -288,7 +291,7 @@ namespace ProjectAllTime.VN.SaveLoad
         internal VNSaveOperationResult TryWriteLegacyCheckpointAutoSave(VNSaveSlotKey slotKey, out SaveSlotData saveData)
         {
             saveData = null;
-            if (!CanReplaceSlot(slotKey, out var overwriteDiagnostic))
+            if (!CanReplaceSlot(slotKey, false, out var overwriteDiagnostic))
                 return VNSaveOperationResult.Failure(overwriteDiagnostic);
             if (!TryComposeCompleteSave(slotKey, true, out saveData, out var diagnostic))
                 return VNSaveOperationResult.Failure(diagnostic);
@@ -302,7 +305,7 @@ namespace ProjectAllTime.VN.SaveLoad
             return result;
         }
 
-        private bool CanReplaceSlot(VNSaveSlotKey key, out string diagnostic)
+        private bool CanReplaceSlot(VNSaveSlotKey key, bool confirmedManualOverwrite, out string diagnostic)
         {
             diagnostic = "The existing save is corrupted, unsupported, or incompatible and is preserved.";
             if (repository == null || !key.IsValid) return false;
@@ -314,6 +317,11 @@ namespace ProjectAllTime.VN.SaveLoad
             }
             if (existing.State != VNSaveSlotState.Valid || ValidateLoad(key).Status != VNYarnLoadValidationStatus.Valid)
                 return false;
+            if (key.SlotType == VNSaveSlotType.Manual && !confirmedManualOverwrite)
+            {
+                diagnostic = "Manual save replacement requires overwrite confirmation.";
+                return false;
+            }
             diagnostic = null;
             return true;
         }
