@@ -1,6 +1,6 @@
 # M10-15 — SaveData Compatibility Hardening
 
-**Status: compatibility implementation and validation complete; review pending.**
+**Status: compatibility implementation and validation complete; [PR #64](https://github.com/chocy1849-png/project_all_time/pull/64) open for review.**
 
 M10-15 follows the completed [M10-14 closure](M10_14_PROLOGUE_MILESTONE_CLOSURE_REPORT.md). The production story and line-resume manifest remain unchanged.
 
