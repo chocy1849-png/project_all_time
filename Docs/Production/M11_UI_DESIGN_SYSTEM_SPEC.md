@@ -1,6 +1,6 @@
 # M11 — VN UI Design System Specification
 
-**Status: work in progress.** The production scene has not yet been redesigned or visually accepted.
+**Status: production integration implemented; technical validation and user visual acceptance remain in progress.**
 
 ## Direction and baseline
 
@@ -14,6 +14,14 @@ Initial palette: panel `#252B32`, primary text `#F7F4EF`, speaker `#E5CAA2`, sec
 
 `python AgentScripts/generate_m11_ui_assets.py` requires Pillow and produces 14 original RGBA PNGs in `Assets/_Project/Art/UI/M11`: dialogue frame, nameplate, button and tooltip backgrounds, continue marker, and nine action icons. A repeated run produced identical SHA-256 hashes. The assets were imported using Unity's Sprite importer, bilinear filtering and Full Rect mesh; the four scalable backgrounds use 16-pixel (frame) or 14-pixel borders. The intended Image type for those backgrounds is Sliced.
 
-## Remaining work
+## Production implementation
 
-Create and apply a shared theme and the reusable icon-button, tooltip, nameplate and dialogue-frame prefabs. Integrate them in the actual scene while preserving the LinePresenter, quick-control listener ownership, modal/input arbitration and SaveData contracts. Capture comparable story-state screenshots at the requested resolutions, complete interaction and regression testing, and prepare the final visual validation report and PR. User visual acceptance remains pending.
+The shared `M11_UITheme` asset controls panel tint, text, speaker accent, button state colors and text sizes through `VNUIThemeBinding`. Runtime icon hover and disabled colors use the same asset. The theme also records icon sizing and spacing tokens. The existing Korean TextMesh Pro font remains in use.
+
+The serialized `M11/VNDialogueFrame`, `VNNameplate`, `VNIconButton`, and `VNTooltip` prefabs are nested into the authoritative dialogue prefab or the production control bar. Frame and nameplate use sliced images and do not receive raycasts. The existing LinePresenter and dialogue text are retained. The continue marker is driven from the active line and interaction gate, without owning input.
+
+The nine icon controls are Next, Hide, Backlog, Skip, Auto, Save, Load, Settings, and Records. Their existing `VNQuickControlBar` owns actions and derives Skip/Auto indicators from the existing controllers. Buttons use ColorBlock normal, highlighted/focused, pressed and disabled colors; the Korean tooltip is nonblocking and hidden when the control is disabled, the interface is hidden, or a modal blocks interaction.
+
+## Review
+
+The scene captures and actual validation results are documented in `M11_UI_VISUAL_VALIDATION_REPORT.md`. The baseline story-state captures and user visual approval remain outstanding; no visual acceptance is implied.
