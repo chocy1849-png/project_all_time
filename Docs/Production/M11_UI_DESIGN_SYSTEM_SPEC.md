@@ -1,6 +1,6 @@
 # M11 — VN UI Design System Specification
 
-**Status: production integration implemented; technical validation and user visual acceptance remain in progress.**
+**Status: production integration implemented; technical regression passed and user visual acceptance remains pending.**
 
 ## Direction and baseline
 
@@ -16,7 +16,7 @@ Initial palette: panel `#252B32`, primary text `#F7F4EF`, speaker `#E5CAA2`, sec
 
 ## Production implementation
 
-The shared `M11_UITheme` asset controls panel tint, text, speaker accent, button state colors and text sizes through `VNUIThemeBinding`. Runtime icon hover and disabled colors use the same asset. The theme also records icon sizing and spacing tokens. The existing Korean TextMesh Pro font remains in use.
+The shared `M11_UITheme` asset controls panel tint, text, speaker accent, button state colors and text sizes through `VNUIThemeBinding`. Runtime icon hover and disabled colors use the same asset. Editing the theme refreshes loaded bindings through a deferred Editor callback; runtime bindings also apply on enable. The theme also records icon sizing and spacing tokens. The existing Korean TextMesh Pro font remains in use.
 
 The serialized `M11/VNDialogueFrame`, `VNNameplate`, `VNIconButton`, and `VNTooltip` prefabs are nested into the authoritative dialogue prefab or the production control bar. Frame and nameplate use sliced images and do not receive raycasts. The existing LinePresenter and dialogue text are retained. The continue marker is driven from the active line and interaction gate, without owning input.
 
@@ -24,4 +24,4 @@ The nine icon controls are Next, Hide, Backlog, Skip, Auto, Save, Load, Settings
 
 ## Review
 
-The scene captures and actual validation results are documented in `M11_UI_VISUAL_VALIDATION_REPORT.md`. The baseline story-state captures and user visual approval remain outstanding; no visual acceptance is implied.
+The scene captures and actual validation results are documented in `M11_UI_VISUAL_VALIDATION_REPORT.md`. The report includes before and after story-state captures. User visual approval remains outstanding; no visual acceptance is implied.

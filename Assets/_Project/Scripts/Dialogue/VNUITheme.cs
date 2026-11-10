@@ -17,5 +17,21 @@ namespace ProjectAllTime.VN.Dialogue
         public float speakerSize = 28;
         public float iconSize = 27;
         public float spacing = 6;
+
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            // Defer UI mutations until Unity has finished validating the asset.
+            UnityEditor.EditorApplication.delayCall -= RefreshLoadedBindings;
+            UnityEditor.EditorApplication.delayCall += RefreshLoadedBindings;
+        }
+
+        private void RefreshLoadedBindings()
+        {
+            if (this == null) return;
+            foreach (var binding in Object.FindObjectsByType<VNUIThemeBinding>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                if (binding.Theme == this) binding.Apply();
+        }
+#endif
     }
 }

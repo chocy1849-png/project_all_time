@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.TestTools;
 using Yarn.Unity;
 
 namespace ProjectAllTime.Tests.Editor
@@ -65,6 +66,28 @@ namespace ProjectAllTime.Tests.Editor
                 Assert.That(child.GetComponent<TMP_Text>().color, Is.EqualTo(Color.yellow));
                 Assert.That(root.GetComponent<Button>().colors.highlightedColor, Is.EqualTo(Color.cyan));
                 Assert.That(root.GetComponent<Button>().colors.disabledColor, Is.EqualTo(Color.gray));
+            }
+            finally { Object.DestroyImmediate(root); Object.DestroyImmediate(theme); }
+        }
+
+        [UnityTest]
+        public System.Collections.IEnumerator SharedTheme_RefreshesLoadedBindingsAfterAssetEdit()
+        {
+            var theme = ScriptableObject.CreateInstance<VNUITheme>();
+            var root = new GameObject("theme refresh test", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(VNUIThemeBinding));
+            try
+            {
+                var binding = new SerializedObject(root.GetComponent<VNUIThemeBinding>());
+                binding.FindProperty("theme").objectReferenceValue = theme;
+                binding.FindProperty("panel").objectReferenceValue = root.GetComponent<Image>();
+                binding.ApplyModifiedPropertiesWithoutUndo();
+                var editedTheme = new SerializedObject(theme);
+                editedTheme.FindProperty("panel").colorValue = Color.magenta;
+                editedTheme.ApplyModifiedPropertiesWithoutUndo();
+                var deadline = EditorApplication.timeSinceStartup + 2;
+                while (root.GetComponent<Image>().color != Color.magenta && EditorApplication.timeSinceStartup < deadline)
+                    yield return null;
+                Assert.That(root.GetComponent<Image>().color, Is.EqualTo(Color.magenta));
             }
             finally { Object.DestroyImmediate(root); Object.DestroyImmediate(theme); }
         }

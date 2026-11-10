@@ -15,6 +15,7 @@ namespace ProjectAllTime.VN.Dialogue
         [SerializeField] private TMP_Text dialogue;
         [SerializeField] private TMP_Text tooltip;
         [SerializeField] private Button button;
+        public VNUITheme Theme => theme;
         private void OnEnable() => Apply();
         private void OnValidate() => Apply();
         public void Apply()
