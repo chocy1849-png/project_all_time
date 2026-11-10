@@ -11,8 +11,8 @@ namespace ProjectAllTime.VN.SaveLoad
     /// <summary>Validated project-owned mapping from runtime line IDs to executable entries.</summary>
     public static class VNProductionLineResume
     {
-        [Serializable] private sealed class Manifest { public Entry[] entries; }
-        [Serializable] private sealed class Entry
+        [Serializable] internal sealed class Manifest { public Entry[] entries; }
+        [Serializable] internal sealed class Entry
         {
             public string runtimeLineId;
             public string sourceYarnFile;
@@ -22,6 +22,9 @@ namespace ProjectAllTime.VN.SaveLoad
             public string presentationBeat;
             public string eligibility;
             public string restrictionReason;
+            public string successorNodeOrFlow;
+            public string chapterId;
+            public string sceneTitle;
             public string informationTitle;
             public string informationFacts;
             public bool medicalDiagram;
@@ -35,10 +38,58 @@ namespace ProjectAllTime.VN.SaveLoad
             { Title = title; Facts = facts; Diagram = diagram; }
         }
 
-        public static bool TryGetPresentationContext(string lineId, out PresentationContext context)
+        public static bool ContainsLine(string lineId, TextAsset manifestAsset = null)
+        {
+            var asset = manifestAsset != null ? manifestAsset : Resources.Load<TextAsset>("M10_09_LINE_RESUME_MANIFEST");
+            try
+            {
+                var manifest = asset == null ? null : JsonUtility.FromJson<Manifest>(asset.text);
+                if (manifest?.entries == null) return false;
+                foreach (var entry in manifest.entries)
+                    if (entry != null && entry.runtimeLineId == lineId) return true;
+            }
+            catch (Exception) { }
+            return false;
+        }
+
+        public static bool TryGetSaveMetadata(string lineId, YarnProject project,
+            out string chapter, out string sceneTitle, out string diagnostic, TextAsset manifestAsset = null)
+        {
+            chapter = null;
+            sceneTitle = null;
+            if (!TryResolve(lineId, project, out _, out _, out diagnostic, manifestAsset)) return false;
+            var asset = manifestAsset != null ? manifestAsset : Resources.Load<TextAsset>("M10_09_LINE_RESUME_MANIFEST");
+            try
+            {
+                var manifest = JsonUtility.FromJson<Manifest>(asset.text);
+                foreach (var entry in manifest.entries)
+                {
+                    if (entry.runtimeLineId != lineId) continue;
+                    if (!string.IsNullOrWhiteSpace(entry.chapterId) && !string.IsNullOrWhiteSpace(entry.sceneTitle))
+                    {
+                        chapter = entry.chapterId;
+                        sceneTitle = entry.sceneTitle;
+                        return true;
+                    }
+                    if (string.IsNullOrEmpty(entry.chapterId) && string.IsNullOrEmpty(entry.sceneTitle) &&
+                        VNResumeCompatibilityRegistry.IsOriginalM10Entry(entry))
+                    {
+                        chapter = "prologue";
+                        sceneTitle = "프롤로그 " + entry.scene;
+                        return true;
+                    }
+                    break;
+                }
+            }
+            catch (Exception) { }
+            diagnostic = "The production line is missing validated chapter or scene metadata.";
+            return false;
+        }
+
+        public static bool TryGetPresentationContext(string lineId, out PresentationContext context, TextAsset manifestAsset = null)
         {
             context = default;
-            var asset = Resources.Load<TextAsset>("M10_09_LINE_RESUME_MANIFEST");
+            var asset = manifestAsset != null ? manifestAsset : Resources.Load<TextAsset>("M10_09_LINE_RESUME_MANIFEST");
             if (asset == null) return false;
             try
             {
@@ -58,30 +109,91 @@ namespace ProjectAllTime.VN.SaveLoad
             return false;
         }
 
-        public static bool TryResolve(string lineId, YarnProject project, out string node, out string graphVersion, out string diagnostic)
+        public static bool TryResolve(string lineId, YarnProject project, out string node, out string graphVersion, out string diagnostic, TextAsset manifestAsset = null)
+        {
+            try { return TryResolveCore(lineId, project, out node, out graphVersion, out diagnostic, manifestAsset); }
+            catch (Exception)
+            {
+                node = null;
+                graphVersion = null;
+                diagnostic = "The production narrative graph could not be validated.";
+                return false;
+            }
+        }
+
+        private static bool TryResolveCore(string lineId, YarnProject project, out string node, out string graphVersion, out string diagnostic, TextAsset manifestAsset)
         {
             node = null;
             graphVersion = null;
-            var asset = Resources.Load<TextAsset>("M10_09_LINE_RESUME_MANIFEST");
+            var asset = manifestAsset != null ? manifestAsset : Resources.Load<TextAsset>("M10_09_LINE_RESUME_MANIFEST");
             Manifest manifest;
             try { manifest = asset == null ? null : JsonUtility.FromJson<Manifest>(asset.text); }
             catch (Exception) { manifest = null; }
-            if (manifest?.entries == null || manifest.entries.Length != 379)
+            if (manifest?.entries == null || manifest.entries.Length == 0 || project == null ||
+                project.compiledYarnProgram == null || project.compiledYarnProgram.Length == 0)
             {
                 diagnostic = "Production line-resume manifest is missing or incomplete.";
                 return false;
             }
             var ids = new HashSet<string>(StringComparer.Ordinal);
             var nodes = new HashSet<string>(StringComparer.Ordinal);
+            var compiledLines = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var compiledNode in project.Program.Nodes.Values)
+                foreach (var instruction in compiledNode.Instructions)
+                    if (instruction.RunLine != null &&
+                        (string.IsNullOrWhiteSpace(instruction.RunLine.LineID) || !compiledLines.Add(instruction.RunLine.LineID)))
+                    {
+                        diagnostic = "The compiled narrative contains duplicate or invalid runtime line IDs.";
+                        return false;
+                    }
+            Dictionary<string, Entry> originalEntries = null;
             Entry match = null;
             foreach (var item in manifest.entries)
             {
                 if (item == null || string.IsNullOrWhiteSpace(item.runtimeLineId) ||
                     string.IsNullOrWhiteSpace(item.resumeEntryNode) || string.IsNullOrWhiteSpace(item.sourceNode) ||
+                    string.IsNullOrWhiteSpace(item.sourceYarnFile) ||
+                    string.IsNullOrWhiteSpace(item.scene) || string.IsNullOrWhiteSpace(item.presentationBeat) ||
+                    string.IsNullOrWhiteSpace(item.successorNodeOrFlow) ||
                     !ids.Add(item.runtimeLineId) || !nodes.Add(item.resumeEntryNode) ||
-                    (item.eligibility != "SAVE_ELIGIBLE" && item.eligibility != "SAVE_BLOCKED_TRANSIENT"))
+                    (item.eligibility != "SAVE_ELIGIBLE" && item.eligibility != "SAVE_BLOCKED_TRANSIENT") ||
+                    (item.eligibility == "SAVE_BLOCKED_TRANSIENT" && string.IsNullOrWhiteSpace(item.restrictionReason)) ||
+                    (item.eligibility == "SAVE_ELIGIBLE" && !string.IsNullOrWhiteSpace(item.restrictionReason)) ||
+                    !project.Program.Nodes.ContainsKey(item.sourceNode) ||
+                    !project.Program.Nodes.ContainsKey(item.presentationBeat) ||
+                    !project.Program.Nodes.ContainsKey(item.successorNodeOrFlow) ||
+                    !project.Program.Nodes.TryGetValue(item.resumeEntryNode, out var compiledEntry) ||
+                    compiledEntry.Instructions.Count == 0 || compiledEntry.Instructions[0].RunLine == null ||
+                    compiledEntry.Instructions[0].RunLine.LineID != item.runtimeLineId)
                 {
                     diagnostic = "Production line-resume manifest contains invalid or ambiguous mappings.";
+                    return false;
+                }
+                if (string.IsNullOrWhiteSpace(item.chapterId) || string.IsNullOrWhiteSpace(item.sceneTitle))
+                {
+                    if (!string.IsNullOrEmpty(item.chapterId) || !string.IsNullOrEmpty(item.sceneTitle) ||
+                        (originalEntries == null && !VNResumeCompatibilityRegistry.TryGetOriginalM10Entries(out originalEntries)) ||
+                        !originalEntries.TryGetValue(item.runtimeLineId, out var original) ||
+                        JsonUtility.ToJson(original) != JsonUtility.ToJson(item))
+                    {
+                        diagnostic = "Production line-resume manifest has invalid chapter or scene metadata.";
+                        return false;
+                    }
+                }
+                var transfers = 0;
+                foreach (var instruction in compiledEntry.Instructions)
+                    if (instruction.RunNode != null)
+                    {
+                        transfers++;
+                        if (instruction.RunNode.NodeName != item.successorNodeOrFlow)
+                        {
+                            diagnostic = "Production line-resume manifest has an invalid successor.";
+                            return false;
+                        }
+                    }
+                if (transfers != 1)
+                {
+                    diagnostic = "Production line-resume manifest has an ambiguous successor.";
                     return false;
                 }
                 if (string.Equals(item.runtimeLineId, lineId, StringComparison.Ordinal)) match = item;
@@ -116,9 +228,9 @@ namespace ProjectAllTime.VN.SaveLoad
 
         /// <summary>Accept only the current graph's canonical LF or historical CRLF fingerprint.</summary>
         public static bool IsCompatibleGraphVersion(string lineId, YarnProject project, string savedVersion,
-            out string node, out string diagnostic)
+            out string node, out string diagnostic, TextAsset manifestAsset = null)
         {
-            var result = VNResumeCompatibilityRegistry.Evaluate(lineId, project, savedVersion);
+            var result = VNResumeCompatibilityRegistry.Evaluate(lineId, project, savedVersion, manifestAsset);
             node = result.ResumeNode;
             diagnostic = result.Diagnostic;
             return result.IsCompatible;

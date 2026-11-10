@@ -85,6 +85,21 @@ namespace ProjectAllTime.Tests.Editor
                 Assert.That(coordinator.ValidateLoad(key).Status, Is.EqualTo(VNYarnLoadValidationStatus.Valid), fingerprint);
                 Assert.That(session.CurrentLineId, Is.EqualTo("line:prologue_s001_016"));
             }
+            var controllerObject = new GameObject("M10-15 manual overwrite controller");
+            ownedObjects.Add(controllerObject);
+            var controller = controllerObject.AddComponent<VNSaveLoadController>();
+            SetPrivate(controller, "repository", repository);
+            SetPrivate(controller, "saveCoordinator", coordinator);
+            SetPrivate(controller, "sessionState", session);
+            Assert.That(repository.TryGetSlotPath(key, out var manualPath), Is.True);
+            var originalBytes = File.ReadAllBytes(manualPath);
+            Assert.That(controller.SaveManual(0).Status, Is.EqualTo(VNSaveLoadOperationStatus.ConfirmationRequired));
+            controller.CancelManualOverwrite();
+            CollectionAssert.AreEqual(originalBytes, File.ReadAllBytes(manualPath));
+            Assert.That(controller.SaveManual(0).Status, Is.EqualTo(VNSaveLoadOperationStatus.ConfirmationRequired));
+            Assert.That(controller.ConfirmManualOverwrite().Status, Is.EqualTo(VNSaveLoadOperationStatus.Succeeded));
+            Assert.That(repository.Read(key).SaveData.resumeGraphVersion,
+                Is.EqualTo("cd43ce5bca1f245f359e90f71297e64232261c5c4b4ee6163790fa1cd3bef0b9"));
             var program = (byte[])runner.YarnProject.compiledYarnProgram.Clone();
             var manifest = Resources.Load<TextAsset>("M10_09_LINE_RESUME_MANIFEST").bytes;
             string Hash(byte[] p, byte[] m)

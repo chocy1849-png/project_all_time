@@ -88,6 +88,37 @@ namespace ProjectAllTime.VN.SaveLoad
             }
         }
 
+        /// <summary>Checks saved v2 values against the current declared Yarn variable types.</summary>
+        public static bool TryValidateAgainstProgram(YarnVariablesData snapshot, YarnProject project, out string diagnostic)
+        {
+            if (!VNSaveSerializer.TryValidateYarnVariables(snapshot, out diagnostic)) return false;
+            if (project == null || project.compiledYarnProgram == null || project.compiledYarnProgram.Length == 0)
+            {
+                diagnostic = "The Yarn program is unavailable for variable validation.";
+                return false;
+            }
+            try
+            {
+                var declared = project.Program.InitialValues;
+                foreach (var entry in snapshot.floats)
+                    if (!declared.TryGetValue(entry.name, out var value) || value.ValueCase != Yarn.Operand.ValueOneofCase.FloatValue)
+                    { diagnostic = "Saved Yarn number is unknown or has changed type: " + entry.name; return false; }
+                foreach (var entry in snapshot.strings)
+                    if (!declared.TryGetValue(entry.name, out var value) || value.ValueCase != Yarn.Operand.ValueOneofCase.StringValue)
+                    { diagnostic = "Saved Yarn text is unknown or has changed type: " + entry.name; return false; }
+                foreach (var entry in snapshot.bools)
+                    if (!declared.TryGetValue(entry.name, out var value) || value.ValueCase != Yarn.Operand.ValueOneofCase.BoolValue)
+                    { diagnostic = "Saved Yarn boolean is unknown or has changed type: " + entry.name; return false; }
+                diagnostic = null;
+                return true;
+            }
+            catch (Exception)
+            {
+                diagnostic = "The saved Yarn variable contract could not be validated.";
+                return false;
+            }
+        }
+
         internal static bool TryRestorePrepared(VariableStorageBehaviour variableStorage, VNYarnVariableRestorePlan restorePlan, out string diagnostic)
         {
             if (variableStorage == null)

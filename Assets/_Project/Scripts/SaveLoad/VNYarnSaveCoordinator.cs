@@ -105,6 +105,7 @@ namespace ProjectAllTime.VN.SaveLoad
         private readonly VNInteractionGate interactionGate;
         private readonly VNInformationOverlay informationOverlay;
         private readonly VNProloguePanels prologuePanels;
+        private readonly UnityEngine.TextAsset resumeManifest;
         private readonly VNLinePresenterLoadBarrier linePresenterLoadBarrier = new();
 
         /// <summary>
@@ -126,7 +127,8 @@ namespace ProjectAllTime.VN.SaveLoad
             VNDialogueSessionState sessionState = null,
             VNInteractionGate interactionGate = null,
             VNInformationOverlay informationOverlay = null,
-            VNProloguePanels prologuePanels = null)
+            VNProloguePanels prologuePanels = null,
+            UnityEngine.TextAsset resumeManifest = null)
         {
             this.repository = repository;
             this.checkpointService = checkpointService;
@@ -139,6 +141,7 @@ namespace ProjectAllTime.VN.SaveLoad
             this.interactionGate = interactionGate;
             this.informationOverlay = informationOverlay;
             this.prologuePanels = prologuePanels;
+            this.resumeManifest = resumeManifest;
         }
 
         /// <summary>
@@ -170,10 +173,12 @@ namespace ProjectAllTime.VN.SaveLoad
                 return false;
             }
             var isProductionLine = sessionState != null && sessionState.IsLineActive &&
-                sessionState.CurrentLineId.StartsWith("line:prologue_", StringComparison.Ordinal);
+                VNProductionLineResume.ContainsLine(sessionState.CurrentLineId, resumeManifest);
             var checkpoint = default(VNCheckpointContext);
             string exactNode = null;
             string graphVersion = null;
+            string chapterId = null;
+            string sceneTitle = null;
             if (isProductionLine)
             {
                 if (sessionState.OptionsActive || sessionState.IsManualAdvanceRequired || sessionState.IsCurrentLineConsumed ||
@@ -183,8 +188,10 @@ namespace ProjectAllTime.VN.SaveLoad
                     return false;
                 }
                 if (!VNProductionLineResume.TryResolve(sessionState.CurrentLineId, dialogueRunner.YarnProject,
-                    out exactNode, out graphVersion, out diagnostic)) return false;
-                if (!VNProductionLineResume.TryGetPresentationContext(sessionState.CurrentLineId, out var context) ||
+                    out exactNode, out graphVersion, out diagnostic, resumeManifest)) return false;
+                if (!VNProductionLineResume.TryGetSaveMetadata(sessionState.CurrentLineId, dialogueRunner.YarnProject,
+                    out chapterId, out sceneTitle, out diagnostic, resumeManifest)) return false;
+                if (!VNProductionLineResume.TryGetPresentationContext(sessionState.CurrentLineId, out var context, resumeManifest) ||
                     (!string.IsNullOrEmpty(context.Facts) && (informationOverlay == null || !informationOverlay.CanRestore)) ||
                     (context.Diagram && (prologuePanels == null || !prologuePanels.CanRestoreDiagram)))
                 {
@@ -216,6 +223,9 @@ namespace ProjectAllTime.VN.SaveLoad
                 !audioController.TryCaptureStableState(out var audioState, out diagnostic))
                 return false;
 
+            if (isProductionLine && !VNYarnVariableSnapshot.TryValidateAgainstProgram(yarnVariables, dialogueRunner.YarnProject, out diagnostic))
+                return false;
+
             if (!slotKey.TryGetCanonicalThumbnailFileName(out var thumbnailFileName))
             {
                 diagnostic = "The requested save slot cannot produce a canonical thumbnail filename.";
@@ -236,8 +246,8 @@ namespace ProjectAllTime.VN.SaveLoad
                 resumeLineId = isProductionLine ? sessionState.CurrentLineId : string.Empty,
                 resumeEntryNode = exactNode ?? string.Empty,
                 resumeGraphVersion = graphVersion ?? string.Empty,
-                chapterId = isProductionLine ? "prologue" : checkpoint.ChapterId,
-                sceneTitle = isProductionLine ? "프롤로그 " + sessionState.CurrentLineId.Substring("line:prologue_".Length, 4).ToUpperInvariant() : checkpoint.SceneTitle,
+                chapterId = isProductionLine ? chapterId : checkpoint.ChapterId,
+                sceneTitle = isProductionLine ? sceneTitle : checkpoint.SceneTitle,
                 playedSeconds = playTimeTracker.PlayedSeconds,
                 savedAtUtcIso8601 = VNSaveSerializer.CreateUtcTimestamp(),
                 thumbnailFileName = thumbnailFileName,
@@ -265,6 +275,8 @@ namespace ProjectAllTime.VN.SaveLoad
         public VNSaveOperationResult TryWriteCompleteSave(VNSaveSlotKey slotKey, out SaveSlotData saveData)
         {
             saveData = null;
+            if (!CanReplaceSlot(slotKey, out var overwriteDiagnostic))
+                return VNSaveOperationResult.Failure(overwriteDiagnostic);
             if (!TryComposeCompleteSave(slotKey, out saveData, out var diagnostic))
                 return VNSaveOperationResult.Failure(diagnostic);
 
@@ -276,6 +288,8 @@ namespace ProjectAllTime.VN.SaveLoad
         internal VNSaveOperationResult TryWriteLegacyCheckpointAutoSave(VNSaveSlotKey slotKey, out SaveSlotData saveData)
         {
             saveData = null;
+            if (!CanReplaceSlot(slotKey, out var overwriteDiagnostic))
+                return VNSaveOperationResult.Failure(overwriteDiagnostic);
             if (!TryComposeCompleteSave(slotKey, true, out saveData, out var diagnostic))
                 return VNSaveOperationResult.Failure(diagnostic);
             if (saveData.schemaVersion != VNSaveSerializer.CurrentSchemaVersion)
@@ -286,6 +300,22 @@ namespace ProjectAllTime.VN.SaveLoad
             var result = repository.Write(slotKey, saveData);
             if (!result.Succeeded) saveData = null;
             return result;
+        }
+
+        private bool CanReplaceSlot(VNSaveSlotKey key, out string diagnostic)
+        {
+            diagnostic = "The existing save is corrupted, unsupported, or incompatible and is preserved.";
+            if (repository == null || !key.IsValid) return false;
+            var existing = repository.Read(key);
+            if (existing.State == VNSaveSlotState.Empty)
+            {
+                diagnostic = null;
+                return true;
+            }
+            if (existing.State != VNSaveSlotState.Valid || ValidateLoad(key).Status != VNYarnLoadValidationStatus.Valid)
+                return false;
+            diagnostic = null;
+            return true;
         }
 
         /// <summary>
@@ -349,11 +379,11 @@ namespace ProjectAllTime.VN.SaveLoad
                     return VNYarnLoadValidationResult.Failure(VNYarnLoadValidationStatus.InvalidDependencies,
                         "Exact-line loading requires the session, input gate and authoritative line presenter.");
                 if (!VNProductionLineResume.IsCompatibleGraphVersion(readResult.SaveData.resumeLineId, dialogueRunner.YarnProject,
-                        readResult.SaveData.resumeGraphVersion, out var node, out var lineDiagnostic) ||
+                        readResult.SaveData.resumeGraphVersion, out var node, out var lineDiagnostic, resumeManifest) ||
                     node != readResult.SaveData.resumeEntryNode)
                     return VNYarnLoadValidationResult.Failure(VNYarnLoadValidationStatus.InvalidCheckpoint,
                         lineDiagnostic ?? "Exact-line resume metadata does not match this narrative graph.");
-                if (!VNProductionLineResume.TryGetPresentationContext(readResult.SaveData.resumeLineId, out linePresentation) ||
+                if (!VNProductionLineResume.TryGetPresentationContext(readResult.SaveData.resumeLineId, out linePresentation, resumeManifest) ||
                     (!string.IsNullOrEmpty(linePresentation.Facts) && (informationOverlay == null || !informationOverlay.CanRestore)) ||
                     (linePresentation.Diagram && (prologuePanels == null || !prologuePanels.CanRestoreDiagram)))
                     return VNYarnLoadValidationResult.Failure(VNYarnLoadValidationStatus.InvalidDependencies,
@@ -362,6 +392,9 @@ namespace ProjectAllTime.VN.SaveLoad
             else if (!checkpointService.TryValidateSavedCheckpoint(readResult.SaveData, dialogueRunner, out checkpoint, out var checkpointDiagnostic))
                 return VNYarnLoadValidationResult.Failure(VNYarnLoadValidationStatus.InvalidCheckpoint, checkpointDiagnostic);
 
+            if (readResult.SaveData.schemaVersion == VNSaveSerializer.ExactLineSchemaVersion &&
+                !VNYarnVariableSnapshot.TryValidateAgainstProgram(readResult.SaveData.yarnVariables, dialogueRunner.YarnProject, out var contractDiagnostic))
+                return VNYarnLoadValidationResult.Failure(VNYarnLoadValidationStatus.InvalidVariables, contractDiagnostic);
             if (!VNYarnVariableSnapshot.TryPrepareRestore(readResult.SaveData.yarnVariables, out var yarnRestorePlan, out var variablesDiagnostic))
                 return VNYarnLoadValidationResult.Failure(VNYarnLoadValidationStatus.InvalidVariables, variablesDiagnostic);
 
