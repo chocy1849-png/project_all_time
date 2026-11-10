@@ -172,7 +172,7 @@ namespace ProjectAllTime.VN.SaveLoad
             var slotKey = pendingManualOverwrite.Value;
             pendingManualOverwrite = null;
             saveLoadModal?.HideOverwriteConfirmation();
-            return WriteCompleteSlot(slotKey, "Manual save overwritten.");
+            return WriteCompleteSlot(slotKey, "Manual save overwritten.", true);
         }
 
         public void CancelManualOverwrite()
@@ -287,13 +287,13 @@ namespace ProjectAllTime.VN.SaveLoad
             RefreshSlots();
         }
 
-        private VNSaveLoadOperationResult WriteCompleteSlot(VNSaveSlotKey slotKey, string successMessage)
+        private VNSaveLoadOperationResult WriteCompleteSlot(VNSaveSlotKey slotKey, string successMessage, bool confirmedManualOverwrite = false)
         {
             var existing = repository.Read(slotKey);
             if (existing.State == VNSaveSlotState.Corrupted || existing.State == VNSaveSlotState.Unsupported ||
                 (existing.State == VNSaveSlotState.Valid && !IsCompatibleOverwrite(slotKey, existing.SaveData)))
                 return Complete(VNSaveLoadOperationStatus.UnsupportedSave, "The existing save is corrupted or incompatible and is preserved.");
-            var result = saveCoordinator.TryWriteCompleteSave(slotKey, out var savedData);
+            var result = saveCoordinator.TryWriteCompleteSave(slotKey, confirmedManualOverwrite, out var savedData);
             if (!result.Succeeded)
             {
                 var status = ClassifySaveFailure(result.Diagnostic);
@@ -456,12 +456,8 @@ namespace ProjectAllTime.VN.SaveLoad
 
         private bool IsCompatibleOverwrite(VNSaveSlotKey key, SaveSlotData data)
         {
-            if (data == null) return false;
-            if (data.schemaVersion == VNSaveSerializer.CurrentSchemaVersion)
-                return saveCoordinator != null && saveCoordinator.ValidateLoad(key).Status == VNYarnLoadValidationStatus.Valid;
-            return dialogueRunner != null &&
-                VNProductionLineResume.TryResolve(data.resumeLineId, dialogueRunner.YarnProject, out var node, out var graph, out _) &&
-                node == data.resumeEntryNode && graph == data.resumeGraphVersion;
+            return data != null && saveCoordinator != null &&
+                saveCoordinator.ValidateLoad(key).Status == VNYarnLoadValidationStatus.Valid;
         }
 
         private void SuppressDialogueAdvanceInput()

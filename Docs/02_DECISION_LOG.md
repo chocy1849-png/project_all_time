@@ -1,5 +1,14 @@
 # Decision Log
 
+## DEC-032 — Versioned narrative save compatibility
+
+Status: PROPOSED — M10-15 ready for review
+
+- Keep schema-v1 checkpoints and schema-v2 exact-line saves. Preserve the original M10 LF/CRLF graph identities.
+- Bind new graph identities to compiled instructions, the resume manifest and base-language line and option text. Accept an older M10 identity only when the pinned descriptor proves the conservative original execution, variable, text and presentation-context contract remains intact.
+- Apply the same complete pre-mutation load validation to occupied Manual, Quick and Auto slots; Manual replacement additionally requires the existing confirmation flow.
+- Retain original epoch evidence and require reviewed migrations for incompatible rewrites. See the [M10-15 report](Production/M10_15_SAVE_DATA_COMPATIBILITY_REPORT.md).
+
 ## DEC-001 — Unity baseline
 
 Status: ACCEPTED
