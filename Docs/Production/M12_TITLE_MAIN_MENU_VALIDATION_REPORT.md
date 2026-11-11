@@ -1,3 +1,95 @@
+# M12 Title and Main Menu — Final Validation Report
+
+> **Current status: developer-side validation is waiting on one current-source standalone Player interaction smoke. User Visual Acceptance is pending.** The historical run notes below are retained as-is; their earlier outstanding-state summaries are superseded by this final snapshot. No final PR is open yet.
+
+## Delivery snapshot — 2026-11-11
+
+- Repository: `C:\Dev\project_all_time`
+- Branch: `feat/m12-title-main-menu`
+- Base: `e6f8b7a964661e4da24dc2248a372d26f3f1d7a2` (merged M11 / current `main` base)
+- Source under validation: `217af8266efeb9456c817648e636f1577f4832e4`
+- Final evidence commit: recorded by Git after this report and screenshot matrix are committed; see final delivery response for its SHA.
+- PR: not opened; the current-source standalone Player interaction smoke is not yet observed. Do not treat this as User Visual Acceptance.
+
+## Regression and Editor evidence
+
+- Full unfiltered EditMode suite: **541 passed, 0 failed, 0 skipped, 0 inconclusive**. The run was completed before this evidence-only update; result artifact: `%TEMP%\M12-final-editmode-results.xml`.
+- Focused M12 suite: **11/11 passed**. No test was rerun during this delivery pass because production code did not change.
+- The asynchronous Title recovery integration test passed. It loads the production scene under isolated Settings, SaveData, and MetaProgress roots, starts an accepted asynchronous restore, induces a controlled presentation-restore failure, observes `LoadExecutionCompleted`, exercises the real Title controller's scene-recovery path, verifies Title/message/loading/modal/input recovery, and starts New Game again.
+- Connected Unity Editor Play validation and the M12 test runner reported completion. Earlier physical keyboard evidence is retained below and explicitly attributed to the user and the earlier Player build.
+
+## Final-source Windows Player build and smoke status
+
+- Current-source Windows x64 build: `C:\Users\UserK\AppData\Local\Temp\M12FinalPlayerCurrent\M12.exe`
+- Source commit: `217af8266efeb9456c817648e636f1577f4832e`
+- Unity: `6000.3.21f1`; build result: **Succeeded, 0 errors, 486 warnings**, 353,033,744 bytes reported by Unity. Executable SHA-256: `48EFAB523AA684C653BD1254A6962D3410127B5C02DC1310F6F16F4810666556`.
+- This build uses the isolated Player identity `M12Validation20261111 / AllTime_M12_QA`, with data under `%USERPROFILE%\AppData\LocalLow\M12Validation20261111\AllTime_M12_QA`; the target was absent before launch. It does not open or mutate the normal `DefaultCompany\My project` SaveData or Settings.
+- The current-source Player launched, initialized Unity 6000.3.21f1, initialized the Input System, and remained responsive. Its log records `VNSettingsRuntimeBootstrap: Display: Primary display native dimensions are invalid.` during first-run display initialization; the process stayed alive. This diagnostic is not recorded as a passing Settings interaction.
+- I could not observe the Player's rendered screen or state transitions through the available desktop capture/input bridge: the capture returned black and the local screen-capture call failed with an invalid handle. Therefore, **no fresh current-source Player button/keyboard interaction is claimed**. Earlier user-performed physical Escape/navigation/return evidence applies to the prior build and is not substituted for this build.
+- The current-source QA Player is left running at the path above for the exact manual smoke below. Its storage identity is isolated.
+
+### Exact remaining manual smoke
+
+On the open `M12FinalPlayerCurrent\M12.exe` window, perform one current-source smoke and report any failed step:
+
+1. Confirm the Korean Title and all six actions are visible. Choose **새 게임** and confirm S001 appears.
+2. From S001, use the existing Save/Load UI to create a Quick save. Press Escape; confirm the in-game menu opens. Choose **계속하기** and verify gameplay resumes.
+3. Reopen the in-game menu, choose **타이틀로**, cancel once and confirm the in-game menu is restored; repeat and confirm the return. Verify Title appears and Continue is available.
+4. Choose **이어하기** and verify the saved line is restored. Return to Title, open **불러오기**, load the Quick save, and verify restoration.
+5. Open and close **설정** and **기록** from Title. Confirm both return to Title and the UI remains responsive.
+6. Open **종료**, cancel and verify Title returns; reopen it, confirm, and verify the Player exits.
+
+This is the only remaining developer-side interaction gate. It is a user-performed physical/UI smoke if the desktop bridge remains unavailable; do not label it passed until the user reports the result.
+
+## UI-state screenshot matrix
+
+The 36 PNGs in [`M12_Evidence/FinalMatrix`](M12_Evidence/FinalMatrix) were captured from the actual production `VN_Main` scene in Unity Editor Play Mode with Unity Pipeline Game View capture, not fabricated or synthesized. The Game View was set to each required size before each capture. Every PNG header was read back and matched its filename dimensions exactly.
+
+| Required state | 1280×720 | 1600×900 | 1920×1080 |
+|---|---|---|---|
+| Initial Title | Captured | Captured | Captured |
+| Focused menu item | Captured | Captured | Captured |
+| Continue disabled | Captured | Captured | Captured |
+| Continue enabled | Captured | Captured | Captured |
+| Load | Captured | Captured | Captured |
+| Settings | Captured | Captured | Captured |
+| Records | Captured | Captured | Captured |
+| Quit confirmation | Captured | Captured | Captured |
+| In-game menu | Captured | Captured | Captured |
+| Return confirmation | Captured | Captured | Captured |
+| S001 after New Game | Captured | Captured | Captured |
+| Restored gameplay after Continue | Captured | Captured | Captured |
+
+Visual review of the matrix found the title and six menu actions readable, selected state visible, title content within the viewport, and no button overlap or clipping at all three sizes. The 1280×720 in-game menu, 1920×1080 return confirmation, and 1600×900 restored dialogue were inspected individually; contact sheets for all three sizes were inspected as well. Load/Settings/Records use the existing M7/M9 screens; their full visual redesign remains deferred to M13. Capture metadata and isolated test-save details are in `FinalMatrix/README.md`.
+
+The screenshot run used the isolated temporary Editor data root `%TEMP%\M12_final_matrix_590a04a680dd4a6d81f08f870220383e`. The temporary capture imports were copied into `Docs/Production/M12_Evidence/FinalMatrix` and removed from `Assets`; no runtime source or project settings were changed by this evidence pass.
+
+## Original M12 acceptance checklist
+
+| Acceptance area | Result | Evidence / note |
+|---|---|---|
+| Existing branch/base preserved; standard-user Unity Editor connected | Pass | Branch remains `feat/m12-title-main-menu`; base is M11 merge. User resolved the Unity administrator warning. |
+| Architecture audit and production-scene wiring | Pass | M12 specification and production `VN_Main` integration; one authoritative dialogue/save/settings/records runtime composition. |
+| Normal launch enters Title; no automatic `M2_UI_START` | Pass in Editor/test coverage | Production runner automatic start disabled; New Game explicitly requests `PROLOGUE_S001_START`. Current-source Player's rendered Title still needs manual confirmation. |
+| Six Korean actions, M11 styling, replaceable Sprite and overlay | Pass in implementation and Editor capture | Sprite is serialized independently from text/menu. Screenshot matrix shows Title states. User visual approval remains pending. |
+| Responsive UI, keyboard focus, disabled states and modal ownership | Pass in Editor/test coverage | 36 actual captures at required dimensions; focused/disabled states included. Current-source Player input requires the smoke above. |
+| New Game freshness and S001 entry | Pass in Editor/test coverage | Recovery integration returns to Title then starts S001; standalone current-source confirmation pending. |
+| Continue candidate selection, compatibility, async completion and recovery | Pass in tests/Editor integration | Latest compatible candidate policy, actual completion event, controlled failure recovery and exact-line integration covered. |
+| Load Game reuse, invalid-save handling, Settings and Records integration | Pass in tests/Editor integration | Existing services and modal ownership retained; screenshot states captured. Current-source Player interactions pending. |
+| In-game menu, Escape routing, return confirmation and repeat cycle | Pass in Editor/test coverage; earlier user physical input separately recorded | Actual current-source Player interaction remains part of the manual smoke. |
+| Quit confirmation and application exit | Editor/test coverage; current Player not yet exercised | Current-source Player must complete the manual exit step above. |
+| Protected story, Yarn, SaveData, MetaProgress, Replay and M11 contracts | Pass | Protected asset review and 541-test regression recorded in prior run. |
+| Focused M12 and full EditMode regression | Pass | 11/11 focused; 541/541 full. Not rerun without code changes. |
+| Current-source Windows x64 build | Pass | Build succeeded with 0 errors; 486 warnings are recorded above. |
+| Current-source standalone interaction smoke | **Pending exact manual smoke above** | Desktop capture/input bridge did not provide observable Player state. |
+| User visual/gameplay acceptance | **Pending user approval** | Not inferred from technical screenshots. |
+| Final PR | **Not opened** | Will open once the current-source Player smoke passes. |
+
+## M13 deferrals
+
+The complete visual redesign of Settings, Save/Load, Records, and Backlog remains deferred to M13. M12 only integrates their existing interfaces with Title and preserves correct navigation/input ownership. No M13 work has started.
+## Historical Validation Ledger (retained without rewriting prior observations)
+
 # M12 Title and Main Menu — Validation Report (developer gate blocked)
 
 ## Final regression continuation — 2026-11-11
