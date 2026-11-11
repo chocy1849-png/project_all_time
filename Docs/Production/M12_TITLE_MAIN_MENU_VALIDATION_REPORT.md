@@ -1,6 +1,6 @@
 # M12 Title and Main Menu — Final Validation Report
 
-> **Current status: developer-side validation is waiting on one current-source standalone Player interaction smoke. User Visual Acceptance is pending.** The historical run notes below are retained as-is; their earlier outstanding-state summaries are superseded by this final snapshot. No final PR is open yet.
+> **M12 TITLE & MAIN MENU — READY FOR USER PLAY GATE.** Developer-side validation is complete. User Visual Acceptance remains pending. The historical run notes below are retained as-is; their earlier outstanding-state summaries are superseded by this final snapshot.
 
 ## Delivery snapshot — 2026-11-11
 
@@ -8,8 +8,8 @@
 - Branch: `feat/m12-title-main-menu`
 - Base: `e6f8b7a964661e4da24dc2248a372d26f3f1d7a2` (merged M11 / current `main` base)
 - Source under validation: `217af8266efeb9456c817648e636f1577f4832e4`
-- Final evidence commit: recorded by Git after this report and screenshot matrix are committed; see final delivery response for its SHA.
-- PR: not opened; the current-source standalone Player interaction smoke is not yet observed. Do not treat this as User Visual Acceptance.
+- Final evidence and current-source smoke record: see the feature branch head and final delivery response.
+- PR: will be opened against `main` after this final report update; it will not be merged here.
 
 ## Regression and Editor evidence
 
@@ -24,22 +24,21 @@
 - Source commit: `217af8266efeb9456c817648e636f1577f4832e`
 - Unity: `6000.3.21f1`; build result: **Succeeded, 0 errors, 486 warnings**, 353,033,744 bytes reported by Unity. Executable SHA-256: `48EFAB523AA684C653BD1254A6962D3410127B5C02DC1310F6F16F4810666556`.
 - This build uses the isolated Player identity `M12Validation20261111 / AllTime_M12_QA`, with data under `%USERPROFILE%\AppData\LocalLow\M12Validation20261111\AllTime_M12_QA`; the target was absent before launch. It does not open or mutate the normal `DefaultCompany\My project` SaveData or Settings.
-- The current-source Player launched, initialized Unity 6000.3.21f1, initialized the Input System, and remained responsive. Its log records `VNSettingsRuntimeBootstrap: Display: Primary display native dimensions are invalid.` during first-run display initialization; the process stayed alive. This diagnostic is not recorded as a passing Settings interaction.
-- I could not observe the Player's rendered screen or state transitions through the available desktop capture/input bridge: the capture returned black and the local screen-capture call failed with an invalid handle. Therefore, **no fresh current-source Player button/keyboard interaction is claimed**. Earlier user-performed physical Escape/navigation/return evidence applies to the prior build and is not substituted for this build.
-- The current-source QA Player is left running at the path above for the exact manual smoke below. Its storage identity is isolated.
+- The current-source Player launched, initialized Unity 6000.3.21f1 and the Input System, and remained responsive. Its log records `VNSettingsRuntimeBootstrap: Display: Primary display native dimensions are invalid.` during first-run display initialization; no fatal exception was reported. The user subsequently performed the current-source UI smoke listed below and reported every step passing. This smoke confirms Settings opens and closes; it does not claim testing a display-mode change.
+- The requested `M12FinalPlayer` output path was occupied by an older running Player, so the current-source build used the distinct `M12FinalPlayerCurrent` path above. Its isolated storage identity remains `M12Validation20261111 / AllTime_M12_QA`.
 
-### Exact remaining manual smoke
+### Current-source standalone Player interaction smoke
 
-On the open `M12FinalPlayerCurrent\M12.exe` window, perform one current-source smoke and report any failed step:
+**PASS — user-performed physical/UI verification**, reported after running the build at `C:\Users\UserK\AppData\Local\Temp\M12FinalPlayerCurrent\M12.exe`:
 
-1. Confirm the Korean Title and all six actions are visible. Choose **새 게임** and confirm S001 appears.
-2. From S001, use the existing Save/Load UI to create a Quick save. Press Escape; confirm the in-game menu opens. Choose **계속하기** and verify gameplay resumes.
-3. Reopen the in-game menu, choose **타이틀로**, cancel once and confirm the in-game menu is restored; repeat and confirm the return. Verify Title appears and Continue is available.
-4. Choose **이어하기** and verify the saved line is restored. Return to Title, open **불러오기**, load the Quick save, and verify restoration.
-5. Open and close **설정** and **기록** from Title. Confirm both return to Title and the UI remains responsive.
-6. Open **종료**, cancel and verify Title returns; reopen it, confirm, and verify the Player exits.
+1. Title displayed and New Game entered S001.
+2. A Quick save was created; Escape opened the in-game menu; Continue resumed gameplay.
+3. Return-to-Title cancellation restored the in-game menu; confirmation returned to Title and Continue was available.
+4. Continue restored the saved line; Load opened and restored the Quick save.
+5. Settings and Records opened from Title and returned correctly.
+6. Quit cancellation returned to Title; confirming Quit exited the Player.
 
-This is the only remaining developer-side interaction gate. It is a user-performed physical/UI smoke if the desktop bridge remains unavailable; do not label it passed until the user reports the result.
+This result is user-reported physical/UI evidence for the current-source build. It is separate from Codex's Unity Editor screenshots and does not by itself constitute User Visual Acceptance.
 
 ## UI-state screenshot matrix
 
@@ -72,18 +71,18 @@ The screenshot run used the isolated temporary Editor data root `%TEMP%\M12_fina
 | Architecture audit and production-scene wiring | Pass | M12 specification and production `VN_Main` integration; one authoritative dialogue/save/settings/records runtime composition. |
 | Normal launch enters Title; no automatic `M2_UI_START` | Pass in Editor/test coverage | Production runner automatic start disabled; New Game explicitly requests `PROLOGUE_S001_START`. Current-source Player's rendered Title still needs manual confirmation. |
 | Six Korean actions, M11 styling, replaceable Sprite and overlay | Pass in implementation and Editor capture | Sprite is serialized independently from text/menu. Screenshot matrix shows Title states. User visual approval remains pending. |
-| Responsive UI, keyboard focus, disabled states and modal ownership | Pass in Editor/test coverage | 36 actual captures at required dimensions; focused/disabled states included. Current-source Player input requires the smoke above. |
+| Responsive UI, keyboard focus, disabled states and modal ownership | Pass in Editor/test coverage; current-source Player smoke reported pass | 36 actual captures at required dimensions; focused/disabled states included. User reports current-source navigation and modal flows passed. |
 | New Game freshness and S001 entry | Pass in Editor/test coverage | Recovery integration returns to Title then starts S001; standalone current-source confirmation pending. |
 | Continue candidate selection, compatibility, async completion and recovery | Pass in tests/Editor integration | Latest compatible candidate policy, actual completion event, controlled failure recovery and exact-line integration covered. |
 | Load Game reuse, invalid-save handling, Settings and Records integration | Pass in tests/Editor integration | Existing services and modal ownership retained; screenshot states captured. Current-source Player interactions pending. |
-| In-game menu, Escape routing, return confirmation and repeat cycle | Pass in Editor/test coverage; earlier user physical input separately recorded | Actual current-source Player interaction remains part of the manual smoke. |
+| In-game menu, Escape routing, return confirmation and repeat cycle | Pass in Editor/test coverage and user-performed current-source Player smoke | User reports Escape, Continue, return cancellation, and confirmed return to Title passed. |
 | Quit confirmation and application exit | Editor/test coverage; current Player not yet exercised | Current-source Player must complete the manual exit step above. |
 | Protected story, Yarn, SaveData, MetaProgress, Replay and M11 contracts | Pass | Protected asset review and 541-test regression recorded in prior run. |
 | Focused M12 and full EditMode regression | Pass | 11/11 focused; 541/541 full. Not rerun without code changes. |
 | Current-source Windows x64 build | Pass | Build succeeded with 0 errors; 486 warnings are recorded above. |
-| Current-source standalone interaction smoke | **Pending exact manual smoke above** | Desktop capture/input bridge did not provide observable Player state. |
+| Current-source standalone interaction smoke | **Pass — user-performed** | User reports all six current-source Player smoke steps passed. |
 | User visual/gameplay acceptance | **Pending user approval** | Not inferred from technical screenshots. |
-| Final PR | **Not opened** | Will open once the current-source Player smoke passes. |
+| Final PR | **Pending creation in this delivery** | Will target `main`; no merge will be performed. |
 
 ## M13 deferrals
 
