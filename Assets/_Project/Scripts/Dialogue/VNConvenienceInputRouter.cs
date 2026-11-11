@@ -31,6 +31,7 @@ namespace ProjectAllTime.VN.Dialogue
         private int rebindCaptureSuspensionDepth;
 
         public bool IsRebindCaptureSuspended => rebindCaptureSuspensionDepth > 0;
+        public event System.Func<bool> UnhandledCancel;
 
         /// <summary>Temporarily blocks all M6 routing while Input System captures a rebind.</summary>
         public void BeginRebindCaptureSuspension()
@@ -95,7 +96,14 @@ namespace ProjectAllTime.VN.Dialogue
         private void HandleToggleHidePerformed(InputAction.CallbackContext context) { if (!IsRebindCaptureSuspended) convenienceController?.ToggleUiVisibility(); }
         private void HandleQuickSavePerformed(InputAction.CallbackContext context) { if (!IsRebindCaptureSuspended) convenienceController?.QuickSave(); }
         private void HandleQuickLoadPerformed(InputAction.CallbackContext context) { if (!IsRebindCaptureSuspended) convenienceController?.QuickLoad(); }
-        private void HandleCancelPerformed(InputAction.CallbackContext context) { if (!IsRebindCaptureSuspended) convenienceController?.HandleCancel(); }
+        private void HandleCancelPerformed(InputAction.CallbackContext context)
+        {
+            if (IsRebindCaptureSuspended) return;
+            if (convenienceController != null && convenienceController.HandleCancel()) return;
+            // A story interaction retains ownership even when it declines cancel.
+            if (interactionGate != null && (interactionGate.IsStoryInteractionActive || interactionGate.IsLoadInProgress)) return;
+            UnhandledCancel?.Invoke();
+        }
         private void HandleSkipHoldStarted(InputAction.CallbackContext context) { if (!IsRebindCaptureSuspended) BeginSkipHold(); }
         private void HandleSkipHoldCanceled(InputAction.CallbackContext context) { if (!IsRebindCaptureSuspended) EndSkipHold(); }
 

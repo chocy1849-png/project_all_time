@@ -22,12 +22,13 @@ namespace ProjectAllTime.VN.Dialogue
         private void OnValidate()
         {
             // Defer UI mutations until Unity has finished validating the asset.
-            UnityEditor.EditorApplication.delayCall -= RefreshLoadedBindings;
-            UnityEditor.EditorApplication.delayCall += RefreshLoadedBindings;
+            UnityEditor.EditorApplication.update -= RefreshLoadedBindings;
+            UnityEditor.EditorApplication.update += RefreshLoadedBindings;
         }
 
         private void RefreshLoadedBindings()
         {
+            UnityEditor.EditorApplication.update -= RefreshLoadedBindings;
             if (this == null) return;
             foreach (var binding in Object.FindObjectsByType<VNUIThemeBinding>(FindObjectsInactive.Include, FindObjectsSortMode.None))
                 if (binding.Theme == this) binding.Apply();
