@@ -28,6 +28,12 @@ The current closure report consolidates implementation, media, provenance, valid
 
 **Prototype status:** `PROTOTYPE_PLAY_GATE_PASS`. **Commercial release status:** `COMMERCIAL_RELEASE_CLEARANCE_PENDING` until final media, provenance, rights, and release-readiness review are complete.
 
+## M12 — Title and Main Menu (current branch)
+
+M12 implementation is on `feat/m12-title-main-menu`, based on merged M11 commit `e6f8b7a964661e4da24dc2248a372d26f3f1d7a2`. This branch is not merged. `VN_Main` now presents the Korean title first, disables only the production DialogueRunner's automatic start, and retains `M2_UI_START` as its technical serialized start node. New Game explicitly starts `PROLOGUE_S001_START`; Continue and Load reuse the existing schema-v2 exact-line Save/Load path and wait on the explicit asynchronous load completion signal. Settings and Records reuse their existing bootstraps and modal owner. The title and in-game flow controller owns transitions only; it is not a persistence authority.
+
+The isolated Windows x64 build and mouse-driven Player smoke are recorded in [the M12 validation report](Production/M12_TITLE_MAIN_MENU_VALIDATION_REPORT.md). Current EditMode evidence is 535 passed, 0 failed, 0 skipped; PlayMode discovery returns 0 tests because this repository currently contains Editor-folder tests and no PlayMode test assembly. The standalone Player's keyboard/Escape path and consequent in-game menu/return-to-title flow remain unverified. M12 developer-side acceptance is **BLOCKED** pending that verification; no final PR or user Play Gate is claimed. The M13 redesign of Settings, Save/Load, Records, and Backlog remains deferred.
+
 ## Phase 0
 
 This section is the original project bootstrap snapshot; later M1–M10 sections supersede its “not present” implementation statements.

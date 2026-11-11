@@ -42,6 +42,18 @@ The following describes the merged M10 production path. The M5 checkpoint sectio
 - The production audio catalog routes the two BGM tracks and one-shot SFX through the existing mixer/controller authority. Timed BGM transitions are awaited; finite one-shot cues remain distinct from continuous BGM. The finite equipment-to-rain handoff uses the SFX catalog and does not add an Ambient subsystem.
 - Six global IDs retain a technical placeholder: the mechanical Rope marker and five silent SFX fallbacks. Their runtime references are valid, but these fallbacks are not final media. Nineteen character-scoped expression keys stay inside the nine character definitions; they are not extra global asset IDs.
 
+## M12 title-first startup and main menu (current branch)
+
+- `VN_Main` remains the sole production scene and keeps its existing Settings, MetaProgress, Records, Save/Load, presentation, audio, dialogue, and input services. `VNTitleScreen.prefab` is instantiated within the existing canvas and shares its single EventSystem and modal layer.
+- M12 sets the production DialogueRunner's serialized `autoStart` false while retaining `M2_UI_START` as the technical `startNode`. Normal application startup shows Title without running technical dialogue. A guarded New Game explicitly starts `PROLOGUE_S001_START`; load transitions reuse the existing validated restore coordinator.
+- `VNTitleFlowController` owns only Title/Menu/confirmation/loading/transition coordination. `VNInteractionGate` and the existing convenience router arbitrate story and convenience input. Existing services continue to own persistence, modal input suppression, Settings, Records, and isolated Replay.
+- Continue inspects the existing Manual/Auto/Quick slots, filters malformed, unsupported, timestamp-invalid, and incompatible candidates through existing validation, then ranks compatible saves deterministically. The controller waits for `LoadExecutionCompleted`; the immediate accepted-start result is not treated as a completed restore.
+- Returning to Title uses a confirmed reload of `VN_Main` as the session-reset boundary, preserving SaveData, Settings, and MetaProgress. Quit is confirmed and calls `Application.Quit()` only after confirmation. Escape dispatch continues through the existing Cancel chain before reaching the M12 in-game menu.
+- The title Sprite is an Inspector-assigned Image reference below a separately adjustable overlay, with envelope-parent aspect-ratio cover cropping. Art replacement does not depend on the menu controller or baked title text. See [the M12 specification](Production/M12_TITLE_MAIN_MENU_SPEC.md).
+- This architecture is implemented on the unmerged M12 branch. The production keyboard/Escape path is not yet accepted as validated; see [the M12 validation report](Production/M12_TITLE_MAIN_MENU_VALIDATION_REPORT.md).
+
+The M2 section below records the historical play-screen contract; M12 supersedes its startup wording only. It does not replace the M2 runtime presenter or input architecture.
+
 ## M2 core VN play screen
 
 - Project-owned uGUI objects and prefabs provide the VN play-screen layout.

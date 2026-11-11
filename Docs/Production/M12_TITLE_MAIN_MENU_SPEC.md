@@ -1,4 +1,6 @@
-# M12 — Title and Main Menu Specification (work in progress)
+# M12 — Title and Main Menu Specification
+
+This specification describes the implementation on `feat/m12-title-main-menu`. Developer-side acceptance remains blocked pending standalone keyboard/Escape validation; see the [validation report](M12_TITLE_MAIN_MENU_VALIDATION_REPORT.md). User visual acceptance remains pending.
 
 ## Baseline and observed startup
 
@@ -18,11 +20,11 @@ SaveLoadRuntime constructs its repository and coordinator in Awake. MetaProgress
 
 Inspect all 12 manual, five auto, and one quick slots with the repository. Reject invalid timestamps, unreadable/unsupported data, and any candidate that fails the existing coordinator's complete compatibility preflight. Rank by saved UTC timestamp descending, then deterministically by slot type and index. Disable Continue when no candidate qualifies. Revalidate at execution time.
 
-`VNSaveLoadController.Load()` reports success after validated execution starts, not after restoration. Its `StartLoad` awaits `ExecuteValidatedLoad`, publishes completion status on success, emits an operation failure on error, and clears `IsLoadInProgress` in `finally`. A narrow explicit completion signal is required to distinguish actual success from failure and to prevent overlapping transitions. A failure after mutation requires clean-scene recovery; preflight failure must leave the title intact. Reuse the existing Load modal, coordinator, and repository.
+`VNSaveLoadController.Load()` reports success after validated execution starts, not after restoration. Its `StartLoad` awaits `ExecuteValidatedLoad`, publishes completion status on success, emits an operation failure on error, and clears `IsLoadInProgress` in `finally`. The implemented `LoadExecutionCompleted` signal distinguishes actual success from failure and prevents overlapping transitions. A failure after mutation requires clean-scene recovery; preflight failure must leave the title intact. Reuse the existing Load modal, coordinator, and repository.
 
 ## Return, exit, and outstanding validation
 
-Return to title requires confirmation and a guarded scene reload after outstanding load operations finish. Exit requires confirmation and `Application.Quit` in Player; Editor validation must not claim the Editor exits. Reuse existing Settings and Records, including isolated Replay. Verify modal return focus, exact-line continuity, serialized references, input and UI layering, all required resolutions, replacement Sprite serialization, full regression, connected Editor Play, and isolated Windows Player before claiming completion. Detailed implementation and evidence remain outstanding.
+Return to title requires confirmation and a guarded scene reload after outstanding load operations finish. Exit requires confirmation and `Application.Quit` in Player; Editor validation must not claim the Editor exits. Reuse existing Settings and Records, including isolated Replay. Modal return focus, exact-line continuity, serialized references, layout and Sprite replacement, EditMode regression, connected Editor Play, and a mouse-driven Windows Player smoke are documented. Standalone keyboard/Escape, in-game-menu/return-to-title, and remaining negative save/load cases are still unverified; therefore technical acceptance is blocked and user visual approval is not claimed.
 
 ## Implemented title presentation and replacement procedure
 
@@ -34,4 +36,4 @@ To replace the artwork: open `Assets/_Project/Prefabs/UI/M12/VNTitleScreen.prefa
 
 `VNTitleFlowController` coordinates the existing services. `VNInteractionGate.SetTitleFlowBlocksGameplay` blocks story/convenience actions while title or in-game menu owns the interaction; the router invokes the title's Cancel handler only after the established Cancel chain. Settings and Records continue to use `VNConvenienceModalController`; the existing Save/Load modal remains the owner of its transaction. Returning to title reloads the current production scene. New Game resets the play-time counter, disables Auto/Skip, and explicitly starts S001 from the clean scene. Title startup initializes the line presenter to the quiescent state required by the existing load barrier.
 
-`VNContinueSelection` orders valid UTC timestamps descending; equal timestamps prefer Manual, then Auto, then Quick, and the lower slot index. The controller calls the existing full compatibility preflight before selecting and revalidates on load. `LoadExecutionCompleted` reports the awaited execution outcome after input release, distinct from the immediate accepted-start result. A failed title load returns to a clean scene with a diagnostic. Full validation and user visual acceptance remain outstanding; this document is not a test pass.
+`VNContinueSelection` orders valid UTC timestamps descending; equal timestamps prefer Manual, then Auto, then Quick, and the lower slot index. The controller calls the existing full compatibility preflight before selecting and revalidates on load. `LoadExecutionCompleted` reports the awaited execution outcome after input release, distinct from the immediate accepted-start result. A failed title load returns to a clean scene with a diagnostic. See the validation report for completed checks, limitations, and the current blocked developer gate; user visual acceptance remains pending.

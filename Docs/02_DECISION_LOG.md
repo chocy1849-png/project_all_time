@@ -322,3 +322,14 @@ Status: ACCEPTED
 - At the M9-13 boundary, `VN_Main` contained the production Records wiring and four intentionally empty production catalogs. M10-10 later populated those catalogs; the original Scene/Prefab wiring was authored through Unity Editor operations, not manual YAML edits.
 - M9-14 Technical Validation passed, and M9-15 User Play Gate passed. M9 is recorded COMPLETE by the M9-16 reconciliation.
 - `DEFERRED_CONTENT_POPULATION` recorded the M9 boundary: the framework/runtime were complete while the production catalogs had no story Records content. M10-10 later populated them; that historical label is not the current M10 catalog state. Human UX checks remain specific to future Records content or UI changes.
+
+## DEC-032 — M12 title-first startup composition
+
+Status: PROPOSED — implemented on `feat/m12-title-main-menu`; pending technical validation and review.
+
+- Keep `VN_Main` and the existing runtime services as the single production composition. Add the title as a separate layer in the existing canvas so Settings, Save/Load, Records, and MetaProgress retain their established owners.
+- Disable automatic production DialogueRunner startup while retaining the technical `M2_UI_START` serialized node. Start `PROLOGUE_S001_START` explicitly for New Game; route Continue and Load through the existing compatibility preflight and asynchronous restore coordinator.
+- Let a small scene-local title controller coordinate transitions and gate ownership. It owns no persistence, story variables, audio, or Records state. Use the existing Cancel chain and modal owners.
+- Use a serialized title background Sprite plus independent overlay and cover crop so future art replacement requires only an Inspector Sprite assignment.
+- Reload `VN_Main` after confirmed Return to Title to establish a fresh session while preserving durable saves, Settings, and MetaProgress.
+- Final M12 acceptance remains pending until standalone keyboard/Escape and all required runtime gates are verified. This proposed decision does not claim User Play Gate approval.
