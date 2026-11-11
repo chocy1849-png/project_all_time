@@ -8,8 +8,8 @@
 - Branch: `feat/m12-title-main-menu`
 - Base: `e6f8b7a964661e4da24dc2248a372d26f3f1d7a2` (merged M11 / current `main` base)
 - Source under validation: `217af8266efeb9456c817648e636f1577f4832e4`
-- Final evidence and current-source smoke record: see the feature branch head and final delivery response.
-- PR: will be opened against `main` after this final report update; it will not be merged here.
+- Final evidence and current-source smoke record: committed on `feat/m12-title-main-menu`; the exact final SHA is the PR head and is included in the delivery response.
+- PR: [#66 — Complete title screen and main menu experience](https://github.com/chocy1849-png/project_all_time/pull/66), open against `main`, mergeable, not merged.
 
 ## Regression and Editor evidence
 
@@ -82,7 +82,7 @@ The screenshot run used the isolated temporary Editor data root `%TEMP%\M12_fina
 | Current-source Windows x64 build | Pass | Build succeeded with 0 errors; 486 warnings are recorded above. |
 | Current-source standalone interaction smoke | **Pass — user-performed** | User reports all six current-source Player smoke steps passed. |
 | User visual/gameplay acceptance | **Pending user approval** | Not inferred from technical screenshots. |
-| Final PR | **Pending creation in this delivery** | Will target `main`; no merge will be performed. |
+| Final PR | **Open, not merged** | [PR #66](https://github.com/chocy1849-png/project_all_time/pull/66) targets `main`. |
 
 ## M13 deferrals
 
