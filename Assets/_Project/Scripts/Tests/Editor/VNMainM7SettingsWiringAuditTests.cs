@@ -216,7 +216,7 @@ namespace ProjectAllTime.Tests.Editor
             Assert.That(bootstrap.isActiveAndEnabled, Is.True);
 
             var runnerProperties = new SerializedObject(runner);
-            Assert.That(runnerProperties.FindProperty("autoStart").boolValue, Is.True);
+            Assert.That(runnerProperties.FindProperty("autoStart").boolValue, Is.False, "M12 starts from the title screen.");
             Assert.That(runnerProperties.FindProperty("startNode").stringValue, Is.EqualTo("M2_UI_START"));
             Assert.That(MonoImporter.GetExecutionOrder(MonoScript.FromMonoBehaviour(bootstrap)), Is.Zero);
             Assert.That(MonoImporter.GetExecutionOrder(MonoScript.FromMonoBehaviour(settingsBootstrap)), Is.Zero);

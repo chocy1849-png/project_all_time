@@ -89,7 +89,16 @@ namespace ProjectAllTime.VN.Settings
         public string CanonicalFilePath => Path.Combine(storageRoot, CanonicalFileName);
         public static string ProductionStorageRoot => Path.Combine(Application.persistentDataPath, SettingsDirectoryName);
 
-        public VNSettingsRepository() : this(ProductionStorageRoot) { }
+        public VNSettingsRepository() : this(DefaultStorageRoot()) { }
+
+        private static string DefaultStorageRoot()
+        {
+#if UNITY_EDITOR
+            var isolated = Environment.GetEnvironmentVariable("PROJECT_ALL_TIME_TEST_ROOT");
+            if (!string.IsNullOrWhiteSpace(isolated)) return Path.Combine(isolated, SettingsDirectoryName);
+#endif
+            return ProductionStorageRoot;
+        }
 
         private VNSettingsRepository(string rootDirectory)
         {
