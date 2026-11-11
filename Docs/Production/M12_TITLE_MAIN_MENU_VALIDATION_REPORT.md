@@ -55,6 +55,8 @@ The Unity Editor remains connected to `C:\Dev\project_all_time` on Unity `6000.3
 
 ## User-performed physical keyboard evidence
 
+The user subsequently reports completing the requested standalone keyboard-navigation checks and that arrow-key navigation works. This is user-reported physical input evidence. Individual confirmation, cancellation, and return substeps were not separately described in that report; their Editor Play observations are recorded above.
+
 On 2026-11-11, the user launched `C:\Users\UserK\AppData\Local\Temp\M12FinalPlayer\M12.exe`, started New Game, entered S001, and pressed Escape on a physical keyboard. The user reports **PASS**: the in-game menu opened over the active dialogue and displayed `계속하기`, `타이틀로`, and `종료`. The user also reports a screenshot is available as visual evidence. This is explicitly user-performed physical Windows Player input; it is separate from Computer Use and simulated-input evidence. It confirms Escape-to-open only; it does not establish menu close, keyboard navigation, return confirmation, or return-to-title behavior.
 
 **Developer-side gate: BLOCKED.** The remaining gate includes in-game-menu Resume/Return flows, keyboard selection/cancellation behavior independent of Escape-to-open, and the outstanding missing/corrupt/incompatible/failed-load scenarios. User visual acceptance and M13 deferred redesign work remain separate.
