@@ -514,6 +514,7 @@ namespace ProjectAllTime.Tests.Editor
             };
             ui.LoadStateChanged += loadOwnership;
             ui.LoadExecutionCompleted += result => failedCompletion = result;
+            LogAssert.Expect(LogType.Error, "Cannot set unknown background 'bg_family_kitchen_morning'.");
             var accepted = ui.Load(legacyKey);
             Assert.That(accepted.Succeeded, Is.True, accepted.Message);
             Assert.That(repeatedRequest.Status, Is.EqualTo(VNSaveLoadOperationStatus.Busy));

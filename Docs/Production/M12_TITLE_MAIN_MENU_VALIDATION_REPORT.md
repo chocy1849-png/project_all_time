@@ -1,5 +1,15 @@
 # M12 Title and Main Menu — Validation Report (developer gate blocked)
 
+## Final regression continuation — 2026-11-11
+
+- Branch `feat/m12-title-main-menu`; candidate implementation commit `a26429b5380a2feeb8dcf407588449cc06518812`. The current continuation adds test cleanup and this evidence.
+- Full unfiltered EditMode: **541 passed, 0 failed, 0 skipped, 0 inconclusive**. Both Unity NUnit and Pipeline reported completion. The count increased from the historical 538 by three M12 tests. Result artifact: `%TEMP%/M12-final-editmode-results.xml` on the validation machine. Focused M12: **11/11 passed**. PlayMode discovery found **0 tests**; the M12 EditMode integration test enters actual Editor Play Mode.
+- An earlier full run failed because the M10-15 fixture's deliberate presentation failure emitted an unregistered error log. The fixture now expects that exact error. Its focused rerun and the final full suite passed.
+- The M12 production-scene test uses isolated Editor-only Settings, SaveData and MetaProgress roots, triggers an accepted load, removes a presentation reference after validation, observes actual asynchronous failure, reloads Title through its real controller, verifies recovery message, loading/modal cleanup and UI input, and starts S001 again. Normal Player Settings paths remain unchanged by the Editor-only override.
+- Final Windows x64 build at `C:\Users\UserK\AppData\Local\Temp\M12FinalPlayer\M12.exe`: **Succeeded, 0 errors, 486 warnings**. The test-generated background-execution setting and temporary Input System preload were restored before the final build. The fresh build has not received a complete interactive standalone smoke; the earlier Player interaction and user physical keyboard evidence below refer to the prior build. The final code changes after the build affect Editor tests only.
+- The user reports physical standalone Escape, arrow navigation, Enter Continue, return confirmation, keyboard cancellation, and confirmed return to Title as **PASS — User-performed physical Windows standalone Player verification**. This is not Codex-performed input and does not constitute overall visual acceptance.
+- Title captures exist at 1280×720, 1600×900 and 1920×1080; the report's other state captures are not available at every required resolution. Mandatory remaining evidence includes the full requested state/resolution screenshot matrix and an interactive smoke of the final rebuilt Player. The developer gate remains blocked pending those checks; User Visual Acceptance remains pending. No final PR is claimed.
+
 ## Latest continuation — 2026-11-11
 
 - The final full unfiltered EditMode run after the asynchronous-load test change completed **538 passed, 0 failed, 0 skipped, 0 inconclusive**. The M12 focused suite passed 8/8; the updated M10-15 integration case passed independently and in the full run. PlayMode discovery found zero tests; no PlayMode suite is claimed.
@@ -54,6 +64,8 @@ The project currently has Editor tests under `Assets/_Project/Scripts/Tests/Edit
 The Unity Editor remains connected to `C:\Dev\project_all_time` on Unity `6000.3.21f1`, Play Mode stopped, compilation clean, and the current Editor Console ground truth reports 0 errors and 3 warnings. The 486 build warnings are the package Sentis shader warnings and the optional Pipeline runtime-configuration warning listed earlier; there is no measured pre-M12 comparison build to classify them as pre-existing.
 
 ## User-performed physical keyboard evidence
+
+The user subsequently reports the following physical Windows standalone Player checks as **PASS — User-performed physical Windows standalone Player verification**: S001 Escape menu, arrow navigation through all three options, Enter on Continue, return-to-title confirmation, keyboard cancellation, and confirmed return to Title. This is user-reported evidence from the earlier Player build; it is not a fresh test of a later rebuild. Overall visual acceptance remains pending.
 
 The user subsequently reports completing the requested standalone keyboard-navigation checks and that arrow-key navigation works. This is user-reported physical input evidence. Individual confirmation, cancellation, and return substeps were not separately described in that report; their Editor Play observations are recorded above.
 

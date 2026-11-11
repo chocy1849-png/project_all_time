@@ -25,6 +25,7 @@ namespace ProjectAllTime.Tests.Editor
     public sealed class M12TitleIntegrationTests
     {
         private const string RecoveryRootVariable = "PROJECT_ALL_TIME_M12_RECOVERY_ROOT";
+        private const string RecoveryBackgroundVariable = "PROJECT_ALL_TIME_M12_BACKGROUND_BEFORE_TEST";
         private static bool recoveryFinished;
         private static Exception recoveryFailure;
         private static bool oldRunInBackground;
@@ -47,7 +48,10 @@ namespace ProjectAllTime.Tests.Editor
         {
             var root = Environment.GetEnvironmentVariable(RecoveryRootVariable);
             if (string.IsNullOrEmpty(root)) return;
-            Application.runInBackground = oldRunInBackground;
+            var previousBackground = Environment.GetEnvironmentVariable(RecoveryBackgroundVariable);
+            if (bool.TryParse(previousBackground, out var restoredBackground))
+                PlayerSettings.runInBackground = restoredBackground;
+            Environment.SetEnvironmentVariable(RecoveryBackgroundVariable, null);
             Environment.SetEnvironmentVariable("PROJECT_ALL_TIME_TEST_ROOT", null);
             Environment.SetEnvironmentVariable(RecoveryRootVariable, null);
             if (root.StartsWith(Path.Combine(Path.GetTempPath(), "M12_recovery_"), StringComparison.OrdinalIgnoreCase) && Directory.Exists(root))
@@ -74,6 +78,7 @@ namespace ProjectAllTime.Tests.Editor
             Assert.That(Environment.GetEnvironmentVariable("PROJECT_ALL_TIME_TEST_ROOT"), Is.Null.Or.Empty, "Recovery test requires an unused isolation override.");
             var recoveryRoot = Path.Combine(Path.GetTempPath(), "M12_recovery_" + Guid.NewGuid().ToString("N"));
             Environment.SetEnvironmentVariable(RecoveryRootVariable, recoveryRoot);
+            Environment.SetEnvironmentVariable(RecoveryBackgroundVariable, PlayerSettings.runInBackground.ToString());
             Environment.SetEnvironmentVariable("PROJECT_ALL_TIME_TEST_ROOT", recoveryRoot);
             EditorSceneManager.OpenScene("Assets/_Project/Scenes/VN_Main.unity", OpenSceneMode.Single);
             yield return new EnterPlayMode();
@@ -87,6 +92,7 @@ namespace ProjectAllTime.Tests.Editor
             yield return WaitUntil(() => recoveryFinished, "recovery coroutine completion");
             Object.Destroy(host.gameObject);
             if (recoveryFailure != null) Assert.Fail(recoveryFailure.ToString());
+            Application.runInBackground = oldRunInBackground;
             yield return new ExitPlayMode();
         }
 
