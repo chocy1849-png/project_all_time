@@ -10,11 +10,165 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Yarn.Unity;
 using TMPro;
+using System;
+using System.Collections;
+using System.IO;
+using System.Reflection;
+using UnityEngine.TestTools;
+using UnityEngine.SceneManagement;
+using ProjectAllTime.VN.Presentation;
+using ProjectAllTime.VN.Settings;
+using Object = UnityEngine.Object;
 
 namespace ProjectAllTime.Tests.Editor
 {
     public sealed class M12TitleIntegrationTests
     {
+        private const string RecoveryRootVariable = "PROJECT_ALL_TIME_M12_RECOVERY_ROOT";
+        private static bool recoveryFinished;
+        private static Exception recoveryFailure;
+        private static bool oldRunInBackground;
+
+        [UnityTest]
+        public IEnumerator M12_EmptyScene_PlayModeLifecycleCompletes()
+        {
+            Debug.Log("[M12-LIFECYCLE] opening empty scene");
+            EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+            yield return new EnterPlayMode();
+            Debug.Log("[M12-LIFECYCLE] entered play: " + Application.isPlaying);
+            Assert.That(Application.isPlaying, Is.True);
+            yield return new ExitPlayMode();
+            Debug.Log("[M12-LIFECYCLE] exited play: " + Application.isPlaying);
+            Assert.That(Application.isPlaying, Is.False);
+        }
+
+        [TearDown]
+        public void CleanRecoveryRoot()
+        {
+            var root = Environment.GetEnvironmentVariable(RecoveryRootVariable);
+            if (string.IsNullOrEmpty(root)) return;
+            Application.runInBackground = oldRunInBackground;
+            Environment.SetEnvironmentVariable("PROJECT_ALL_TIME_TEST_ROOT", null);
+            Environment.SetEnvironmentVariable(RecoveryRootVariable, null);
+            if (root.StartsWith(Path.Combine(Path.GetTempPath(), "M12_recovery_"), StringComparison.OrdinalIgnoreCase) && Directory.Exists(root))
+                Directory.Delete(root, true);
+        }
+        [Test]
+        public void Settings_DefaultRepositoryUsesIsolatedEditorRoot()
+        {
+            var old = Environment.GetEnvironmentVariable("PROJECT_ALL_TIME_TEST_ROOT");
+            var root = Path.Combine(Path.GetTempPath(), "M12_settings_" + Guid.NewGuid().ToString("N"));
+            try
+            {
+                Environment.SetEnvironmentVariable("PROJECT_ALL_TIME_TEST_ROOT", root);
+                var isolated = new VNSettingsRepository();
+                Assert.That(isolated.StorageRoot, Is.EqualTo(Path.Combine(root, "Settings")));
+                Assert.That(isolated.StorageRoot, Is.Not.EqualTo(VNSettingsRepository.ProductionStorageRoot));
+            }
+            finally { Environment.SetEnvironmentVariable("PROJECT_ALL_TIME_TEST_ROOT", old); }
+        }
+
+        [UnityTest]
+        public IEnumerator ProductionTitle_RecoversAfterAcceptedLoadFails()
+        {
+            Assert.That(Environment.GetEnvironmentVariable("PROJECT_ALL_TIME_TEST_ROOT"), Is.Null.Or.Empty, "Recovery test requires an unused isolation override.");
+            var recoveryRoot = Path.Combine(Path.GetTempPath(), "M12_recovery_" + Guid.NewGuid().ToString("N"));
+            Environment.SetEnvironmentVariable(RecoveryRootVariable, recoveryRoot);
+            Environment.SetEnvironmentVariable("PROJECT_ALL_TIME_TEST_ROOT", recoveryRoot);
+            EditorSceneManager.OpenScene("Assets/_Project/Scenes/VN_Main.unity", OpenSceneMode.Single);
+            yield return new EnterPlayMode();
+            oldRunInBackground = Application.runInBackground;
+            Application.runInBackground = true;
+            recoveryFinished = false;
+            recoveryFailure = null;
+            var host = new GameObject("M12 persistent test host").AddComponent<VNInteractionGate>();
+            Object.DontDestroyOnLoad(host.gameObject);
+            host.StartCoroutine(RunRecovery());
+            yield return WaitUntil(() => recoveryFinished, "recovery coroutine completion");
+            Object.Destroy(host.gameObject);
+            if (recoveryFailure != null) Assert.Fail(recoveryFailure.ToString());
+            yield return new ExitPlayMode();
+        }
+
+        private static IEnumerator RunRecovery()
+        {
+            var stack = new System.Collections.Generic.Stack<IEnumerator>();
+            stack.Push(RecoveryRuntime());
+            while (stack.Count > 0)
+            {
+                object current = null;
+                bool moved;
+                try { moved = stack.Peek().MoveNext(); if (moved) current = stack.Peek().Current; }
+                catch (Exception error) { recoveryFailure = error; break; }
+                if (!moved) { (stack.Pop() as IDisposable)?.Dispose(); continue; }
+                if (current is IEnumerator nested) { stack.Push(nested); continue; }
+                yield return current;
+            }
+            recoveryFinished = true;
+        }
+
+        private static IEnumerator RecoveryRuntime()
+        {
+            // Start registers the production button callbacks after Awake.
+            yield return null;
+            var flow = Object.FindFirstObjectByType<VNTitleFlowController>();
+            var runner = Object.FindFirstObjectByType<DialogueRunner>();
+            var session = Object.FindFirstObjectByType<VNDialogueSessionState>();
+            var save = Object.FindFirstObjectByType<VNSaveLoadController>();
+            Assert.That(flow, Is.Not.Null, "Production Title controller must exist after scene startup.");
+            Assert.That(runner.IsDialogueRunning, Is.False, "Title must not automatically start dialogue.");
+            Assert.That(((GameObject)typeof(VNTitleFlowController).GetField("titleLayer", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(flow)).activeInHierarchy, Is.True);
+            Button FieldButton(string name) => (Button)typeof(VNTitleFlowController).GetField(name, BindingFlags.Instance | BindingFlags.NonPublic).GetValue(flow);
+            yield return WaitUntil(() => FieldButton("newGame").interactable, "title initialization");
+            FieldButton("newGame").onClick.Invoke();
+            yield return WaitUntil(() => session.IsLineActive && session.CurrentLineId == "line:prologue_s001_001", "first production line");
+            VNSaveLoadOperationResult saved = null;
+            yield return WaitUntil(() => { saved = save.QuickSave(); return saved.Succeeded; }, "stable quick save");
+            SceneManager.LoadScene(flow.gameObject.scene.buildIndex);
+            yield return null;
+            yield return null;
+            flow = Object.FindFirstObjectByType<VNTitleFlowController>();
+            save = Object.FindFirstObjectByType<VNSaveLoadController>();
+            yield return WaitUntil(() => FieldButton("continueGame").interactable, "continue enabled");
+            var presentation = Object.FindFirstObjectByType<VNPresentationController>();
+            var backgroundField = typeof(VNPresentationController).GetField("backgroundImage", BindingFlags.Instance | BindingFlags.NonPublic);
+            var background = backgroundField.GetValue(presentation);
+            VNSaveLoadOperationResult outcome = null;
+            var starts = 0;
+            save.LoadStateChanged += active => { if (active) { starts++; backgroundField.SetValue(presentation, null); } };
+            save.LoadExecutionCompleted += result => outcome = result;
+            LogAssert.Expect(LogType.Error, "VN Presentation Controller has no Background Image reference.");
+            FieldButton("continueGame").onClick.Invoke();
+            yield return WaitUntil(() => outcome != null, "load completion");
+            Assert.That(outcome.Succeeded, Is.False);
+            Assert.That(starts, Is.EqualTo(1));
+            if (presentation != null) backgroundField.SetValue(presentation, background);
+            yield return WaitUntil(() => flow == null, "recovery scene reload");
+            yield return null;
+            flow = Object.FindFirstObjectByType<VNTitleFlowController>();
+            runner = Object.FindFirstObjectByType<DialogueRunner>();
+            save = Object.FindFirstObjectByType<VNSaveLoadController>();
+            yield return WaitUntil(() => FieldButton("newGame").interactable, "recovered title");
+            var status = (TMP_Text)typeof(VNTitleFlowController).GetField("statusText", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(flow);
+            Assert.That(status.text, Does.Contain("실패"));
+            Assert.That(save.IsLoadInProgress, Is.False);
+            Assert.That(save.IsModalOpen, Is.False);
+            Assert.That(runner.IsDialogueRunning, Is.False);
+            Assert.That(Object.FindObjectsByType<VNSaveLoadController>(FindObjectsSortMode.None).Length, Is.EqualTo(1));
+            Assert.That(Object.FindObjectsByType<VNTitleFlowController>(FindObjectsSortMode.None).Length, Is.EqualTo(1));
+            var titleGroup = ((GameObject)typeof(VNTitleFlowController).GetField("titleLayer", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(flow)).GetComponent<CanvasGroup>();
+            Assert.That(titleGroup.interactable && titleGroup.blocksRaycasts, Is.True, "Recovered title must own UI input.");
+            FieldButton("newGame").onClick.Invoke();
+            session = Object.FindFirstObjectByType<VNDialogueSessionState>();
+            yield return WaitUntil(() => session.IsLineActive && session.CurrentLineId == "line:prologue_s001_001", "new game after recovery");
+        }
+
+        private static IEnumerator WaitUntil(Func<bool> condition, string stage)
+        {
+            var timer = System.Diagnostics.Stopwatch.StartNew();
+            while (timer.Elapsed < TimeSpan.FromSeconds(30)) { if (condition()) yield break; yield return null; }
+            Assert.Fail("Timed out waiting for " + stage);
+        }
         [Test]
         public void ProductionScene_UsesTitleFirstAndExistingRuntime()
         {
