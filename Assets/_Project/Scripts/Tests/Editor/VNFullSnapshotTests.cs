@@ -487,8 +487,47 @@ namespace ProjectAllTime.Tests.Editor
             yield return WaitForM1015(() => stop.IsCompletedSuccessfully(), "legacy checkpoint stop");
             CollectionAssert.AreEqual(metaBytes, File.ReadAllBytes(metaRepository.CanonicalFilePath));
             Assert.That(File.Exists(emptyAutoPath), Is.False, "Loading historical lines must not allocate an autosave.");
+
+            // Exercise M12's asynchronous load-completion contract through the
+            // existing M5 controller. The slot validates before the load starts;
+            // remove its catalog dependency from the LoadStateChanged callback so
+            // prepared Yarn state is restored before presentation restore fails.
+            var failingSave = JsonUtility.FromJson<SaveSlotData>(JsonUtility.ToJson(legacy));
+            failingSave.presentationState.backgroundId = "bg_family_kitchen_morning";
+            Assert.That(repository.Write(legacyKey, failingSave).Succeeded, Is.True);
+            Assert.That(legacyCoordinator.ValidateLoad(legacyKey).Status, Is.EqualTo(VNYarnLoadValidationStatus.Valid));
+            SetPrivate(ui, "saveCoordinator", legacyCoordinator);
+            var originalCatalog = productionPresentation;
+            VNSaveLoadOperationResult failedCompletion = null;
+            VNSaveLoadOperationResult repeatedRequest = null;
+            var ownershipReleasedBeforeCompletion = false;
+            Action<bool> loadOwnership = loading =>
+            {
+                if (!loading)
+                {
+                    ownershipReleasedBeforeCompletion = failedCompletion == null;
+                    return;
+                }
+
+                repeatedRequest = ui.Load(legacyKey);
+                SetPrivate(presentation.Controller, "catalog", null);
+            };
+            ui.LoadStateChanged += loadOwnership;
+            ui.LoadExecutionCompleted += result => failedCompletion = result;
+            var accepted = ui.Load(legacyKey);
+            Assert.That(accepted.Succeeded, Is.True, accepted.Message);
+            Assert.That(repeatedRequest.Status, Is.EqualTo(VNSaveLoadOperationStatus.Busy));
+            yield return WaitForM1015(() => failedCompletion != null, "asynchronous controller failure completion");
+            Assert.That(failedCompletion.Succeeded, Is.False);
+            Assert.That(failedCompletion.Status, Is.EqualTo(VNSaveLoadOperationStatus.LoadValidationFailed));
+            Assert.That(ownershipReleasedBeforeCompletion, Is.True,
+                "Load ownership must be released before the final completion event.");
+            Assert.That(ui.IsLoadInProgress, Is.False);
+            SetPrivate(presentation.Controller, "catalog", originalCatalog);
+            ui.LoadStateChanged -= loadOwnership;
+            CollectionAssert.AreEqual(metaBytes, File.ReadAllBytes(metaRepository.CanonicalFilePath));
             historyBridge.Dispose();
-            Debug.Log("M10-15 integration: completed S005 restore and successor");
+            Debug.Log("M10-15 integration: completed S005 restore/successor and M12 async load-failure recovery signal");
         }
 
         private static IEnumerator WaitForM1015(Func<bool> condition, string stage)

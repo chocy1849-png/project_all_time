@@ -1,6 +1,6 @@
 # M12 — Title and Main Menu Specification
 
-This specification describes the implementation on `feat/m12-title-main-menu`. Developer-side acceptance remains blocked pending standalone keyboard/Escape validation; see the [validation report](M12_TITLE_MAIN_MENU_VALIDATION_REPORT.md). User visual acceptance remains pending.
+This specification describes the implementation on `feat/m12-title-main-menu`. The user verified physical Escape opens the standalone menu; Editor Play verified menu close and return confirmation/reload. Standalone keyboard navigation and end-to-end failed-load recovery remain pending. See the [validation report](M12_TITLE_MAIN_MENU_VALIDATION_REPORT.md). User visual acceptance remains pending.
 
 ## Baseline and observed startup
 

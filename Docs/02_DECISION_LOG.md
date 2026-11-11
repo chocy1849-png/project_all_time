@@ -332,4 +332,4 @@ Status: PROPOSED — implemented on `feat/m12-title-main-menu`; pending technica
 - Let a small scene-local title controller coordinate transitions and gate ownership. It owns no persistence, story variables, audio, or Records state. Use the existing Cancel chain and modal owners.
 - Use a serialized title background Sprite plus independent overlay and cover crop so future art replacement requires only an Inspector Sprite assignment.
 - Reload `VN_Main` after confirmed Return to Title to establish a fresh session while preserving durable saves, Settings, and MetaProgress.
-- Final M12 acceptance remains pending until standalone keyboard/Escape and all required runtime gates are verified. This proposed decision does not claim User Play Gate approval.
+- The user physically verified standalone Escape opens the in-game menu. Editor Play verified menu close and return confirmation/reload; standalone keyboard navigation and end-to-end failed-load recovery remain pending. This proposed decision does not claim User Play Gate approval.

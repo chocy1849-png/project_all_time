@@ -50,7 +50,7 @@ The following describes the merged M10 production path. The M5 checkpoint sectio
 - Continue inspects the existing Manual/Auto/Quick slots, filters malformed, unsupported, timestamp-invalid, and incompatible candidates through existing validation, then ranks compatible saves deterministically. The controller waits for `LoadExecutionCompleted`; the immediate accepted-start result is not treated as a completed restore.
 - Returning to Title uses a confirmed reload of `VN_Main` as the session-reset boundary, preserving SaveData, Settings, and MetaProgress. Quit is confirmed and calls `Application.Quit()` only after confirmation. Escape dispatch continues through the existing Cancel chain before reaching the M12 in-game menu.
 - The title Sprite is an Inspector-assigned Image reference below a separately adjustable overlay, with envelope-parent aspect-ratio cover cropping. Art replacement does not depend on the menu controller or baked title text. See [the M12 specification](Production/M12_TITLE_MAIN_MENU_SPEC.md).
-- This architecture is implemented on the unmerged M12 branch. The production keyboard/Escape path is not yet accepted as validated; see [the M12 validation report](Production/M12_TITLE_MAIN_MENU_VALIDATION_REPORT.md).
+- This architecture is implemented on the unmerged M12 branch. Physical Escape-to-open was verified by the user; Editor Play verified menu close and return confirmation/reload. Standalone keyboard navigation and failure recovery still require validation. See [the M12 validation report](Production/M12_TITLE_MAIN_MENU_VALIDATION_REPORT.md).
 
 The M2 section below records the historical play-screen contract; M12 supersedes its startup wording only. It does not replace the M2 runtime presenter or input architecture.
 

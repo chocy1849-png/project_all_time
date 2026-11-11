@@ -90,12 +90,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
+    m_SelectOnRight: {fileID: 3885439587404182307}
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 0.14509805, g: 0.16862746, b: 0.19607843, a: 0.92156863}
@@ -188,8 +188,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uD655\uC778"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
-  m_sharedMaterial: {fileID: -4460444456296403923, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
+  m_sharedMaterial: {fileID: 6296285191155949211, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -399,9 +399,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
+    m_SelectOnUp: {fileID: 1137315092566067990}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
@@ -497,8 +497,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uD0C0\uC774\uD2C0\uB85C"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
-  m_sharedMaterial: {fileID: -4460444456296403923, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
+  m_sharedMaterial: {fileID: 6296285191155949211, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -634,8 +634,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uC774\uC5B4\uD558\uAE30"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
-  m_sharedMaterial: {fileID: -4460444456296403923, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
+  m_sharedMaterial: {fileID: 6296285191155949211, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -771,8 +771,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uC0C8 \uAC8C\uC784"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
-  m_sharedMaterial: {fileID: -4460444456296403923, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
+  m_sharedMaterial: {fileID: 6296285191155949211, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -931,10 +931,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
+    m_SelectOnUp: {fileID: 3447820327609876238}
+    m_SelectOnDown: {fileID: 8157514405676130907}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
@@ -1029,8 +1029,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: ALL TIME
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
-  m_sharedMaterial: {fileID: -4460444456296403923, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
+  m_sharedMaterial: {fileID: 6296285191155949211, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1166,8 +1166,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uCDE8\uC18C"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
-  m_sharedMaterial: {fileID: -4460444456296403923, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
+  m_sharedMaterial: {fileID: 6296285191155949211, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1326,10 +1326,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
+    m_SelectOnDown: {fileID: 2425918990017717212}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
@@ -1368,6 +1368,7 @@ GameObject:
   - component: {fileID: 1782242286854736520}
   - component: {fileID: 8143555251200897615}
   - component: {fileID: 160675675887203112}
+  - component: {fileID: 6629954847873448863}
   m_Layer: 0
   m_Name: ConfirmationLayer
   m_TagString: Untagged
@@ -1433,6 +1434,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &6629954847873448863
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3495165071460323871}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &3588959026828857137
 GameObject:
   m_ObjectHideFlags: 0
@@ -1694,8 +1707,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uC124\uC815"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
-  m_sharedMaterial: {fileID: -4460444456296403923, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
+  m_sharedMaterial: {fileID: 6296285191155949211, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1854,9 +1867,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
+    m_SelectOnUp: {fileID: 2425918990017717212}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
@@ -1952,8 +1965,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uACC4\uC18D\uD558\uAE30"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
-  m_sharedMaterial: {fileID: -4460444456296403923, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
+  m_sharedMaterial: {fileID: 6296285191155949211, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2112,10 +2125,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
+    m_SelectOnUp: {fileID: 6356419414598649859}
+    m_SelectOnDown: {fileID: 8666282320524648000}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
@@ -2233,10 +2246,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
+    m_SelectOnUp: {fileID: 8666282320524648000}
+    m_SelectOnDown: {fileID: 1137315092566067990}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
@@ -2331,8 +2344,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
-  m_sharedMaterial: {fileID: -4460444456296403923, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
+  m_sharedMaterial: {fileID: 6296285191155949211, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2594,10 +2607,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
+    m_SelectOnDown: {fileID: 3854671176105754083}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
@@ -2692,8 +2705,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uBD88\uB7EC\uC624\uAE30"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
-  m_sharedMaterial: {fileID: -4460444456296403923, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
+  m_sharedMaterial: {fileID: 6296285191155949211, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2852,10 +2865,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
+    m_SelectOnUp: {fileID: 7495255831679881080}
+    m_SelectOnDown: {fileID: 4131655848371457938}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
@@ -2950,8 +2963,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
-  m_sharedMaterial: {fileID: -4460444456296403923, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
+  m_sharedMaterial: {fileID: 6296285191155949211, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3087,8 +3100,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uC885\uB8CC"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
-  m_sharedMaterial: {fileID: -4460444456296403923, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
+  m_sharedMaterial: {fileID: 6296285191155949211, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3224,8 +3237,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uAE30\uB85D"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
-  m_sharedMaterial: {fileID: -4460444456296403923, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
+  m_sharedMaterial: {fileID: 6296285191155949211, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3361,8 +3374,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uC6B0\uB9AC\uAC00 \uB9CC\uB0AC\uB358\n\uBAA8\uB4E0 \uC2DC\uB300"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
-  m_sharedMaterial: {fileID: -4460444456296403923, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
+  m_sharedMaterial: {fileID: 6296285191155949211, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3667,10 +3680,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
+    m_SelectOnUp: {fileID: 3854671176105754083}
+    m_SelectOnDown: {fileID: 7495255831679881080}
     m_SelectOnLeft: {fileID: 0}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
@@ -3709,6 +3722,7 @@ GameObject:
   - component: {fileID: 4789591507707160235}
   - component: {fileID: 1554186120761926151}
   - component: {fileID: 6359546123016419740}
+  - component: {fileID: 5682642112314968371}
   m_Layer: 0
   m_Name: InGameMenu
   m_TagString: Untagged
@@ -3774,6 +3788,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &5682642112314968371
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8209530294618489294}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &8280099352131576626
 GameObject:
   m_ObjectHideFlags: 0
@@ -3841,8 +3867,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uC885\uB8CC"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
-  m_sharedMaterial: {fileID: -4460444456296403923, guid: 3573e8779e9ca3e4e90a4648c4f434c5, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
+  m_sharedMaterial: {fileID: 6296285191155949211, guid: 89bfefef6da95ee428f603c666a68eb0, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -4001,11 +4027,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 4
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnLeft: {fileID: 8457416501721787466}
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:

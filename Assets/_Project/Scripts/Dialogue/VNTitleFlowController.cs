@@ -61,6 +61,8 @@ namespace ProjectAllTime.VN.Title
             SetGameplayVisible(false);
             if (titleLayer != null) titleLayer.SetActive(true);
             if (gameMenu != null) gameMenu.SetActive(false);
+            SetGroupInteraction(gameMenu, false);
+            SetGroupInteraction(confirmation, false);
             if (confirmation != null) confirmation.SetActive(false);
         }
         private void OnEnable()
@@ -111,6 +113,7 @@ namespace ProjectAllTime.VN.Title
         {
             if (!CanUseTitle() || !newGame.interactable) return;
             state = State.Transition;
+            SetTitleInteraction(false);
             convenience.SetAutoEnabled(false); convenience.SetSkipEnabled(false);
             saves.PlayTimeTracker.TrySetPlayedSeconds(0);
             SetGameplayVisible(true);
@@ -159,6 +162,7 @@ namespace ProjectAllTime.VN.Title
         {
             if (!loading || state != State.Title) return;
             loadingFromTitle = true; state = State.Loading;
+            SetTitleInteraction(false);
             statusText.text = "불러오는 중...";
         }
         private void OnLoadCompleted(VNSaveLoadOperationResult result)
@@ -183,32 +187,99 @@ namespace ProjectAllTime.VN.Title
             {
                 if (saves.IsLoadInProgress) return true;
                 state = State.Menu; convenience.SetAutoEnabled(false); convenience.SetSkipEnabled(false);
-                gate.SetTitleFlowBlocksGameplay(true); gameMenu.SetActive(true); Select(resumeButton); return true;
+                SetGameplayInputEnabled(false);
+                gate.SetTitleFlowBlocksGameplay(true);
+                SetGroupInteraction(gameMenu, true);
+                gameMenu.SetActive(true);
+                Select(resumeButton);
+                return true;
             }
             if (state == State.Menu) { Resume(); return true; }
             if (state == State.ConfirmTitle || state == State.ConfirmQuit) { CancelConfirmation(); return true; }
             return state != State.Playing;
         }
-        private void Resume() { if (state != State.Menu) return; gameMenu.SetActive(false); gate.SetTitleFlowBlocksGameplay(false); state = State.Playing; }
+        private void Resume()
+        {
+            if (state != State.Menu) return;
+            SetGroupInteraction(gameMenu, false);
+            gameMenu.SetActive(false);
+            SetGameplayInputEnabled(true);
+            gate.SetTitleFlowBlocksGameplay(false);
+            state = State.Playing;
+        }
         private void AskTitle() { if (state != State.Menu || saves.IsLoadInProgress) return; state = State.ConfirmTitle; ShowConfirmation("타이틀로 돌아가시겠습니까? 저장하지 않은 진행은 사라집니다."); }
         private void AskQuit() { if (state != State.Menu && !CanUseTitle()) return; state = State.ConfirmQuit; ShowConfirmation("게임을 종료하시겠습니까?"); }
-        private void ShowConfirmation(string message) { confirmationText.text = message; confirmation.SetActive(true); Select(cancelButton); }
+        private void ShowConfirmation(string message)
+        {
+            if (gameMenu != null && gameMenu.activeSelf) SetGroupInteraction(gameMenu, false);
+            SetTitleInteraction(false);
+            confirmationText.text = message;
+            SetGroupInteraction(confirmation, true);
+            confirmation.SetActive(true);
+            Select(cancelButton);
+        }
         private void CancelConfirmation()
         {
             if (state != State.ConfirmTitle && state != State.ConfirmQuit) return;
+            SetGroupInteraction(confirmation, false);
             confirmation.SetActive(false);
             state = gameMenu.activeSelf ? State.Menu : State.Title;
-            Select(state == State.Menu ? resumeButton : quitButton);
+            if (state == State.Menu)
+            {
+                SetGroupInteraction(gameMenu, true);
+                Select(resumeButton);
+            }
+            else
+            {
+                SetTitleInteraction(true);
+                Select(quitButton);
+            }
         }
         private void Confirm()
         {
-            if (state == State.ConfirmTitle) { state = State.Transition; SceneManager.LoadScene(gameObject.scene.buildIndex); }
-            else if (state == State.ConfirmQuit) { state = State.Transition; Application.Quit(); }
+            if (state == State.ConfirmTitle)
+            {
+                state = State.Transition;
+                SetGroupInteraction(confirmation, false);
+                SceneManager.LoadScene(gameObject.scene.buildIndex);
+            }
+            else if (state == State.ConfirmQuit)
+            {
+                state = State.Transition;
+                SetGroupInteraction(confirmation, false);
+                Application.Quit();
+            }
         }
         private void SetGameplayVisible(bool visible)
         {
             foreach (var group in new[] { dialogueLayer, quickControls }) if (group != null)
-            { group.alpha = visible ? 1 : 0; group.interactable = visible; group.blocksRaycasts = visible; }
+                group.alpha = visible ? 1 : 0;
+            SetGameplayInputEnabled(visible);
+        }
+        private void SetGameplayInputEnabled(bool enabled)
+        {
+            foreach (var group in new[] { dialogueLayer, quickControls }) if (group != null)
+            {
+                bool canInteract = enabled && group.alpha > 0.001f;
+                group.interactable = canInteract;
+                group.blocksRaycasts = canInteract;
+            }
+        }
+        private void SetTitleInteraction(bool enabled)
+        {
+            if (titleGroup == null) return;
+            bool canInteract = enabled && titleGroup.alpha > 0.001f;
+            titleGroup.interactable = canInteract;
+            titleGroup.blocksRaycasts = canInteract;
+        }
+        private static void SetGroupInteraction(GameObject root, bool enabled)
+        {
+            if (root == null) return;
+            var group = root.GetComponent<CanvasGroup>();
+            if (group == null) return;
+            bool canInteract = enabled && group.alpha > 0.001f;
+            group.interactable = canInteract;
+            group.blocksRaycasts = canInteract;
         }
         private static void Select(Button button) { if (EventSystem.current != null && button != null) EventSystem.current.SetSelectedGameObject(button.gameObject); }
         private void SetTitleModalObscured(bool obscured)
