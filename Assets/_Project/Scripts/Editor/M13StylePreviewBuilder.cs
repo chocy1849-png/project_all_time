@@ -26,12 +26,12 @@ public static class M13StylePreviewBuilder
     static Button Btn(string name, Transform parent, string text, string sprite, Vector2 pos, Vector2 size, bool interactable=true) {
         var i=Img(name,parent,sprite,pos,size); var b=i.gameObject.AddComponent<Button>(); b.interactable=interactable;
         var colors=b.colors; colors.normalColor=Color.white; colors.highlightedColor=new Color(1.12f,1.12f,1.12f); colors.pressedColor=new Color(.78f,.84f,.83f); colors.selectedColor=new Color(1.12f,1.12f,1.12f); colors.disabledColor=new Color(.52f,.54f,.54f,.65f); b.colors=colors;
-        Label("Label",i.transform,text,Vector2.zero,size- new Vector2(20,8),24,new Color(.97f,.96f,.94f),TextAlignmentOptions.Center); return b;
+        Label("Label",i.transform,text,Vector2.zero,size- new Vector2(20,8),24,new Color(.97f,.96f,.94f),TextAlignmentOptions.Center); var ring=Img("Focus",i.transform,"focus",Vector2.zero,size+new Vector2(6,6)); ring.raycastTarget=false; i.gameObject.AddComponent<M13PreviewFocus>().Configure(ring.gameObject); return b;
     }
     [MenuItem("Tools/M13/Build style previews")]
     public static void Build() {
         AssetDatabase.Refresh();
-        foreach(var p in Directory.GetFiles(Art,"*.png")) { var path=p.Replace('\\','/'); var ti=(TextureImporter)AssetImporter.GetAtPath(path); ti.textureType=TextureImporterType.Sprite; ti.spriteImportMode=SpriteImportMode.Single; var settings=new TextureImporterSettings(); ti.ReadTextureSettings(settings); settings.spriteMeshType=SpriteMeshType.FullRect; ti.SetTextureSettings(settings); ti.spriteBorder=new Vector4(20,20,20,20); ti.mipmapEnabled=false; ti.filterMode=FilterMode.Bilinear; ti.wrapMode=TextureWrapMode.Clamp; ti.textureCompression=TextureImporterCompression.Uncompressed; ti.alphaIsTransparency=true; ti.SaveAndReimport(); }
+        foreach(var p in Directory.GetFiles(Art,"*.png")) { var path=p.Replace('\\','/'); var ti=(TextureImporter)AssetImporter.GetAtPath(path); ti.textureType=TextureImporterType.Sprite; ti.spriteImportMode=SpriteImportMode.Single; var settings=new TextureImporterSettings(); ti.ReadTextureSettings(settings); settings.spriteMeshType=SpriteMeshType.FullRect; ti.SetTextureSettings(settings); ti.spriteBorder=path.EndsWith("_grain.png") ? Vector4.zero : new Vector4(20,20,20,20); ti.mipmapEnabled=false; ti.filterMode=FilterMode.Bilinear; ti.wrapMode=TextureWrapMode.Clamp; ti.textureCompression=TextureImporterCompression.Uncompressed; ti.alphaIsTransparency=true; ti.SaveAndReimport(); }
         font=AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/_Project/Fonts/NotoSansKR/M12_Title_Korean_SDF.asset");
         Directory.CreateDirectory("Assets/_Project/Prefabs/UI/M13"); Directory.CreateDirectory("Assets/_Project/Scenes/M13");
         foreach(var d in new[]{"A","B"}) { dir=d; var scene=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
@@ -40,6 +40,7 @@ public static class M13StylePreviewBuilder
             var bg=Node("ProductionBackground",canvas.transform,Vector2.zero,new Vector2(1920,1080)).AddComponent<Image>(); bg.sprite=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/_Project/Art/Backgrounds/bg_family_table_morning.png"); bg.preserveAspect=false;
             var shade=Node("BackgroundScrim",canvas.transform,Vector2.zero,new Vector2(1920,1080)).AddComponent<Image>(); shade.color=new Color(0,0,0,.30f);
             var panel=Img("MainModal",canvas.transform,"panel",Vector2.zero,new Vector2(1590,880));
+            var grain=Img("SurfaceGrain",panel.transform,"grain",Vector2.zero,new Vector2(1550,840)); grain.type=Image.Type.Tiled; grain.raycastTarget=false;
             var ivory=new Color(.969f,.957f,.937f); var muted=new Color(.667f,.71f,.74f); var gold=new Color(.898f,.792f,.635f);
             Label("Eyebrow",panel.transform,"시각 테스트",new Vector2(-555,380),new Vector2(400,28),17,gold);
             Label("Title",panel.transform,"기록 보관함",new Vector2(-470,325),new Vector2(570,64),42,ivory);
@@ -61,10 +62,11 @@ public static class M13StylePreviewBuilder
             Label("SideTitle",side.transform,"화면 설정",new Vector2(0,168),new Vector2(280,38),26,ivory);
             Label("SliderLabel",side.transform,"밝기",new Vector2(0,112),new Vector2(280,30),20,muted);
             var track=Img("Slider",side.transform,"track",new Vector2(0,65),new Vector2(270,14)); track.type=Image.Type.Simple; track.sprite=null; track.color=new Color(.37f,.48f,.48f,1f); var slider=track.gameObject.AddComponent<Slider>(); var handle=Img("Handle",track.transform,"handle",Vector2.zero,new Vector2(25,25)); slider.handleRect=handle.rectTransform; slider.targetGraphic=handle; slider.value=.65f;
-            var scroll=Img("Scrollbar",side.transform,"track",new Vector2(145,-60),new Vector2(14,180)); scroll.type=Image.Type.Simple; scroll.sprite=null; scroll.color=new Color(.37f,.48f,.48f,1f); var sb=scroll.gameObject.AddComponent<Scrollbar>(); var sh=Img("Handle",scroll.transform,"handle",Vector2.zero,new Vector2(14,65)); sb.handleRect=sh.rectTransform; sb.targetGraphic=sh; sb.direction=Scrollbar.Direction.BottomToTop; sb.size=.35f;
-            Btn("Primary",side.transform,"불러오기","selected",new Vector2(0,-42),new Vector2(260,56));
-            Btn("Secondary",side.transform,"뒤로","button",new Vector2(0,-112),new Vector2(260,56));
-            Btn("Disabled",side.transform,"사용할 수 없음","button",new Vector2(0,-182),new Vector2(260,48),false);
+            var scroll=Img("Scrollbar",side.transform,"track",new Vector2(151,-55),new Vector2(10,160)); scroll.type=Image.Type.Simple; scroll.sprite=null; scroll.color=new Color(.37f,.48f,.48f,1f); var sb=scroll.gameObject.AddComponent<Scrollbar>(); var sh=Img("Handle",scroll.transform,"handle",Vector2.zero,new Vector2(14,65)); sb.handleRect=sh.rectTransform; sb.targetGraphic=sh; sb.direction=Scrollbar.Direction.BottomToTop; sb.size=.35f;
+            Btn("Primary",side.transform,"불러오기","selected",new Vector2(0,-42),new Vector2(240,56));
+            Btn("Secondary",side.transform,"뒤로","button",new Vector2(0,-112),new Vector2(240,56));
+            Btn("Disabled",side.transform,"사용할 수 없음","button",new Vector2(0,-182),new Vector2(240,48),false);
+            var toggleBg=Img("Toggle",panel.transform,"button",new Vector2(520,-345),new Vector2(32,32)); var toggle=toggleBg.gameObject.AddComponent<Toggle>(); var check=Img("Check",toggleBg.transform,"selected",Vector2.zero,new Vector2(18,18)); toggle.graphic=check; toggle.targetGraphic=toggleBg; toggle.isOn=true; Label("ToggleLabel",panel.transform,"표시 설정",new Vector2(640,-345),new Vector2(190,32),20,ivory);
             Label("Footer",panel.transform,"방향 " + d + "  ·  테스트 데이터",new Vector2(-550,-405),new Vector2(460,24),16,muted);
             new GameObject("EventSystem",typeof(EventSystem),typeof(StandaloneInputModule));
             PrefabUtility.SaveAsPrefabAsset(canvas,"Assets/_Project/Prefabs/UI/M13/M13_StylePreview_"+d+".prefab");

@@ -23,3 +23,21 @@ This is a working checkpoint, not user visual approval or M13-00/01 completion. 
 ## Exact next action
 
 Rework A/B generator so A has fine non-stretched surface detail and B has a distinctly warmer matte treatment; rebuild with `Tools > M13 > Build style previews`, reposition the scrollbar, add a focus indicator driven by selection and a Toggle, then capture both current prefabs at actual 1920×1080 against the same bright background. Inspect those images before selecting a candidate. Continue the original M13-00/01 instructions afterward.
+
+## Second preview iteration
+
+The current matching 1920×1080 Game View captures are [A](M13_Evidence/DesignCandidates/Direction_A/current_1920.png) and [B](M13_Evidence/DesignCandidates/Direction_B/current_1920.png). Both used the same scene content, bright production background and programmatic EventSystem selection of the Gallery tab. A preview-only focus component responds to select/deselect and pointer enter/exit; the capture demonstrates selected-state rendering, not physical keyboard navigation. A Toggle was added and the scrollbar moved away from the action buttons. The generator was regenerated independently again; all 20 output hashes matched.
+
+The comparison still fails the desired visual quality: B's stretched grain is visibly blotchy, while A is comparatively flat. Current direction B is warmer and more angular, but requires a non-stretching material treatment. The current captures are evidence of progress, not a recommendation or final candidate. The previously listed 720p/900p images predate this iteration and need recapture. The production baseline audit, complete interaction and asset families, contrast, nine-slice, focused preview tests, and final reports remain outstanding.
+
+Exact next action: replace stretched center grain with a separate subtle tiled or otherwise scale-stable material treatment in the preview and assets; render the same current A/B scenes again at 1920×1080, inspect the surface at 1:1, then proceed with the required background, resolution, interaction and audit validation.
+
+## Third material experiment and regression
+
+Full unfiltered EditMode regression executed after the second preview iteration: **541 passed, 0 failed, 0 skipped, 0 inconclusive**. This precedes the subsequent material-only experiment. The 22 PNGs now generated (including A/B tiled grain overlays) were regenerated into an isolated temporary folder and all SHA-256 hashes matched.
+
+The [third B experiment](M13_Evidence/DesignCandidates/Direction_B/grain_experiment_1920.png) replaces stretched panel-center noise with a tiled overlay, but the result is too noisy and exposes missing Korean glyphs (e.g. in the toggle label and footer). It is not an acceptable candidate. `Application.runInBackground` was restored to its original false value. The existing dynamically modified Noto font asset was restored to the clean baseline; do not commit its incidental glyph-cache changes.
+
+The current serialized A/B scenes now include the experimental overlay and therefore are newer than the matching A/B comparison images above. Neither the latest A nor the latest B is approved or validated. The interaction focus screenshot demonstrates programmatic selection only. Full asset-specific tests and the original task's remaining deliverables have not been completed.
+
+**Next implementation action:** lower or redesign the tiled overlay until the actual Game View has subtle scale-stable grain, and create a dedicated M13 preview Korean TMP font/atlas or another reproducible glyph solution that preserves the existing font asset. Rebuild the scenes, capture both at actual 1080p and inspect glyphs and grain at 1:1. Then resume the outstanding baseline, matrices, states, 9-slice, contrast and documentation work.

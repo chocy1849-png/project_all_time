@@ -19,11 +19,12 @@ for direction in ('A','B'):
   for y in range(n):
    for x in range(n):
     # fine material variation with restrained spatial lighting
-    noise=rng.gauss(0, (0.22 if 20 < x < 108 and 20 < y < 108 else 0.7) if direction=='A' else 1.65)
+    noise=rng.gauss(0, 0.22 if 20 < x < 108 and 20 < y < 108 else (0.7 if direction=='A' else 1.0))
     light=(1-y/(n-1))*(3.0 if direction=='A' else 1.4)
-    if direction=='B': light += math.sin(y*0.36)*0.38
-    warm=(6,3,-2) if direction=='B' else (0,0,0)
+    if direction=='B': light += math.sin(y*0.11)*0.25
+    warm=(9,5,0) if direction=='B' else (0,0,0)
     pix[x,y]=tuple(max(0,min(255,round(base[i]+warm[i]+noise+light))) for i in range(3))+(alpha,)
+  radius = radius if direction == 'A' else max(4, radius-5)
   mask=Image.new('L',(n,n)); d=ImageDraw.Draw(mask); d.rounded_rectangle((1,1,n-2,n-2),radius,fill=255)
   im.putalpha(Image.composite(im.getchannel('A'),Image.new('L',(n,n),0),mask))
   d=ImageDraw.Draw(im)
@@ -33,4 +34,11 @@ for direction in ('A','B'):
   if role=='focus':
    im=Image.new('RGBA',(n,n)); d=ImageDraw.Draw(im); d.rounded_rectangle((2,2,n-3,n-3),radius,outline=(229,202,162,255),width=3)
   im.save(out/f'{direction}_{role}.png', optimize=False, compress_level=9)
-print('generated',len(roles)*2,'assets in',out)
+for direction in ('A','B'):
+ rng=random.Random('M13-grain-'+direction)
+ grain=Image.new('RGBA',(128,128)); px=grain.load()
+ for y in range(128):
+  for x in range(128):
+   v=rng.randrange(2); px[x,y]=((255,255,255,4) if v else (0,0,0,4 if direction=='A' else 7))
+ grain.save(out/f'{direction}_grain.png',optimize=False,compress_level=9)
+print('generated',len(roles)*2+2,'assets in',out)
