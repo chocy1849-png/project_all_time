@@ -41,3 +41,23 @@ The [third B experiment](M13_Evidence/DesignCandidates/Direction_B/grain_experim
 The current serialized A/B scenes now include the experimental overlay and therefore are newer than the matching A/B comparison images above. Neither the latest A nor the latest B is approved or validated. The interaction focus screenshot demonstrates programmatic selection only. Full asset-specific tests and the original task's remaining deliverables have not been completed.
 
 **Next implementation action:** lower or redesign the tiled overlay until the actual Game View has subtle scale-stable grain, and create a dedicated M13 preview Korean TMP font/atlas or another reproducible glyph solution that preserves the existing font asset. Rebuild the scenes, capture both at actual 1080p and inspect glyphs and grain at 1:1. Then resume the outstanding baseline, matrices, states, 9-slice, contrast and documentation work.
+
+## Fourth iteration — 2026-11-16, still incomplete
+
+- Replaced the preview's dependency on the mutable production TMP atlas with a fixture-only static Noto SDF populated from the checked-in font source. After Editor restart and forced reimport, A labels had no missing glyphs. B's current labels were also checked before restart. This covers fixture strings, not all Korean.
+- Reduced the separately tiled grain Image to alpha 0.16. Current matching actual 1080p A/B captures and A 720p/900p/background captures are indexed in `M13_Evidence/Current/README.md`. A is the working recommendation, not user approval.
+- Added a project-image thumbnail with preserved aspect ratio, linked the Scrollbar to actual ScrollRect content, a preview-only initial scroll position, a destructive sample, and brighter metadata. Programmatic UI events changed Slider, Toggle and scroll state; physical pointer and keyboard behavior remain untested.
+- Current A bright-background screenshot pixel sampling: title 7.40:1, metadata 5.14:1, hint 4.58:1 and disabled label 5.32:1. This is an approximate sample, not complete contrast certification.
+- A representative 9-slice resizing image is indexed in the asset report; B and full dimension range remain unverified.
+- Generator regeneration matched 22/22 hashes. Focused M13 tests passed 5/5. Full unfiltered EditMode after current implementation changes: 546 passed, 0 failed, 0 skipped, 0 inconclusive.
+- Current production 1080p baseline captures are indexed in `M13_Evidence/Before/README.md`; isolated PlayerSettings identity was verified and restored. Save/Load empty states, Settings five categories, Records four tabs, Backlog, Title and game menu were captured. Populated/locked/unlocked/long states and physical input are outstanding.
+
+**Next executable action:** exercise the preview with actual pointer and keyboard input, complete B and minimum/maximum 9-slice visual coverage, then capture production long/populated/locked states under isolated storage and finish the audit/interaction matrices. Measure indicator and text contrast over all required backgrounds and resolutions. The visual direction and both reports remain working drafts; do not mark ready for user review yet.
+
+## Physical input pass and correction
+
+In the connected Editor Game View, Windows input automation dragged the Slider from 0.65 to 0.3395, clicked the Toggle from true to false, and dragged the Scrollbar to normalized 0 with content offset 280. Clicking Gallery then pressing Right selected `TabNormal2`. A first hover/click over the disabled button incorrectly showed its focus ring; `M13PreviewFocus` was corrected to require `Selectable.IsInteractable`, and a focused test now covers that case. On the subsequent live pass, while the pointer was over Disabled, the Button reported `interactable=False` and the ring `activeSelf=False`. This verifies these specific interactions in the Editor at the observed Game View scale, not every input path or a Windows Player.
+
+The full unfiltered EditMode suite was rerun after this correction: **546 passed, 0 failed, 0 skipped, 0 inconclusive**. Production baseline and visual validation gaps listed above still remain. Next: inspect B at multiple sliced sizes, complete populated/unlocked and long Backlog production state evidence, then finish the audit and interaction matrices and contrast measurements across backgrounds/resolutions before claiming readiness.
+
+A matching B 9-slice size capture was added at `M13_Evidence/NineSliceTests/B_sizes.png`; the examined sample pairs appeared continuous at 1080p. Full dimension/control and multi-resolution coverage remains open.
