@@ -61,3 +61,66 @@ The preview canvas is Screen Space Overlay; its previous scene had no camera, an
 The corrected 720 top and bottom, 900 and 1080, and 720 sunset/title comparisons are linked in the [current evidence index](M13_Evidence/Current/README.md). The provisional title asset appears black. Physical scroll down reached the 320-unit bottom limit with synchronized bar; clicking 9 screen pixels above the visual track changed slider value from 0.65 to approximately 0.193. The 7 focused preview EditMode cases and full unfiltered 548-case EditMode suite passed (0 failed/skipped/inconclusive). These automated checks are separate from user-performed and physical agent checks.
 
 Additional physical Editor checks: scrollbar drag reached both ends and returned to y≈0 with bar≈1; wheel down/up returned to y≈0 without changing the slider. Slider handle drag moved 0.65→0.925→0.134, and Right arrow while selected changed it to 0.234. These values were inspected after pointer release. Remaining validation: complete revised keyboard/focus and control-interference matrix, explicit contrast measurement on all captures, min/max nine-slice visual stress, complete production audit/rubric, and Windows Player diagnostic check have not been completed in this pass. Do not mark the milestone ready for final review until these gaps are resolved.
+
+
+## Final geometry, visual, and interaction pass — 2026-11-16
+
+The preferred Direction B material is retained. The scrollbar issue was corrected as a layout/input-lane change: the card viewport is narrower, the pointer lane is reserved beside it and outside its mask, and the visual thumb is narrower than both its rail and its transparent drag region. The B handle image now uses its original sprite color; at 720p the resulting thumb-to-rail sample is approximately 3.70:1 while the handle remains 12 screen pixels wide.
+
+### Measured geometry
+
+At the 1920×1080 Game View (Canvas scale 1), screen-space rectangles were queried from transformed `RectTransform.GetWorldCorners` bounds. Screen origin is bottom-left:
+
+| Element | Reference size | Screen bounds at 1920×1080 |
+|---|---:|---:|
+| Save-slot `Content` scroll-region panel | 1010×450 | `(245,237)`–`(1255,687)` |
+| `Viewport` with `RectMask2D` | 910×320 | `(265,332)`–`(1175,652)` |
+| `ScrollbarLane` transparent input region | 36×288 | `(1192,348)`–`(1228,636)` |
+| Visible track | 10×288 | `(1205,348)`–`(1215,636)` |
+| Visible thumb at top | 18×144 | `(1201,492)`–`(1219,636)` |
+| Rightmost card focus outline | 276×311 | `(882,338.5)`–`(1158,649.5)` |
+
+The lane is fully inside the panel's 20-unit border-safe area, does not overlap the card viewport, and leaves 17 screen pixels between the viewport and pointer lane. The visible thumb clears the inner panel's right border by 36 pixels (16 beyond its 20-pixel safe inset), the top border by 51 pixels, and the bottom border at the opposite scroll limit by 111 pixels. The card focus outline clears the visible thumb by 43 pixels. The track is inset 16 units from the viewport top and bottom. At 1280×720 these become an 11.3-pixel viewport-to-lane gap and 10.7-pixel track insets; at 1600×900 they are 14.2 and 13.3 pixels. The screenshot set confirms the three-column layout and Korean text still fit at all required sizes; the Save and Settings panels remain 70 reference units apart (46.7 screen pixels at 720p).
+
+The requested real Game View evidence is indexed in [Current](M13_Evidence/Current/README.md): 720p top/bottom, 900p top, 1080p top/bottom, plus 1:1 native crops of the top, right, card gap and bottom clearances. The before image is [B feedback 1080p](M13_Evidence/Current/B_feedback_1080.png); the corrected image is [B lane 1080p](M13_Evidence/Current/B_lane_1080_top.png). Full screenshots are actual screen captures; close-ups are pixel crops without resizing.
+
+### Scroll, focus, and control-interference matrix
+
+| Target | Input | Observed result | Evidence limit |
+|---|---|---|---|
+| Card body | Mouse wheel | One notch moves content 240 reference units; scrollbar follows; a second notch clamps to the 320-unit bottom. | Physical Editor pass at 720p. |
+| Empty card-view space | Mouse wheel | Scrolls the same content. | Physical Editor pass at 720p. |
+| Scrollbar lane / thin visible thumb | Wheel and drag | Lane wheel bubbles to the parent ScrollRect; dragging the 18-unit thumb reaches top and bottom. At 1080p, stable bounds show top `(1201,492)` and bottom `(1201,348)` to the thumb's 636/492 top edges. | Physical drag/wheel pass; endpoint screenshots use explicitly set positions and rendered Game View frames. |
+| Settings / slider region | Mouse wheel | Does not move card content or change slider value. | Physical Editor pass. |
+| Slider track/handle | Click, drag, Right arrow | Track click and drag change only the slider; observed values include `0.65→0.134→0.925`; Right changes the focused slider value. | Physical Editor pass; exact arrow delta varies with starting value. |
+| Toggle label | Click | Changes the Toggle from true to false. | Physical Editor pass. Toggle Submit is also covered by the focused UI-event test; physical Space traversal was not separately captured. |
+| Card0 / Card1 | Click then Right arrow | Keyboard focus moves from Card0 to Card1 and shows one gold focus ring; selection marker and focus treatment remain separate. | Physical Editor pass; this is not a full production navigation route. |
+| Disabled Card2 | Hover and click | No focus ring, selection change, or activation. | Physical Editor pass plus automated disabled-interaction assertion. |
+| Scroll at both extremes | Normalized position and thumb | Stable live values are `verticalNormalizedPosition=1`, content y≈0, thumb at track top; and `verticalNormalizedPosition=0`, content y=320, thumb at track bottom. | Runtime inspection after a rendered frame, plus top/bottom screenshots. |
+
+This closes the preview-specific interference matrix for the exercised paths. Physical Space behavior, arrow traversal for every control type, PageUp/PageDown, and all production modal routes remain unverified and are explicit acceptance gaps.
+
+### Rendered contrast observations
+
+Using the same limited sRGB screenshot sampling method as earlier report entries (25th-percentile luminance for a manually selected local background region; 99th percentile in a text box; 90th percentile for indicator pixels), the current 720p captures measured the following. Bright, sunset and title results are identical in these modal regions because the modal/card surfaces cover the background pixels:
+
+| 1280×720 text | Bright | Sunset | Title |
+|---|---:|---:|---:|
+| Card metadata | 4.46:1 | 4.46:1 | 4.46:1 |
+| Footer hint | 4.68:1 | 4.68:1 | 4.68:1 |
+| Locked-card label | 5.54:1 | 5.54:1 | 5.54:1 |
+| Disabled action label | 5.55:1 | 5.55:1 | 5.55:1 |
+
+At bright 900p, the same estimates were 4.78:1 metadata, 4.96:1 hint, 5.86:1 locked label and 5.93:1 disabled action. At bright 1080p they were 5.00:1, 5.45:1, 7.19:1 and 6.91:1 respectively. Current 720p indicator samples were 3.70:1 scrollbar thumb against rail, 4.91:1 selected marker against card, 6.91:1 focus outline against card, 3.43:1 slider track against its panel, and 2.13:1 slider-handle fill against track. The slider handle has a brighter edge that the fill-only sample excludes.
+
+These are approximate rendered-pixel observations, sensitive to region selection and antialiasing; they are not a WCAG certification. The 4.46:1 720p metadata estimate is borderline and should be rechecked with a controlled foreground/background capture before production rollout. The provisional title background is black; it is not a valid background-comparison sample outside the modal.
+
+### Nine-slice and production audit
+
+The B 1920×1080 [9-slice size capture](M13_Evidence/NineSliceTests/B_sizes.png) was re-inspected against unchanged B sprite source files. It shows these minimum/maximum reference-unit pairs: panel 240×100 / 1100×150; card 180×100 / 600×170; button 70×32 / 480×80; tab 90×32 / 540×80. The sampled corners and borders appear continuous at both ends. Import tests verify all A/B art roles use the expected 12-unit control or 20-unit structural borders and Full Rect, bilinear, uncompressed, no-mipmap settings. This is a primary-surface 1080p visual stress sample, not an all-role/multi-resolution certification.
+
+The production audit is now a complete ownership/state inventory with observations and unobserved cases itemized in [M13 audit working notes](M13_AUDIT_WORKING_NOTES.md). It found small populated Save metadata and a wrapped page indicator, a low-visibility overwrite prompt, and missing Korean glyphs in one long production-font Backlog fixture. These are future integration findings; production scenes/runtime and the global production font were not changed. A/B preview scenes remain isolated. The preview-only `M13_PreviewCamera` uses culling mask 0; the Editor Game View shows the Screen Space Overlay without the previous `No cameras rendering` message. No Windows Player was built or visually tested.
+
+Focused current M13 EditMode tests: **7 passed, 0 failed, 0 skipped**. Full unfiltered EditMode regression: **548 passed, 0 failed, 0 skipped, 0 inconclusive**. The unintended dynamic glyph cache change to the global Noto SDF was restored; it is not part of this correction.
+
+The corrected Direction B package is ready for the requested visual review gate. M13-00/01 acceptance is still pending review of the contrast/production gaps above; no M13-02 work or PR was started.

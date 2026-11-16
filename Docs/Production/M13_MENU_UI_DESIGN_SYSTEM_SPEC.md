@@ -1,6 +1,6 @@
 # M13 Menu UI design system — working specification
 
-**Work in progress.** This is a proposed design and implemented preview, not user visual acceptance or completion of M13-00/01. The live capture set covers representative states; the complete production-state audit and interaction validation remain open. Base `9380e894f3e5b941e01a8272d85e8cb772eddc84`.
+**Direction B review candidate — 2026-11-16.** The preview and production ownership/state audit are documented for review. Several production state and input gaps remain open; this is not user visual acceptance or completion of M13-00/01. Base `9380e894f3e5b941e01a8272d85e8cb772eddc84`.
 
 ## Production inventory and protected ownership
 
@@ -12,7 +12,7 @@
 | Backlog | `VNCanvas/ModalLayer/BacklogModal`, `VNBacklogModal`, pooled `BacklogItem`, `ScrollRect`, empty text | Session backlog owns data; modal controller owns input. **KEEP** pooling/scroll semantics and previous width/readability correction; **RESTYLE / RELAYOUT** rows. One live state captured. |
 | Title / in-game menu | `VNTitleScreen` under `VNCanvas`; `VNTitleFlowController` | **KEEP** state machine, load completion, title flow and Cancel chain; **DEFER** limited consistency updates to later M13 integration. Both captured. |
 
-The 1080p [Before index](M13_Evidence/Before/README.md) records capture conditions. The isolated run did not exercise populated saves, all locked/unlocked Records variations, long/narrator Backlog, hover, or all scroll extremes. Existing M12 evidence is historical. Those omissions prevent calling the production audit complete. Current captures show white default controls, large empty areas and a wrapped page indicator in Save/Load; retain behavior while correcting presentation later.
+The [Before index](M13_Evidence/Before/README.md) records isolated production captures and their conditions. The M13-00/01 production audit now inventories every listed screen/category and its observed states, with the remaining state gaps recorded in [audit closeout](M13_AUDIT_WORKING_NOTES.md). Evidence includes populated Manual Save, overwrite confirmation, seeded Records, and long/narrator Backlog fixtures. The audit found small Save metadata, a wrapped page indicator, a weak overwrite panel, and missing production-font glyphs in one long Backlog fixture. Those are integration findings; production screens and data ownership were left unchanged.
 
 ## Proposed interaction language
 
@@ -66,4 +66,4 @@ This inventory combines code ownership and actual captures. It is not a complete
 
 ## User feedback layout revision
 
-The isolated preview uses a 930×320 masked viewport in the save-slot panel, 270×305 cards in three columns at 300-unit centers, and a 20×320 scrollbar alongside the viewport under the same `Content` object. The 640-unit content holds two 320-unit rows. CanvasScaler scales the fixed three-column composition; it does not reflow to two columns. Scroll sensitivity is 240 reference units per wheel step, with clamped movement and existing inertia. The slider retains its 14-unit visual track inside a 48-unit hit area; the toggle label is a clickable child. These are preview-only examples, not production integration.
+The isolated A/B preview keeps the 270×305 cards in three columns at 300-unit centers, with two 320-unit rows in 930×640 content. In the corrected B layout the masked viewport is 910×320 at `(-30, 30)`; a separate 36×288 `ScrollbarLane` at `(460, 30)` sits beside it under `Content`. Its visible track is 10×288 and its transparent drag area is 36 units wide; the visible thumb is 18 units wide and 144 units tall at 50% scroll size. The viewport-to-lane gap is 17 reference units and the track is inset 16 units from each viewport end. The CanvasScaler keeps the three-column composition at 720p, 900p and 1080p without reducing the Korean text size. Wheel sensitivity remains 240, with clamped movement. The slider still has a 14-unit visual track inside a 48-unit hit area; the toggle label remains a clickable child. These are preview-only examples, not production integration.

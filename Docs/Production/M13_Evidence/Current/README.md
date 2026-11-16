@@ -24,3 +24,17 @@ Latest matching 1080p captures are [A v11](A_v11_1080.png) and [B v11](B_v11_108
 ## Current B after user feedback
 
 Unity Editor Play Mode screen captures, B only: [720 top / selected and locked](B_feedback_top.png), [720 bottom / focused](B_feedback_bottom.png), [900 top](B_feedback_900.png), [1080 top](B_feedback_1080.png), [sunset 720](B_feedback_sunset.png), [provisional title 720](B_feedback_title.png). The provisional title asset renders black in this comparison. Background swaps and selected Game View sizes were preview-only; these are not production scenes. The 720 bottom was reached by physical wheel input; the selection and focus state shown on other captures is not evidence of a new physical test by itself. Current B screenshots supersede prior B layout evidence; earlier A/B comparisons are historical.
+
+
+## Final Direction B scrollbar lane — 2026-11-16
+
+These captures show the rebuilt B prefab and scene with a reserved gutter, a narrow visible handle, and the original B handle sprite tint restored for stronger separation from the rail. Each is a Unity Editor Game View `source=screen` capture; `Screen.width/height` and Canvas scale were queried before capture. Scroll position and focus were set in the preview; the separate physical Editor input pass records wheel and drag behavior.
+
+- 1280×720: [top](B_lane_720_top.png), [bottom](B_lane_720_bottom.png).
+- 1600×900: [top](B_lane_900_top.png).
+- 1920×1080: [top](B_lane_1080_top.png), [bottom](B_lane_1080_bottom.png).
+- Same 1280×720 state over [sunset](B_lane_sunset_720.png) and the [provisional title background](B_lane_title_720.png). The title asset still renders black outside the modal.
+
+Before/after: compare the pre-correction [B feedback 1080p](B_feedback_1080.png) with the corrected [B lane 1080p](B_lane_1080_top.png). The close-ups are direct pixel crops from the 1920×1080 source with no resampling: [top inset, 66×240](B_close_top_inset_1080.png), [right inset, 90×110](B_close_right_inset_1080.png), [card-to-thumb gap, 148×320](B_close_card_gap_1080.png), and [bottom inset, 90×220](B_close_bottom_inset_1080.png).
+
+Runtime bounds and clearance measurements are in the [asset production report](../../M13_UI_ASSET_PRODUCTION_REPORT.md). The B primary-surface 9-slice sample remains [here](../NineSliceTests/B_sizes.png).

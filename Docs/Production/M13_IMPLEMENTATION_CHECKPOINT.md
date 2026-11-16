@@ -99,3 +99,16 @@ Exact next action: physically exercise card navigation, selection and disabled b
 B is the user-selected working material direction, not final milestone approval. Scrollbar moved from SidePanel to Content beside the masked card viewport; wheel sensitivity increased from 1 to 240 after physical measurement. Three columns are retained, with viewport 930×320, cards 270×305, row pitch 320 and content height 640 in 1920×1080 reference units. Slider hit area and toggle-label routing corrected in the isolated fixture; a preview-only camera removes the Editor diagnostic. See the production report for physical versus user-performed evidence and limitations. Earlier checkpoint recommendations and next actions above are historical.
 
 Latest regression: focused M13 preview 7/7 and full EditMode 548/548 passed, no failures/skips/inconclusive. Current B images are in the current evidence index. Remaining acceptance gaps are listed in the production report; this checkpoint is not a readiness declaration.
+
+
+## Final scrollbar correction and review package — 2026-11-16
+
+On `feat/m13-menu-ui-redesign`, the selected B composition now reserves a 36×288 interaction lane outside the 910×320 card viewport. The visible rail is 10×288; the thumb is 18×144 and uses the B handle sprite's original tint. The lane is inset inside the 1010×450 scroll-region panel and does not overlap the three-column card/focus bounds. Sensitivity remains 240.
+
+Actual 1280×720 top/bottom, 1600×900 top and 1920×1080 top/bottom Game View captures are in `M13_Evidence/Current/`; four native-pixel close-ups record the border and card clearances. The Editor was explicitly focused/repainted before capturing the bottom state to ensure it was not a stale Game View frame. All five full screenshots have their queried source dimensions; 720p and 1080p top/bottom image pairs differ as expected.
+
+The physical Editor input matrix covers card and blank-viewport wheel scrolling, thumb drag, endpoint clamping, slider and toggle independence, Card0→Card1 Right-key focus, and disabled-card blocking. Current screen-space geometry tests pass for both A and B. Latest focused preview EditMode: **7 passed / 0 failed / 0 skipped**. Latest full unfiltered EditMode: **548 passed / 0 failed / 0 skipped / 0 inconclusive**.
+
+Current 720p screenshot estimates show metadata 4.46:1, hint 4.68:1, locked label 5.54:1, disabled action 5.55:1, scrollbar thumb/rail 3.70:1, selected marker 4.91:1 and focus/card 6.91:1. These are limited percentile samples, not WCAG certification; metadata remains borderline. The B 9-slice min/max capture covers panel, card, button and tab at 1080p. The production audit now records all five current menu areas and remaining unobserved cases in `M13_AUDIT_WORKING_NOTES.md`.
+
+The preview-only camera has culling mask 0 and the Editor Overlay renders without the prior camera diagnostic. A Windows Player was not built or visually checked. Production UI/runtime ownership remains unchanged; a temporary global Noto dynamic-cache edit was restored. The Direction B visual review package is prepared, but final M13-00/01 acceptance remains pending user review and the explicit contrast/production-state gaps. No M13-02 work or PR was started.
