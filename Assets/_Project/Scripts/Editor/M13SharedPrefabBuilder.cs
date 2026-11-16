@@ -16,6 +16,16 @@ public static class M13SharedPrefabBuilder
         var image = go.GetComponent<Image>(); image.sprite = Sprite(sprite); image.type = Image.Type.Sliced; image.raycastTarget = false;
         return image;
     }
+    static TextMeshProUGUI Label(Transform parent, string name, string text, Vector2 size)
+    {
+        var go = new GameObject(name, typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
+        go.transform.SetParent(parent, false);
+        ((RectTransform)go.transform).sizeDelta = size;
+        var label = go.GetComponent<TextMeshProUGUI>(); label.text = text;
+        label.font = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>("Assets/_Project/Fonts/NotoSansKR/M13_Preview_Korean_SDF.asset");
+        label.fontSize = 24; label.alignment = TextAlignmentOptions.Center; label.raycastTarget = false;
+        return label;
+    }
     [MenuItem("Tools/M13/Build shared panel and controls")]
     public static void Build()
     {
@@ -35,6 +45,7 @@ public static class M13SharedPrefabBuilder
             if (button)
             {
                 control = go.AddComponent<Button>(); control.targetGraphic = image;
+                Label(go.transform, "Label", name == "SharedTab" ? "탭" : "확인", size - new Vector2(20, 8));
                 var focus = Child(go.transform, "Focus", "focus", size + new Vector2(6, 6));
                 var active = Child(go.transform, "Active", "selected", new Vector2(size.x - 20, 6));
                 ((RectTransform)active.transform).anchoredPosition = new Vector2(0, -size.y / 2 + 3);
@@ -43,6 +54,7 @@ public static class M13SharedPrefabBuilder
             else
             {
                 var header = Child(go.transform, "Header", "secondary", new Vector2(size.x - 40, 80));
+                Label(header.transform, "Title", "제목", new Vector2(size.x - 80, 48));
                 ((RectTransform)header.transform).anchoredPosition = new Vector2(0, size.y / 2 - 60);
                 var content = Child(go.transform, "Content", "secondary", new Vector2(size.x - 40, size.y - 140));
                 ((RectTransform)content.transform).anchoredPosition = new Vector2(0, -40);
