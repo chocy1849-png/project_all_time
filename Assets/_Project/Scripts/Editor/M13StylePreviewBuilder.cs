@@ -75,7 +75,7 @@ public static class M13StylePreviewBuilder
                 Label("Metadata",card.transform,"2026. 11. 16   ·   12:30",new Vector2(0,-90),new Vector2(250,28),17,new Color(.79f,.82f,.83f));
                 if(j==0) Img("FocusRing",card.transform,"focus",Vector2.zero,new Vector2(294,307)).raycastTarget=false;
             }
-            Label("Hint",content.transform,"선택한 기록을 불러옵니다. 긴 한국어 문장도 편안하게 읽을 수 있어야 합니다.",new Vector2(0,-180),new Vector2(900,45),20,muted);
+            Label("Hint",content.transform,"선택한 기록을 불러옵니다. 긴 한국어 문장도 편안하게 읽을 수 있어야 합니다.",new Vector2(0,-180),new Vector2(900,45),20,new Color(.75f,.79f,.80f));
             var side=Img("SidePanel",panel.transform,"inset",new Vector2(540,-78),new Vector2(350,450));
             Label("SideTitle",side.transform,"화면 설정",new Vector2(0,168),new Vector2(280,38),26,ivory);
             Label("SliderLabel",side.transform,"밝기",new Vector2(0,112),new Vector2(280,30),20,muted);
