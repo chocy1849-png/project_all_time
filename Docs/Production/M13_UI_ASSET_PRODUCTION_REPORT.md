@@ -39,3 +39,5 @@ The matching [B size experiment](M13_Evidence/NineSliceTests/B_sizes.png) used t
 The later 720p hint-color refinement yields approximate screenshot-sampled hint 4.92:1, metadata 4.64:1, disabled label 4.49:1; the last is borderline and needs correction or stronger measurement. See [v6 720p](M13_Evidence/Current/A_v6_720.png). Full unfiltered EditMode after the adjustment: 546 passed, 0 failed, 0 skipped, 0 inconclusive. Matching current 1080p A/B and remaining background captures must be refreshed.
 
 The current v7 720p sample measured metadata 4.84:1, hint 5.15:1 and disabled text 5.87:1 with the same approximate percentile method. Full unfiltered EditMode after this adjustment: 546 passed, 0 failed, 0 skipped, 0 inconclusive. This is not an exhaustive contrast pass.
+
+Current v7 720p over bright/sunset/title backgrounds: screenshot sample ratios respectively metadata 4.84/4.64/4.84, hint 5.15/4.92/5.15 and disabled label 5.87/5.53/5.87. Method and limitations are recorded above. These samples do not establish contrast of all interactive indicators or all resolutions. Matching current background captures are linked in the Current index.

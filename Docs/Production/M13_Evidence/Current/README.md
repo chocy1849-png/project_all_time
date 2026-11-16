@@ -10,3 +10,5 @@ Earlier screenshots in the other evidence directories predate the final metadata
 The [v6 720p](A_v6_720.png) is newer than the v5 images and contains a brighter hint label. The v5 1080p A/B pair remains useful for earlier comparison but is no longer the current serialized appearance; new matching captures are required.
 
 Current v7 actual Game View: [A 1080](A_v7_1080.png), [B 1080](B_v7_1080.png), [A 900](A_v7_900.png), [A 720](A_v7_720.png). These supersede v5 in the matching A/B and bright-background resolution comparison. v5 background variants predate the latest label brightness changes.
+
+Current v7 background comparisons at actual 1280×720: [bright](A_v7_720.png), [sunset](A_v7_sunset.png), [provisional title](A_v7_title.png). Each used the same preview and programmatic Gallery focus.
