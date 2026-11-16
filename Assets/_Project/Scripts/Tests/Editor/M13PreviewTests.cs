@@ -20,6 +20,7 @@ public class M13PreviewTests
         }
         var scroll=prefab.GetComponentInChildren<ScrollRect>(true);
         Assert.NotNull(scroll); Assert.NotNull(scroll.viewport); Assert.NotNull(scroll.content); Assert.NotNull(scroll.verticalScrollbar);
+        for(int row=0;row<2;row++) { var card=Find(scroll.content,"Card"+(row*3)) as RectTransform; var center=card.anchoredPosition.y; var half=card.rect.height/2; var contentHalf=scroll.content.rect.height/2; Assert.LessOrEqual(center+half,contentHalf); Assert.GreaterOrEqual(center-half,-contentHalf); Assert.LessOrEqual(card.rect.height,scroll.viewport.rect.height); }
         Assert.NotNull(prefab.GetComponentInChildren<Slider>(true)); Assert.NotNull(prefab.GetComponentInChildren<Toggle>(true));
         Assert.Greater(prefab.GetComponentsInChildren<M13PreviewFocus>(true).Length, 3);
     }

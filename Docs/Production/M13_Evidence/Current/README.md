@@ -12,3 +12,5 @@ The [v6 720p](A_v6_720.png) is newer than the v5 images and contains a brighter 
 Current v7 actual Game View: [A 1080](A_v7_1080.png), [B 1080](B_v7_1080.png), [A 900](A_v7_900.png), [A 720](A_v7_720.png). These supersede v5 in the matching A/B and bright-background resolution comparison. v5 background variants predate the latest label brightness changes.
 
 Current v7 background comparisons at actual 1280×720: [bright](A_v7_720.png), [sunset](A_v7_sunset.png), [provisional title](A_v7_title.png). Each used the same preview and programmatic Gallery focus.
+
+Latest serialized scenes use two card rows. Compare [A v9 1080](A_v9_1080.png) and [B v9 1080](B_v9_1080.png); [720p top](A_v9_top.png) and [720p bottom](A_v9_bottom.png) demonstrate the two scroll extremes. Earlier v7 900p and background captures precede this content-layout change and must be refreshed before final validation.

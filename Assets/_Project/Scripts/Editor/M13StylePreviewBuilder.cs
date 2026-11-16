@@ -67,9 +67,9 @@ public static class M13StylePreviewBuilder
             Btn("TabNormal2",panel.transform,"업적","tab",new Vector2(-70,202),new Vector2(230,56));
             var content=Img("Content",panel.transform,"secondary",new Vector2(-210,-78),new Vector2(1010,450));
             var viewport=Node("Viewport",content.transform,new Vector2(0,30),new Vector2(960,320)); viewport.AddComponent<RectMask2D>();
-            var scrollContent=Node("ScrollableCards",viewport.transform,Vector2.zero,new Vector2(950,600)); var scrollRect=(RectTransform)scrollContent.transform; scrollRect.anchorMin=scrollRect.anchorMax=new Vector2(.5f,1f); scrollRect.pivot=new Vector2(.5f,1f); scrollRect.anchoredPosition=Vector2.zero;
+            var scrollContent=Node("ScrollableCards",viewport.transform,Vector2.zero,new Vector2(950,640)); var scrollRect=(RectTransform)scrollContent.transform; scrollRect.anchorMin=scrollRect.anchorMax=new Vector2(.5f,1f); scrollRect.pivot=new Vector2(.5f,1f); scrollRect.anchoredPosition=Vector2.zero;
             var list=content.gameObject.AddComponent<ScrollRect>(); list.viewport=(RectTransform)viewport.transform; list.content=scrollRect; list.horizontal=false; list.movementType=ScrollRect.MovementType.Clamped; content.gameObject.AddComponent<M13PreviewScrollStart>();
-            for(int j=0;j<3;j++){var card=Img("Card"+j,scrollContent.transform,"card",new Vector2((j-1)*316,135),new Vector2(292,305));
+            for(int j=0;j<6;j++){var card=Img("Card"+j,scrollContent.transform,"card",new Vector2((j%3-1)*316,162-(j/3)*320),new Vector2(292,305));
                 var thumb=Img("Thumbnail",card.transform,"inset",new Vector2(0,55),new Vector2(254,138)); if(j==0) { var art=Node("StoryImage",thumb.transform,Vector2.zero,new Vector2(246,130)).AddComponent<Image>(); art.sprite=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/_Project/Art/Backgrounds/bg_family_table_morning.png"); art.preserveAspect=true; art.raycastTarget=false; }
                 Label("CardTitle",card.transform,j==0?"첫 번째 이야기":"기억의 조각 0"+(j+1),new Vector2(0,-48),new Vector2(250,36),23,ivory);
                 Label("Metadata",card.transform,"2026. 11. 16   ·   12:30",new Vector2(0,-90),new Vector2(250,28),17,new Color(.79f,.82f,.83f));
