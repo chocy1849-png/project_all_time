@@ -138,7 +138,7 @@ namespace ProjectAllTime.Tests.Editor
             var yarnProject = Ref<YarnProject>(runner, "yarnProject");
             Assert.That(AssetDatabase.GetAssetPath(yarnProject), Is.EqualTo(ProductionYarnPath));
             var serialized = new SerializedObject(runner);
-            Assert.That(serialized.FindProperty("autoStart").boolValue, Is.True);
+            Assert.That(serialized.FindProperty("autoStart").boolValue, Is.False, "M12 starts from the title screen.");
             Assert.That(serialized.FindProperty("startNode").stringValue, Is.EqualTo("M2_UI_START"));
             Assert.That(yarnProject.Program.Nodes.ContainsKey("M2_UI_START"), Is.True);
             Assert.That(yarnProject.Program.Nodes.ContainsKey("PROLOGUE_S001_START"), Is.True);

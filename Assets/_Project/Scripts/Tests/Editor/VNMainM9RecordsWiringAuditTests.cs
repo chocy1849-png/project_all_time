@@ -209,7 +209,7 @@ namespace ProjectAllTime.Tests.Editor
         {
             var runner = Single<DialogueRunner>();
             var so = new SerializedObject(runner);
-            Assert.That(so.FindProperty("autoStart").boolValue, Is.True);
+            Assert.That(so.FindProperty("autoStart").boolValue, Is.False, "M12 starts from the title screen.");
             Assert.That(so.FindProperty("startNode").stringValue, Is.EqualTo("M2_UI_START"));
             Assert.That(All<EventSystem>().Length, Is.EqualTo(1));
             Assert.That(All<Canvas>().Length, Is.EqualTo(2));

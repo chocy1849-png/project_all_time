@@ -12,6 +12,7 @@ namespace ProjectAllTime.VN.Dialogue
 
         private bool isUiHidden;
         private bool convenienceModalActive;
+        private bool titleFlowBlocksGameplay;
         private MonoBehaviour storyInteractionOwner;
         private System.Func<bool> storyCancel;
         private bool storyReadingEnabled;
@@ -25,7 +26,7 @@ namespace ProjectAllTime.VN.Dialogue
         public bool IsStoryInteractionActive => storyInteractionOwner != null;
         public bool IsM5ModalOrLoadActive => saveLoadController != null &&
             (saveLoadController.IsModalOpen || saveLoadController.IsOverwriteConfirmationActive || saveLoadController.IsLoadInProgress);
-        public bool CanAdvanceStory => sessionState != null && !sessionState.OptionsActive &&
+        public bool CanAdvanceStory => !titleFlowBlocksGameplay && sessionState != null && !sessionState.OptionsActive &&
             !IsBlockingModalActive && !IsLoadInProgress && !isUiHidden &&
             (!IsStoryInteractionActive || storyReadingEnabled && sessionState.IsLineActive &&
                 sessionState.CurrentPresentationOccurrence > storyReadingAfterOccurrence);
@@ -33,11 +34,11 @@ namespace ProjectAllTime.VN.Dialogue
             (!IsStoryInteractionActive || source == VNAdvanceSource.Manual);
         public bool CanRunAutomation => CanAdvanceStory && !IsStoryInteractionActive && !sessionState.IsManualAdvanceRequired;
         /// <summary>Options may remain visible; modal/load/hidden ownership blocks user mode changes.</summary>
-        public bool CanChangeConvenienceMode => !IsBlockingModalActive && !IsLoadInProgress && !isUiHidden && !IsStoryInteractionActive;
+        public bool CanChangeConvenienceMode => !titleFlowBlocksGameplay && !IsBlockingModalActive && !IsLoadInProgress && !isUiHidden && !IsStoryInteractionActive;
         /// <summary>Save/Load is intentionally permitted while a Yarn choice is visible.</summary>
-        public bool CanUseSaveLoad => !IsBlockingModalActive && !IsLoadInProgress && !isUiHidden && !IsStoryInteractionActive;
+        public bool CanUseSaveLoad => !titleFlowBlocksGameplay && !IsBlockingModalActive && !IsLoadInProgress && !isUiHidden && !IsStoryInteractionActive;
         /// <summary>Hide requires an actual current line so command-only intervals stay visible.</summary>
-        public bool CanHideUi => sessionState != null && sessionState.IsLineActive &&
+        public bool CanHideUi => !titleFlowBlocksGameplay && sessionState != null && sessionState.IsLineActive &&
             !sessionState.OptionsActive && !IsBlockingModalActive && !IsLoadInProgress && !isUiHidden && !IsStoryInteractionActive;
 
         /// <summary>One scene story interaction, arbitrated by the same gate as convenience input.</summary>
@@ -73,5 +74,8 @@ namespace ProjectAllTime.VN.Dialogue
 
         /// <summary>Owned exclusively by the convenience modal coordinator.</summary>
         public void SetConvenienceModalActive(bool active) => convenienceModalActive = active;
+
+        /// <summary>Blocks gameplay while title or its in-game menu owns input.</summary>
+        public void SetTitleFlowBlocksGameplay(bool blocked) => titleFlowBlocksGameplay = blocked;
     }
 }

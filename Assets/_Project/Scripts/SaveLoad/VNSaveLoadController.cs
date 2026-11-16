@@ -90,6 +90,8 @@ namespace ProjectAllTime.VN.SaveLoad
         public event Action<string> StatusChanged;
         /// <summary>Raised exactly while a validated Load transaction owns runtime state.</summary>
         public event Action<bool> LoadStateChanged;
+        /// <summary>Final outcome of an accepted asynchronous load, after input ownership is released.</summary>
+        public event Action<VNSaveLoadOperationResult> LoadExecutionCompleted;
 
         public VNPlayTimeTracker PlayTimeTracker => playTimeTracker;
         public VNSaveRepository Repository => repository;
@@ -99,6 +101,15 @@ namespace ProjectAllTime.VN.SaveLoad
         public bool IsModalOpen => saveLoadModal != null && saveLoadModal.IsOpen;
         public bool IsLoadInProgress => loadInProgress;
         public bool IsOverwriteConfirmationActive => saveLoadModal != null && saveLoadModal.IsOverwriteConfirmationActive;
+
+        /// <summary>Find the newest fully compatible slot. Ties prefer Manual, Auto, Quick, then lowest index.</summary>
+        public bool TryFindLatestCompatibleSlot(out VNSaveSlotKey slotKey)
+        {
+            slotKey = default;
+            if (repository == null || saveCoordinator == null || loadInProgress) return false;
+            return VNContinueSelection.TrySelect(repository.InspectAllSlots(),
+                key => saveCoordinator.ValidateLoad(key).Status == VNYarnLoadValidationStatus.Valid, out slotKey);
+        }
 
         private void Awake()
         {
@@ -318,17 +329,21 @@ namespace ProjectAllTime.VN.SaveLoad
 
         private async void StartLoad(VNYarnLoadValidationResult validation)
         {
+            VNSaveLoadOperationResult finalResult = null;
             try
             {
                 var execution = await saveCoordinator.ExecuteValidatedLoad(validation);
                 if (!execution.Succeeded)
-                    Complete(VNSaveLoadOperationStatus.LoadValidationFailed, execution.Diagnostic ?? "Load execution failed after runtime mutation began.");
+                    finalResult = Complete(VNSaveLoadOperationStatus.LoadValidationFailed, execution.Diagnostic ?? "Load execution failed after runtime mutation began.");
                 else
+                {
                     PublishStatus("Load complete.");
+                    finalResult = VNSaveLoadOperationResult.Create(VNSaveLoadOperationStatus.Succeeded, "Load complete.");
+                }
             }
             catch (Exception)
             {
-                Complete(VNSaveLoadOperationStatus.LoadValidationFailed, "Load execution failed unexpectedly.");
+                finalResult = Complete(VNSaveLoadOperationStatus.LoadValidationFailed, "Load execution failed unexpectedly.");
             }
             finally
             {
@@ -337,6 +352,7 @@ namespace ProjectAllTime.VN.SaveLoad
                 autosaveGuard.Clear();
                 SetLoadInProgress(false);
                 RestoreDialogueAdvanceInput();
+                LoadExecutionCompleted?.Invoke(finalResult);
             }
         }
 
