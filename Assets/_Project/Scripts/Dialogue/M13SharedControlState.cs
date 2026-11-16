@@ -13,6 +13,7 @@ namespace ProjectAllTime.VN.Dialogue
         public void SetActive(bool value) { active = value; Refresh(); }
         public void OnSelect(BaseEventData eventData) { focused = true; Refresh(); }
         public void OnDeselect(BaseEventData eventData) { focused = false; Refresh(); }
+        private void Update() => Refresh();
         private void OnDisable() { focused = false; Refresh(); }
         private void Refresh()
         {

@@ -1,10 +1,7 @@
 # M13-02 execution state
 
-| Checkpoint | Implemented files | Evidence | Commit | Remaining |
-|---|---|---|---|---|
-| A: Panel, Button, Tab | M13SharedPrefabBuilder, M13SharedControlState, three prefabs, M13SharedControlTests | Unity import and one EditMode state test passed | 2ff065f | Complete labels, destructive variant, responsive panel and actual keyboard/pointer validation. |
-| B: Card and Scrollbar | Not implemented | None | — | Implement and test. |
-| C: Slider and Toggle | Not implemented | None | — | Implement and test. |
-| D: Integration | Not implemented | None | — | Game View evidence, full regression and reports. |
+Seven shared prefabs and the editor builder are present. The card exposes content and locked-state APIs; the standard Scrollbar, Slider and Toggle retain uGUI input ownership. The demo builder creates a temporary Canvas and ScrollRect using the generated prefabs. Panel, Button and Tab were extended, including a destructive button color option and focus suppression when disabled.
 
-The builder eval returned a 5-second main-thread timeout; the generated Tab prefab was subsequently loaded and verified, and the focused state test passed. The global TMP font and existing untracked evidence remain excluded. PR #69 is draft.
+The focused EditMode suite passed 15/15, including programmatic pointer, submit, move, drag and wheel events. Three camera-rendered Game View captures are in `M13_Evidence/M13_02`. See `M13_SHARED_UI_VALIDATION_REPORT.md` for exact scope and remaining limitations. The fresh unfiltered EditMode regression passed 563/563.
+
+The pre-existing global Noto font modification and historical untracked evidence are retained and excluded. Do not merge or integrate based solely on the automated tests: physical interaction, additional text lengths and downstream screen-specific layout remain to be checked.

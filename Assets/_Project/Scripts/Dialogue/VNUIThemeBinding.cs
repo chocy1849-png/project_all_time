@@ -15,7 +15,9 @@ namespace ProjectAllTime.VN.Dialogue
         [SerializeField] private TMP_Text dialogue;
         [SerializeField] private TMP_Text tooltip;
         [SerializeField] private Button button;
+        [SerializeField] private bool destructive;
         public VNUITheme Theme => theme;
+        public void SetDestructive(bool value) { destructive = value; Apply(); }
         private void OnEnable() => Apply();
         private void OnValidate() => Apply();
         public void Apply()
@@ -30,6 +32,13 @@ namespace ProjectAllTime.VN.Dialogue
             {
                 var colors = button.colors; colors.normalColor = theme.normal; colors.highlightedColor = theme.hover;
                 colors.selectedColor = theme.hover; colors.pressedColor = theme.pressed; colors.disabledColor = theme.disabled;
+                if (destructive)
+                {
+                    colors.normalColor = new Color32(178, 105, 95, 255);
+                    colors.highlightedColor = new Color32(218, 137, 119, 255);
+                    colors.selectedColor = colors.highlightedColor;
+                    colors.pressedColor = new Color32(142, 72, 66, 255);
+                }
                 button.colors = colors;
             }
         }

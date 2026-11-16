@@ -32,10 +32,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 4902234156520050286}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -25}
-  m_SizeDelta: {x: 210, y: 6}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: 0, y: 3}
+  m_SizeDelta: {x: -20, y: 6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7804522834617228268
 CanvasRenderer:
@@ -107,10 +107,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 4902234156520050286}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 236, y: 62}
+  m_SizeDelta: {x: 6, y: 6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8021766610577482084
 CanvasRenderer:
@@ -308,6 +308,7 @@ MonoBehaviour:
   dialogue: {fileID: 0}
   tooltip: {fileID: 0}
   button: {fileID: 5074743618556991297}
+  destructive: 0
 --- !u!1 &7108624382279173037
 GameObject:
   m_ObjectHideFlags: 0
@@ -340,10 +341,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 4902234156520050286}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 210, y: 48}
+  m_SizeDelta: {x: -20, y: -8}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1286415238705453413
 CanvasRenderer:
@@ -375,15 +376,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\uD0ED"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 9c6bf927903458a48ac7eb0a474def8d, type: 2}
-  m_sharedMaterial: {fileID: -6023381872719106749, guid: 9c6bf927903458a48ac7eb0a474def8d, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 0a4f61e6afc286d41bcb1e367f5d2fbe, type: 2}
+  m_sharedMaterial: {fileID: -3923035410236137975, guid: 0a4f61e6afc286d41bcb1e367f5d2fbe, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColor: {r: 0.94, g: 0.91, b: 0.83, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
