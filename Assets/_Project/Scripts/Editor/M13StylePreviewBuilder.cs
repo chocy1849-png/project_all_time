@@ -29,7 +29,7 @@ public static class M13StylePreviewBuilder
         var colors=b.colors; colors.normalColor=Color.white; colors.highlightedColor=new Color(1.12f,1.12f,1.12f); colors.pressedColor=new Color(.78f,.84f,.83f); colors.selectedColor=new Color(1.12f,1.12f,1.12f); colors.disabledColor=new Color(.52f,.54f,.54f,.65f); b.colors=colors;
         Label("Label",i.transform,text,Vector2.zero,size- new Vector2(20,8),24,interactable ? new Color(.97f,.96f,.94f) : new Color(.72f,.75f,.76f),TextAlignmentOptions.Center); var ring=Img("Focus",i.transform,"focus",Vector2.zero,size+new Vector2(6,6)); ring.raycastTarget=false; i.gameObject.AddComponent<M13PreviewFocus>().Configure(ring.gameObject); return b;
     }
-    const string PreviewCharacters = "시각 테스트기록 보관함지나온 순간들을 다시 살펴봅니다×저장갤러리업적삭제첫 번째 이야기억의 조각화면 설정밝불오기옵뒤로사용할 수 없음표방향데이터선택한 긴 한국어 문장도 편안하게 읽을 수 있어야 합니다. 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz·:!?—“”()[]/%+-";
+    const string PreviewCharacters = "시각 테스트기록 보관함지나온 순간들을 다시 살펴봅니다×저장갤러리업적삭제잠김첫 번째 이야기억의 조각화면 설정밝불오기옵뒤로사용할 수 없음표방향데이터선택한 긴 한국어 문장도 편안하게 읽을 수 있어야 합니다. 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz·:!?—“”()[]/%+-";
     static TMP_FontAsset PreviewFont() {
         const string path="Assets/_Project/Fonts/NotoSansKR/M13_Preview_Korean_SDF.asset";
         var f=AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(path);
@@ -73,7 +73,11 @@ public static class M13StylePreviewBuilder
                 var thumb=Img("Thumbnail",card.transform,"inset",new Vector2(0,55),new Vector2(254,138)); if(j==0) { var art=Node("StoryImage",thumb.transform,Vector2.zero,new Vector2(246,130)).AddComponent<Image>(); art.sprite=AssetDatabase.LoadAssetAtPath<Sprite>("Assets/_Project/Art/Backgrounds/bg_family_table_morning.png"); art.preserveAspect=true; art.raycastTarget=false; }
                 Label("CardTitle",card.transform,j==0?"첫 번째 이야기":"기억의 조각 0"+(j+1),new Vector2(0,-48),new Vector2(250,36),23,ivory);
                 Label("Metadata",card.transform,"2026. 11. 16   ·   12:30",new Vector2(0,-90),new Vector2(250,28),17,new Color(.79f,.82f,.83f));
-                if(j==0) Img("FocusRing",card.transform,"focus",Vector2.zero,new Vector2(294,307)).raycastTarget=false;
+                var cardButton=card.gameObject.AddComponent<Button>(); cardButton.targetGraphic=card; cardButton.interactable=j!=2;
+                var marker=Img("SelectedMarker",card.transform,"selected",new Vector2(0,-148),new Vector2(250,6)); marker.type=Image.Type.Simple; marker.sprite=null; marker.color=new Color(.5f,.73f,.71f); marker.raycastTarget=false;
+                card.gameObject.AddComponent<M13PreviewCard>().Configure(marker.gameObject,j==0);
+                var cardFocus=Img("Focus",card.transform,"focus",Vector2.zero,new Vector2(298,311)); cardFocus.raycastTarget=false; card.gameObject.AddComponent<M13PreviewFocus>().Configure(cardFocus.gameObject);
+                if(j==2) { card.color=new Color(.60f,.64f,.65f,1); Label("DisabledState",card.transform,"잠김",new Vector2(0,55),new Vector2(200,38),22,new Color(.75f,.78f,.78f),TextAlignmentOptions.Center); }
             }
             Label("Hint",content.transform,"선택한 기록을 불러옵니다. 긴 한국어 문장도 편안하게 읽을 수 있어야 합니다.",new Vector2(0,-180),new Vector2(900,45),20,new Color(.75f,.79f,.80f));
             var side=Img("SidePanel",panel.transform,"inset",new Vector2(540,-78),new Vector2(350,450));

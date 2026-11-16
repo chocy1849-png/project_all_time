@@ -18,3 +18,5 @@ Latest serialized scenes use two card rows. Compare [A v9 1080](A_v9_1080.png) a
 Current v9 same-version captures: [A 900p](A_v9_900.png), [sunset 720p](A_v9_sunset.png), [title 720p](A_v9_title.png). Together with the existing v9 A/B 1080p and A 720p captures they supersede v7 for the sampled layout.
 
 [Selected + focused tab at 720p](A_selected_focused_720.png): real Game View with EventSystem selection set to the already active tab. Teal surface and underline remain visible inside the gold focus outline. This is programmatic selection; a physical arrow-key navigation check is recorded in the production report.
+
+Latest matching 1080p captures are [A v11](A_v11_1080.png) and [B v11](B_v11_1080.png). They contain selectable/focusable card Buttons and a disabled `잠김` card; all earlier 720p/900p/background captures predate this addition. [Card selection plus focus at 720p](A_v10_cards.png) demonstrates an earlier version before the lock label. These are Unity-rendered fixtures, not production menu redesigns.

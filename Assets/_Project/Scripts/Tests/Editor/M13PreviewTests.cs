@@ -50,6 +50,8 @@ public class M13PreviewTests
             responder.OnSelect(new BaseEventData(system.GetComponent<EventSystem>())); Assert.IsTrue(ring.gameObject.activeSelf);
             responder.OnDeselect(new BaseEventData(system.GetComponent<EventSystem>())); Assert.IsFalse(ring.gameObject.activeSelf);
             var disabled=Find(root.transform,"Disabled"); var disabledRing=disabled.Find("Focus"); disabled.GetComponent<M13PreviewFocus>().OnPointerEnter(new PointerEventData(system.GetComponent<EventSystem>())); Assert.IsFalse(disabledRing.gameObject.activeSelf);
+            var card0=Find(root.transform,"Card0"); var card1=Find(root.transform,"Card1"); var card2=Find(root.transform,"Card2");
+            Assert.IsTrue(card0.Find("SelectedMarker").gameObject.activeSelf); typeof(M13PreviewCard).GetMethod("OnEnable",System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance).Invoke(card1.GetComponent<M13PreviewCard>(),null); card1.GetComponent<Button>().onClick.Invoke(); Assert.IsFalse(card0.Find("SelectedMarker").gameObject.activeSelf); Assert.IsTrue(card1.Find("SelectedMarker").gameObject.activeSelf); Assert.IsFalse(card2.GetComponent<Button>().IsInteractable());
             var slider=Find(root.transform,"Slider").GetComponent<Slider>(); var start=slider.value;
             slider.OnMove(new AxisEventData(system.GetComponent<EventSystem>()){moveDir=MoveDirection.Right,moveVector=Vector2.right}); Assert.Greater(slider.value,start);
             var toggle=Find(root.transform,"Toggle").GetComponent<Toggle>(); var previous=toggle.isOn; toggle.OnSubmit(new BaseEventData(system.GetComponent<EventSystem>())); Assert.AreNotEqual(previous,toggle.isOn);

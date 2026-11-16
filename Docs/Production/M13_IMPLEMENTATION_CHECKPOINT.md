@@ -87,3 +87,9 @@ Remaining: v9 captures at 900p and background variants; indicator contrast and p
 Current v9 A 900p and 720p sunset/title captures were refreshed. Representative 720p screenshot samples for text and three indicators are recorded in the production report. Remaining: full per-state measurement and review, complete production state/overflow audit, and visual quality rubric. Do not mark ready yet.
 
 A current 720p selected+focused tab capture demonstrates the teal selected surface/underline with a gold focus outline; see Current index. Pressed/hover and selected/disabled card states still need actual preview implementation/evidence. Next action: add interactive card focus/selection and disabled treatment without affecting production owners, then re-render and rerun tests.
+
+## v11 interactive cards
+
+`M13PreviewCard` is a fixture-only Button selection group. The selected card uses a teal marker; focus uses the existing gold ring; the third card is non-interactable and now displays `잠김`. In Play, invoking Card1 selected it and cleared Card0, with focus shown in [the 720p card-state capture](M13_Evidence/Current/A_v10_cards.png) (this capture predates the added `잠김` label). Current matching 1080p [A](M13_Evidence/Current/A_v11_1080.png) and [B](M13_Evidence/Current/B_v11_1080.png) show the label and same fixture state. 5 focused tests and the full unfiltered EditMode suite after the final label change passed: **546 passed, 0 failed, 0 skipped, 0 inconclusive**. Selection was invoked through Button events, not physically clicked; keyboard/mouse card testing and current-version 720p/900p/background capture remain open. v9 resolution/background screenshots predate the card state change.
+
+Exact next action: physically exercise card navigation, selection and disabled behavior; render the current v11 A at actual 720p/900p and over all backgrounds, and finish the outstanding state/contrast audit and quality rubric before the visual-direction gate.
