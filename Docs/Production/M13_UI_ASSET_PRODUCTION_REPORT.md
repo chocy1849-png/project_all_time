@@ -37,3 +37,5 @@ A later physical Editor Game View pass dragged Slider 0.65→0.3395, clicked Tog
 The matching [B size experiment](M13_Evidence/NineSliceTests/B_sizes.png) used the same size pairs and actual 1080p Game View as A. In these samples its square-cut corners and borders appeared continuous. This does not validate every intended size, all controls, or every display resolution.
 
 The later 720p hint-color refinement yields approximate screenshot-sampled hint 4.92:1, metadata 4.64:1, disabled label 4.49:1; the last is borderline and needs correction or stronger measurement. See [v6 720p](M13_Evidence/Current/A_v6_720.png). Full unfiltered EditMode after the adjustment: 546 passed, 0 failed, 0 skipped, 0 inconclusive. Matching current 1080p A/B and remaining background captures must be refreshed.
+
+The current v7 720p sample measured metadata 4.84:1, hint 5.15:1 and disabled text 5.87:1 with the same approximate percentile method. Full unfiltered EditMode after this adjustment: 546 passed, 0 failed, 0 skipped, 0 inconclusive. This is not an exhaustive contrast pass.

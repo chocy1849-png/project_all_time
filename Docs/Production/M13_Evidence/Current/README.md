@@ -8,3 +8,5 @@ All images are Unity Editor Play Mode Game View `source=screen`; `Screen.width/h
 Earlier screenshots in the other evidence directories predate the final metadata/scroll initialization change and are retained as intermediate evidence, not current serialized-state screenshots. The 1080p pair and v5 size/background set are the latest. Programmatic focus does not prove physical navigation. See the [working production report](../../M13_UI_ASSET_PRODUCTION_REPORT.md) for measurements and limitations.
 
 The [v6 720p](A_v6_720.png) is newer than the v5 images and contains a brighter hint label. The v5 1080p A/B pair remains useful for earlier comparison but is no longer the current serialized appearance; new matching captures are required.
+
+Current v7 actual Game View: [A 1080](A_v7_1080.png), [B 1080](B_v7_1080.png), [A 900](A_v7_900.png), [A 720](A_v7_720.png). These supersede v5 in the matching A/B and bright-background resolution comparison. v5 background variants predate the latest label brightness changes.

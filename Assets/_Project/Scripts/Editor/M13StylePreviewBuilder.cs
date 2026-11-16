@@ -27,7 +27,7 @@ public static class M13StylePreviewBuilder
     static Button Btn(string name, Transform parent, string text, string sprite, Vector2 pos, Vector2 size, bool interactable=true) {
         var i=Img(name,parent,sprite,pos,size); var b=i.gameObject.AddComponent<Button>(); b.interactable=interactable;
         var colors=b.colors; colors.normalColor=Color.white; colors.highlightedColor=new Color(1.12f,1.12f,1.12f); colors.pressedColor=new Color(.78f,.84f,.83f); colors.selectedColor=new Color(1.12f,1.12f,1.12f); colors.disabledColor=new Color(.52f,.54f,.54f,.65f); b.colors=colors;
-        Label("Label",i.transform,text,Vector2.zero,size- new Vector2(20,8),24,interactable ? new Color(.97f,.96f,.94f) : new Color(.63f,.67f,.68f),TextAlignmentOptions.Center); var ring=Img("Focus",i.transform,"focus",Vector2.zero,size+new Vector2(6,6)); ring.raycastTarget=false; i.gameObject.AddComponent<M13PreviewFocus>().Configure(ring.gameObject); return b;
+        Label("Label",i.transform,text,Vector2.zero,size- new Vector2(20,8),24,interactable ? new Color(.97f,.96f,.94f) : new Color(.72f,.75f,.76f),TextAlignmentOptions.Center); var ring=Img("Focus",i.transform,"focus",Vector2.zero,size+new Vector2(6,6)); ring.raycastTarget=false; i.gameObject.AddComponent<M13PreviewFocus>().Configure(ring.gameObject); return b;
     }
     const string PreviewCharacters = "시각 테스트기록 보관함지나온 순간들을 다시 살펴봅니다×저장갤러리업적삭제첫 번째 이야기억의 조각화면 설정밝불오기옵뒤로사용할 수 없음표방향데이터선택한 긴 한국어 문장도 편안하게 읽을 수 있어야 합니다. 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz·:!?—“”()[]/%+-";
     static TMP_FontAsset PreviewFont() {
