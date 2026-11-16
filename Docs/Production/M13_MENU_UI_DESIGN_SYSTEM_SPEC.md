@@ -34,7 +34,7 @@ M11 anchors: charcoal `#252B32`, ivory `#F7F4EF`, gold `#E5CAA2`, teal `#81BBB7`
 
 ## Candidate direction and boundaries
 
-A is the working recommendation: cooler smoked surface and restrained gray edges align with M11. B uses warmer undertones, squarer corners and muted-gold edges. Both retain the same layout and source content; neither is user-approved. Their [matching 1080p captures](M13_Evidence/Current/README.md) support comparison, but further material quality, focus and B-state testing remains. The preview-specific Noto font contains only its known preview characters; it is not a replacement for the production Korean font.
+The user selected B, Textured Matte Composite, as the preferred working material direction. This decision does not approve the whole milestone or every implementation detail. A is preserved as historical comparison. B uses warm matte charcoal, restrained texture, gold focus and teal active accents; avoid increasing grain simply to differentiate it from A. The preview-specific Noto font contains only its known preview characters; it is not a replacement for the production Korean font.
 
 Future M13-02–08 integration must preserve Yarn/stable IDs, SaveData schemas and M10-15 compatibility, Settings persistence, MetaProgress, Records unlock and Replay isolation, dialogue and modal arbitration, input routing, story/audio timing, and M12 title/async-load flow. Reuse existing `VNUITheme` and bindings where justified; no second persistent theme authority. No production screen redesign has been made in this stage.
 
@@ -63,3 +63,7 @@ The isolated 720p populated-save capture shows small metadata and a wrapped page
 | Title / game menu | `VNTitleScreen` prefab, title and in-game menu coordinated by title controller | Existing M12 captures and fresh Title/game-menu samples; focus and standalone behaviors retain M12 limitations. **KEEP** title flow and existing input routing; **DEFER** consistency updates. |
 
 This inventory combines code ownership and actual captures. It is not a complete visual-state sign-off: hover/pressed, keyboard traversal, 900p production layouts, long Records fields, and all save compatibility/error states remain open. Existing Korean TMP fonts are retained by production; M13 preview atlas is fixture-limited. `VNUITheme` remains the shared authority for bindings where applicable.
+
+## User feedback layout revision
+
+The isolated preview uses a 930×320 masked viewport in the save-slot panel, 270×305 cards in three columns at 300-unit centers, and a 20×320 scrollbar alongside the viewport under the same `Content` object. The 640-unit content holds two 320-unit rows. CanvasScaler scales the fixed three-column composition; it does not reflow to two columns. Scroll sensitivity is 240 reference units per wheel step, with clamped movement and existing inertia. The slider retains its 14-unit visual track inside a 48-unit hit area; the toggle label is a clickable child. These are preview-only examples, not production integration.

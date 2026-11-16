@@ -58,5 +58,31 @@ public class M13PreviewTests
             var scroll=root.GetComponentInChildren<ScrollRect>(true); Canvas.ForceUpdateCanvases(); scroll.verticalNormalizedPosition=1; var before=scroll.content.anchoredPosition.y; scroll.verticalScrollbar.value=0; Assert.Greater(scroll.content.anchoredPosition.y,before);
         } finally {Object.DestroyImmediate(root); Object.DestroyImmediate(system);}
     }
+    [TestCase("A")]
+    [TestCase("B")]
+    public void FeedbackLayout_BindsScrollbarAndKeepsCardsWithinViewport(string direction)
+    {
+        var root=Object.Instantiate(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/UI/M13/M13_StylePreview_"+direction+".prefab"));
+        var system=new GameObject("EventSystem",typeof(EventSystem));
+        try {
+            var scroll=root.GetComponentInChildren<ScrollRect>(true); Canvas.ForceUpdateCanvases();
+            Assert.AreEqual(scroll.transform,scroll.verticalScrollbar.transform.parent);
+            Assert.AreEqual(240,scroll.scrollSensitivity); Assert.AreEqual(320,scroll.viewport.rect.height);
+            var bar=(RectTransform)scroll.verticalScrollbar.transform;
+            Assert.Greater(bar.anchoredPosition.x-bar.rect.width/2,scroll.viewport.anchoredPosition.x+scroll.viewport.rect.width/2);
+            for(int j=0;j<6;j++) {
+                var card=(RectTransform)scroll.content.Find("Card"+j);
+                Assert.LessOrEqual(Mathf.Abs(card.anchoredPosition.x)+card.rect.width/2,scroll.viewport.rect.width/2);
+                var focus=(RectTransform)card.Find("Focus");
+                Assert.LessOrEqual(Mathf.Abs(card.anchoredPosition.x)+focus.rect.width/2,scroll.viewport.rect.width/2);
+                Assert.LessOrEqual(Mathf.Abs(card.anchoredPosition.y)+focus.rect.height/2,scroll.content.rect.height/2);
+            }
+            var slider=root.GetComponentInChildren<Slider>(true); Assert.GreaterOrEqual(((RectTransform)slider.transform).rect.height,48);
+            var toggle=root.GetComponentInChildren<Toggle>(true); Assert.IsTrue(toggle.transform.Find("ToggleLabel").GetComponent<TMP_Text>().raycastTarget);
+            var locked=scroll.content.Find("Card2"); var was=scroll.content.Find("Card0/SelectedMarker").gameObject.activeSelf;
+            locked.GetComponent<Button>().OnPointerClick(new PointerEventData(system.GetComponent<EventSystem>()) {button=PointerEventData.InputButton.Left});
+            Assert.AreEqual(was,scroll.content.Find("Card0/SelectedMarker").gameObject.activeSelf);
+        } finally { Object.DestroyImmediate(root); Object.DestroyImmediate(system); }
+    }
     static Transform Find(Transform parent,string name) { foreach(var t in parent.GetComponentsInChildren<Transform>(true)) if(t.name==name) return t; Assert.Fail("Missing "+name); return null; }
 }
