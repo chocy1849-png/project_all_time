@@ -1,0 +1,17 @@
+# Current production baseline captures — representative, incomplete
+
+Captured 2026-11-16 from `Assets/_Project/Scenes/VN_Main.unity` in Unity 6000.3.21f1 Editor Play Mode, Pipeline `capture_game_view` source `screen`, actual `Screen.width × Screen.height = 1920×1080`. Storage identity was temporarily set to `M13PreviewIsolated/AllTimeAudit` and verified via `Application.persistentDataPath`; values were restored afterward. UI actions were invoked through the existing Buttons, category APIs and, for the in-game menu, the existing Cancel handler by reflection. These are not physical-input tests. No save was written deliberately. The isolated state has empty slots and limited progress.
+
+- [Title](Before_title.png), [in-game menu](Before_ingame.png), [Backlog](Before_backlog.png).
+- Settings: [Display](Before_settings_display.png), [Text](Before_settings_Text.png), [Audio](Before_settings_Audio.png), [Gameplay](Before_settings_Gameplay.png), [Controls](Before_settings_Controls.png).
+- Load: [Manual](Before_load_Manual_corrected.png), [Auto](Before_load_Auto_corrected.png), [Quick](Before_load_Quick_corrected.png).
+- Save: [Manual](Before_save_Manual.png), [Auto](Before_save_Auto.png), [Quick](Before_save_Quick.png).
+- Records: [Timeline](Before_records_Timeline.png), [Gallery](Before_records_Gallery.png), [Archive](Before_records_Archive.png), [Achievements](Before_records_Achievements.png).
+
+These do not cover populated saves, every locked/unlocked state, long/narrator Backlog, 720p/900p live production layouts or every interaction. Continue audit before declaring M13-00 complete.
+
+A second isolated Play run seeded `cg_present_table_glimpse`, archive `rope`, achievement `first_steps` and chapter `prologue_part_01` through the existing MetaProgress service. [Timeline](Before_records_Timeline_seeded.png), [Gallery with one unlocked entry](Before_records_Gallery_seeded.png), [Archive](Before_records_Archive_seeded.png), [Achievements](Before_records_Achievements_seeded.png), and the [unlocked gallery viewer](Before_gallery_viewer_seeded.png) were captured. Seed data was written only under the isolated identity and is not player progress.
+
+The Backlog [long/named-speaker](Before_backlog_long_fixture.png) and [top-of-list](Before_backlog_narrator_fixture.png) captures include explicitly injected in-memory test entries; they are not authored story content. In the long fixture, some Korean glyphs are missing from the current production font (for example portions of the test speaker and text). This is a baseline finding, not a claim that the M13 preview font fixes production. Empty Backlog, full multi-resolution and other content states remain to be inspected.
+
+Additional actual 1280×720 Editor Play captures under `M13PreviewIsolated/AllTimeAudit`: [populated Manual save](Before_save_populated.png), [overwrite confirmation](Before_overwrite_720.png), and [empty Backlog](Before_backlog_empty_720.png). The Manual save was deliberately created through the existing UI in isolated storage; the confirmation was opened but not accepted. The Backlog service was cleared only in the isolated running session to expose its empty state. The populated slot shows a very small metadata block; the page indicator wraps. The confirmation capture shows a white panel with message/action visibility problems in this state. These are observations for later integration, not changes to production behavior.
