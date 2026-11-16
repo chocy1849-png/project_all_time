@@ -9,3 +9,7 @@ Captured 2026-11-16 from `Assets/_Project/Scenes/VN_Main.unity` in Unity 6000.3.
 - Records: [Timeline](Before_records_Timeline.png), [Gallery](Before_records_Gallery.png), [Archive](Before_records_Archive.png), [Achievements](Before_records_Achievements.png).
 
 These do not cover populated saves, every locked/unlocked state, long/narrator Backlog, 720p/900p live production layouts or every interaction. Continue audit before declaring M13-00 complete.
+
+A second isolated Play run seeded `cg_present_table_glimpse`, archive `rope`, achievement `first_steps` and chapter `prologue_part_01` through the existing MetaProgress service. [Timeline](Before_records_Timeline_seeded.png), [Gallery with one unlocked entry](Before_records_Gallery_seeded.png), [Archive](Before_records_Archive_seeded.png), [Achievements](Before_records_Achievements_seeded.png), and the [unlocked gallery viewer](Before_gallery_viewer_seeded.png) were captured. Seed data was written only under the isolated identity and is not player progress.
+
+The Backlog [long/named-speaker](Before_backlog_long_fixture.png) and [top-of-list](Before_backlog_narrator_fixture.png) captures include explicitly injected in-memory test entries; they are not authored story content. In the long fixture, some Korean glyphs are missing from the current production font (for example portions of the test speaker and text). This is a baseline finding, not a claim that the M13 preview font fixes production. Empty Backlog, full multi-resolution and other content states remain to be inspected.
