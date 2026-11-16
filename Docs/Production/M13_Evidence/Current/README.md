@@ -16,3 +16,5 @@ Current v7 background comparisons at actual 1280×720: [bright](A_v7_720.png), [
 Latest serialized scenes use two card rows. Compare [A v9 1080](A_v9_1080.png) and [B v9 1080](B_v9_1080.png); [720p top](A_v9_top.png) and [720p bottom](A_v9_bottom.png) demonstrate the two scroll extremes. Earlier v7 900p and background captures precede this content-layout change and must be refreshed before final validation.
 
 Current v9 same-version captures: [A 900p](A_v9_900.png), [sunset 720p](A_v9_sunset.png), [title 720p](A_v9_title.png). Together with the existing v9 A/B 1080p and A 720p captures they supersede v7 for the sampled layout.
+
+[Selected + focused tab at 720p](A_selected_focused_720.png): real Game View with EventSystem selection set to the already active tab. Teal surface and underline remain visible inside the gold focus outline. This is programmatic selection; a physical arrow-key navigation check is recorded in the production report.
