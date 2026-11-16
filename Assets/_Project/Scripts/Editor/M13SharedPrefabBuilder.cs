@@ -23,8 +23,14 @@ public static class M13SharedPrefabBuilder
             var image = go.GetComponent<Image>();
             image.sprite = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/_Project/Art/UI/M13/B_" + spriteName + ".png");
             image.type = Image.Type.Sliced;
-            if (button) { var control = go.AddComponent<Button>(); control.targetGraphic = image; }
-            go.AddComponent<VNUIThemeBinding>();
+            Button control = null;
+            if (button) { control = go.AddComponent<Button>(); control.targetGraphic = image; }
+            var binding = go.AddComponent<VNUIThemeBinding>();
+            var serialized = new SerializedObject(binding);
+            serialized.FindProperty("theme").objectReferenceValue = AssetDatabase.LoadAssetAtPath<VNUITheme>("Assets/_Project/Settings/M11_UITheme.asset");
+            if (button) serialized.FindProperty("button").objectReferenceValue = control;
+            else serialized.FindProperty("panel").objectReferenceValue = image;
+            serialized.ApplyModifiedPropertiesWithoutUndo();
             PrefabUtility.SaveAsPrefabAsset(go, dir + "/M13_" + name + ".prefab");
         }
         finally { Object.DestroyImmediate(go); }

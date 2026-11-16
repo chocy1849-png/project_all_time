@@ -88,8 +88,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6460391aa6598db45b2f3837bf83b179, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectAllTime.VN.Dialogue.VNUIThemeBinding
-  theme: {fileID: 0}
-  panel: {fileID: 0}
+  theme: {fileID: 11400000, guid: 9866f5adfe172df4e836e36e37e1775d, type: 2}
+  panel: {fileID: 2402240906291746925}
   icon: {fileID: 0}
   speaker: {fileID: 0}
   dialogue: {fileID: 0}
