@@ -115,7 +115,8 @@ public static class M13SettingsRefinement
             Style(reb.GetComponentInChildren<TMP_Text>(true),"Medium",20,Text);Style(resetOne.GetComponentInChildren<TMP_Text>(true),"Medium",19,Text);
         }
         reset.SetParent(bindings.transform,false);var rr=(RectTransform)reset;rr.anchorMin=rr.anchorMax=new Vector2(1,1);rr.pivot=new Vector2(1,1);rr.anchoredPosition=new Vector2(-35,-620);rr.sizeDelta=new Vector2(270,50);
-        var tip=Label("M13_BindTip",bindings.transform,"키 선택 후 입력을 기다립니다. Esc로 취소할 수 있습니다.",19,Sub);Top((RectTransform)tip.transform,620,48,35,320);var resetImage=reset.GetComponent<Image>();resetImage.color=new Color32(135,82,76,255);Style(reset.GetComponentInChildren<TMP_Text>(true),"Medium",22,new Color32(233,181,173,255));
+        var tip=Label("M13_BindTip",bindings.transform,"변경 버튼을 누르면 새로운 키를 지정할 수 있습니다.",19,Sub);Top((RectTransform)tip.transform,620,48,35,320);var resetImage=reset.GetComponent<Image>();resetImage.color=new Color32(135,82,76,255);Style(reset.GetComponentInChildren<TMP_Text>(true),"Medium",22,new Color32(233,181,173,255));
+        var ownerSerialized=new SerializedObject(controls.GetComponent<VNControlsSettingsView>()); ownerSerialized.FindProperty("guidanceText").objectReferenceValue=tip; ownerSerialized.ApplyModifiedPropertiesWithoutUndo();
         var guide=New("M13_Guide",controls,typeof(RectTransform));Box((RectTransform)guide.transform,Vector2.zero,Vector2.one,Vector2.zero,Vector2.zero);
         var guideBg=Panel("M13_GuidePanel",guide.transform,new Color32(36,45,50,235));Top((RectTransform)guideBg.transform,185,400,35,35);
         var heading=Label("M13_GuideHeading",guide.transform,"대화와 플레이",24,Text,"SemiBold");Top((RectTransform)heading.transform,200,45,60,60);
