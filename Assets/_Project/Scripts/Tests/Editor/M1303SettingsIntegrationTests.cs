@@ -71,7 +71,8 @@ public class M1303SettingsIntegrationTests
         foreach(var slider in panel.GetComponentsInChildren<Slider>(true)) Assert.IsFalse(slider.interactable,slider.name);
         foreach(var dropdown in panel.GetComponentsInChildren<TMP_Dropdown>(true)) Assert.IsFalse(dropdown.interactable,dropdown.name);
         var gameplay=Ref<VNGameplaySettingsView>(panel,"gameplayView"); foreach(var toggle in gameplay.GetComponentsInChildren<Toggle>(true)) Assert.IsFalse(toggle.interactable,toggle.name);
-        var controls=Ref<VNControlsSettingsView>(panel,"controlsView"); foreach(var button in controls.GetComponentsInChildren<Button>(true)) Assert.IsFalse(button.interactable,button.name);
+        var controls=Ref<VNControlsSettingsView>(panel,"controlsView"); Assert.IsFalse(Ref<Button>(controls,"resetAllButton").interactable);
+        foreach(var item in controls.GetComponentsInChildren<VNRebindItem>(true)) { Assert.IsFalse(Ref<Button>(item,"rebindButton").interactable); Assert.IsFalse(Ref<Button>(item,"resetButton").interactable); }
         Assert.AreEqual(future,File.ReadAllText(repository.CanonicalFilePath));
     }
     [Test] public void ProductionRebindRows_CompleteCancelConflictAndResetThroughExistingService()
@@ -89,6 +90,7 @@ public class M1303SettingsIntegrationTests
             button.onClick.Invoke(); Assert.IsTrue(rebind.IsRebinding);
             InputSystem.QueueStateEvent(keyboard,new UnityEngine.InputSystem.LowLevel.KeyboardState(Key.K)); InputSystem.Update();
             Assert.IsFalse(rebind.IsRebinding); Assert.IsTrue(rebind.TryGetBindingDisplay(VNRebindTarget.Advance,out var changed,out var diagnostic),diagnostic); Assert.IsTrue(changed.DisplayString.Contains("K"));
+            var guide=view.GetComponent<VNControlsGuide>(); guide.RefreshBindings(); var labels=new SerializedObject(guide).FindProperty("bindingLabels"); var guideKey=(TMP_Text)labels.GetArrayElementAtIndex(0).objectReferenceValue; Assert.AreEqual(changed.DisplayString,guideKey.text);
             reset.onClick.Invoke(); Assert.IsTrue(rebind.TryGetBindingDisplay(VNRebindTarget.Advance,out var restored,out diagnostic),diagnostic); Assert.IsTrue(restored.DisplayString.Contains("Space"));
             InputSystem.QueueStateEvent(keyboard,new UnityEngine.InputSystem.LowLevel.KeyboardState()); InputSystem.Update();
             button.onClick.Invoke(); InputSystem.QueueStateEvent(keyboard,new UnityEngine.InputSystem.LowLevel.KeyboardState(Key.A)); InputSystem.Update(); Assert.IsFalse(rebind.IsRebinding);

@@ -18,6 +18,10 @@ namespace ProjectAllTime.VN.Settings
         private bool listenersRegistered;
 
         public bool IsListening => rebindService != null && rebindService.IsRebinding;
+        public string GetBindingLabel(VNRebindTarget target)
+        {
+            return rebindService != null && rebindService.TryGetBindingDisplay(target, out var display, out _) ? display.DisplayString : "—";
+        }
 
         private void OnEnable() => RegisterListeners(true);
         private void OnDisable()

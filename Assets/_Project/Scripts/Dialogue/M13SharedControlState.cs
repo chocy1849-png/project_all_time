@@ -8,6 +8,7 @@ namespace ProjectAllTime.VN.Dialogue
     {
         [SerializeField] private GameObject focusIndicator;
         [SerializeField] private GameObject activeIndicator;
+        [SerializeField] private GameObject activeSurface;
         private bool focused;
         private bool active;
         public void SetActive(bool value) { active = value; Refresh(); }
@@ -21,7 +22,9 @@ namespace ProjectAllTime.VN.Dialogue
             bool enabledControl = selectable == null || selectable.IsInteractable();
             if (focusIndicator != null) focusIndicator.SetActive(focused && enabledControl);
             if (activeIndicator != null) activeIndicator.SetActive(active);
+            if (activeSurface != null) activeSurface.SetActive(active);
         }
+        public void ConfigureSurface(GameObject surface) { activeSurface = surface; Refresh(); }
         public void Configure(GameObject focus, GameObject selected) { focusIndicator = focus; activeIndicator = selected; Refresh(); }
     }
 }

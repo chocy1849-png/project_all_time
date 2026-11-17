@@ -35,6 +35,8 @@ namespace ProjectAllTime.VN.Settings
         }
         public void Refresh(VNInputBindingDisplay display, bool canMutate, bool listening)
         {
+            if (TryGetComponent<Image>(out var background))
+                background.color = listening ? new Color32(75, 65, 50, 255) : new Color32(34, 48, 54, 255);
             if (actionNameText != null) actionNameText.text = DisplayName(target);
             if (bindingText != null)
             {

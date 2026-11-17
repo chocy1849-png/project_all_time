@@ -109,7 +109,8 @@ public static class M13SettingsSceneBuilder
         int i=0; foreach(Transform row in content) if(row.name.EndsWith("Row",StringComparison.Ordinal) && i<labels.Length) {Row(row,110+i*95,labels[i]); i++;}
     }
     [MenuItem("Tools/M13/Apply Settings production styling")]
-    public static void Apply()
+    public static void Apply() => M13SettingsRefinement.Apply();
+    public static void ApplyBase()
     {
         var scene=EditorSceneManager.GetActiveScene(); if(scene.path!=Scene) throw new Exception("Open VN_Main before applying Settings styling.");
         var panel=UnityEngine.Object.FindFirstObjectByType<VNSettingsPanel>(FindObjectsInactive.Include); if(panel==null) throw new Exception("Settings panel missing"); if(!panel.TryValidateWiring(out var error)) throw new Exception("Settings wiring: "+error);
