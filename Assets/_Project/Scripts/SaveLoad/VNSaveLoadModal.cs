@@ -15,6 +15,7 @@ namespace ProjectAllTime.VN.SaveLoad
     {
         [SerializeField] private CanvasGroup modalCanvasGroup;
         [SerializeField] private Button closeButton;
+        [SerializeField] private Button footerCloseButton;
         [SerializeField] private Button manualTabButton;
         [SerializeField] private Button autoTabButton;
         [SerializeField] private Button quickTabButton;
@@ -60,6 +61,7 @@ namespace ProjectAllTime.VN.SaveLoad
         private void Awake()
         {
             closeButton?.onClick.AddListener(() => controller?.Close());
+            footerCloseButton?.onClick.AddListener(() => controller?.Close());
             manualTabButton?.onClick.AddListener(() => controller?.SetCategory(VNSaveLoadCategory.Manual));
             autoTabButton?.onClick.AddListener(() => controller?.SetCategory(VNSaveLoadCategory.Auto));
             quickTabButton?.onClick.AddListener(() => controller?.SetCategory(VNSaveLoadCategory.Quick));
