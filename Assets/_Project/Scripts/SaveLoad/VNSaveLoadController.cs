@@ -236,14 +236,14 @@ namespace ProjectAllTime.VN.SaveLoad
 
         public void SetCategory(VNSaveLoadCategory category)
         {
-            if (saveLoadModal == null || !saveLoadModal.IsOpen) return;
+            if (saveLoadModal == null || !saveLoadModal.IsOpen || loadInProgress || saveLoadModal.IsOverwriteConfirmationActive || saveLoadModal.IsThumbnailCaptureActive) return;
             saveLoadModal.SetNavigation(category, 0);
             RefreshSlots();
         }
 
         public void ChangePage(int delta)
         {
-            if (saveLoadModal == null || !saveLoadModal.IsOpen) return;
+            if (saveLoadModal == null || !saveLoadModal.IsOpen || loadInProgress || saveLoadModal.IsOverwriteConfirmationActive || saveLoadModal.IsThumbnailCaptureActive) return;
             saveLoadModal.SetNavigation(saveLoadModal.Category, saveLoadModal.Page + delta);
             RefreshSlots();
         }
@@ -257,7 +257,7 @@ namespace ProjectAllTime.VN.SaveLoad
 
         internal void ExecuteSelected(VNSaveSlotKey key)
         {
-            if (saveLoadModal == null || !saveLoadModal.IsOpen || loadInProgress || saveLoadModal.IsOverwriteConfirmationActive) return;
+            if (saveLoadModal == null || !saveLoadModal.IsOpen || loadInProgress || saveLoadModal.IsOverwriteConfirmationActive || saveLoadModal.IsThumbnailCaptureActive) return;
             var models = VNSaveLoadSlotModelBuilder.Build(repository.InspectAllSlots(), saveLoadModal.Category, saveLoadModal.Page);
             VNSaveSlotViewModel selected = null;
             foreach (var model in models) if (model.SlotKey.Equals(key)) { selected = model; break; }
@@ -283,7 +283,9 @@ namespace ProjectAllTime.VN.SaveLoad
             }
 
             SuppressDialogueAdvanceInput();
-            saveLoadModal.Show(mode, VNSaveLoadCategory.Manual, 0);
+            // Capture gameplay permission before the modal itself becomes a blocker.
+            var canSwitchToSave = mode == VNSaveLoadMode.Save || (interactionGate != null && interactionGate.CanUseSaveLoad);
+            saveLoadModal.Show(mode, VNSaveLoadCategory.Manual, 0, canSwitchToSave);
             RefreshSlots();
         }
 

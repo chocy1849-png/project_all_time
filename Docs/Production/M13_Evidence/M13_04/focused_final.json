@@ -1,0 +1,104 @@
+{
+  "status": "completed",
+  "duration": 1.85,
+  "summary": {
+    "total": 13,
+    "passed": 13,
+    "failed": 0,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.M1304SaveLoadRedesignTests.PageCounts_FollowPhysicalSlotAllocation(Manual,2)",
+      "Status": "Passed",
+      "Duration": 0.0147863,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.M1304SaveLoadRedesignTests.PageCounts_FollowPhysicalSlotAllocation(Auto,1)",
+      "Status": "Passed",
+      "Duration": 0.0001168,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.M1304SaveLoadRedesignTests.PageCounts_FollowPhysicalSlotAllocation(Quick,1)",
+      "Status": "Passed",
+      "Duration": 4.57E-05,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.M1304SaveLoadRedesignTests.SlotPrefab_ContainsIndependentSelectedAndFocusVisuals",
+      "Status": "Passed",
+      "Duration": 0.0174113,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.M1304SaveLoadRedesignTests.SlotThumbnail_UsesAspectPreservingFitter",
+      "Status": "Passed",
+      "Duration": 0.0015039,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.M1304SelectionIntegrationTests.Confirmation_DisablesParentAndRestoresItOnCancel",
+      "Status": "Passed",
+      "Duration": 0.2342726,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.M1304SelectionIntegrationTests.CorruptedAndUnsupportedManualSlots_AreNotOverwritten",
+      "Status": "Passed",
+      "Duration": 0.1400577,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.M1304SelectionIntegrationTests.GameplayLoad_CanSwitchToSaveWhenGateAllowsIt",
+      "Status": "Passed",
+      "Duration": 0.1110492,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.M1304SelectionIntegrationTests.SelectAutoInSaveMode_CannotExecuteOrCreateSlot",
+      "Status": "Passed",
+      "Duration": 0.1162149,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.M1304SelectionIntegrationTests.SelectEmptyManual_DoesNotWrite_AndPageChangeClearsSelection",
+      "Status": "Passed",
+      "Duration": 0.1199124,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.M1304SelectionIntegrationTests.ThumbnailSuppression_RestoresModalVisibilityAndInput",
+      "Status": "Passed",
+      "Duration": 0.1104265,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.M1304SelectionIntegrationTests.TitleLoad_CannotSwitchToSave",
+      "Status": "Passed",
+      "Duration": 0.1318097,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNFullSnapshotTests.M1304_SelectedManual_UsesProductionControllerAndOverwriteConfirmation",
+      "Status": "Passed",
+      "Duration": 0.7728008,
+      "Message": null,
+      "StackTrace": null
+    }
+  ]
+}

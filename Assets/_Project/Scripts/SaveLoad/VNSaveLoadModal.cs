@@ -51,6 +51,7 @@ namespace ProjectAllTime.VN.SaveLoad
         private bool savedThumbnailBlocksRaycasts;
 
         public bool IsOpen => isOpen;
+        internal bool IsThumbnailCaptureActive => thumbnailSuppressionActive;
         public bool IsOverwriteConfirmationActive => overwriteConfirmPanel != null && overwriteConfirmPanel.activeSelf;
         public VNSaveLoadMode Mode { get; private set; }
         public VNSaveLoadCategory Category { get; private set; }
@@ -86,18 +87,20 @@ namespace ProjectAllTime.VN.SaveLoad
             presentationCatalog = catalog;
         }
 
-        internal void Show(VNSaveLoadMode mode, VNSaveLoadCategory category, int page)
+        internal void Show(VNSaveLoadMode mode, VNSaveLoadCategory category, int page, bool canSwitchToSave)
         {
             isOpen = true;
-            saveModeAvailable = mode == VNSaveLoadMode.Save;
+            saveModeAvailable = canSwitchToSave;
             ClearSelection();
             Mode = mode;
             Category = category;
             Page = VNSaveLoadSlotModelBuilder.ClampPage(category, page);
+            UpdateSelection();
             SetActive(overwriteConfirmPanel, false);
             SetVisible(true);
             SetText(titleText, "기록 보관함");
             if (saveModeButton != null) saveModeButton.interactable = saveModeAvailable;
+            UpdateNavigationState();
             SetStatus(string.Empty);
         }
 
@@ -116,6 +119,7 @@ namespace ProjectAllTime.VN.SaveLoad
             ClearSelection();
             Category = category;
             Page = VNSaveLoadSlotModelBuilder.ClampPage(category, page);
+            UpdateNavigationState();
             SetActive(overwriteConfirmPanel, false);
         }
 
@@ -153,13 +157,28 @@ namespace ProjectAllTime.VN.SaveLoad
 
         private void SwitchMode(VNSaveLoadMode mode)
         {
-            if (!isOpen || IsOverwriteConfirmationActive || (mode == VNSaveLoadMode.Save && !saveModeAvailable)) return;
-            Mode = mode; ClearSelection(); controller?.SetCategory(VNSaveLoadCategory.Manual);
+            if (!isOpen || IsOverwriteConfirmationActive || thumbnailSuppressionActive || (mode == VNSaveLoadMode.Save && !saveModeAvailable)) return;
+            Mode = mode; ClearSelection(); UpdateNavigationState(); controller?.SetCategory(VNSaveLoadCategory.Manual);
+        }
+        private void UpdateNavigationState()
+        {
+            SetNavigationActive(saveModeButton, Mode == VNSaveLoadMode.Save);
+            SetNavigationActive(loadModeButton, Mode == VNSaveLoadMode.Load);
+            SetNavigationActive(manualTabButton, Category == VNSaveLoadCategory.Manual);
+            SetNavigationActive(autoTabButton, Category == VNSaveLoadCategory.Auto);
+            SetNavigationActive(quickTabButton, Category == VNSaveLoadCategory.Quick);
+        }
+        private static void SetNavigationActive(Button button, bool active)
+        {
+            if (button == null) return;
+            var state = button.GetComponent<ProjectAllTime.VN.Dialogue.M13SharedControlState>();
+            if (state != null) state.SetActive(active);
         }
         private void SelectSlot(VNSaveSlotViewModel model)
         {
-            if (model == null || IsOverwriteConfirmationActive) return;
+            if (model == null || IsOverwriteConfirmationActive || thumbnailSuppressionActive) return;
             selectedKey = model.SlotKey; selectedModel = model;
+            SetStatus(controller != null && !controller.IsSlotInteractive(model) ? (Mode == VNSaveLoadMode.Save && Category == VNSaveLoadCategory.Auto ? "자동 저장은 읽기 전용입니다." : "선택한 기록을 사용할 수 없습니다.") : string.Empty);
             foreach (var item in slotItems) if (item != null && item.BoundModel != null) item.SetSelected(item.BoundModel.SlotKey.Equals(model.SlotKey));
             UpdateSelection();
         }

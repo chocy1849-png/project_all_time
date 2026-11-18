@@ -37,6 +37,8 @@ namespace ProjectAllTime.VN.SaveLoad
         public VNSaveSlotViewModel BoundModel => boundModel;
         public void SetSelected(bool selected)
         {
+            if (slotLabelText != null)
+                slotLabelText.color = selected ? new Color32(240, 218, 187, 255) : new Color32(215, 185, 139, 255);
             var state = GetComponent<ProjectAllTime.VN.Dialogue.M13SharedControlState>();
             if (state != null) state.SetActive(selected);
         }
@@ -92,7 +94,7 @@ namespace ProjectAllTime.VN.SaveLoad
         {
             VNThumbnailService.ReleaseRuntimeTexture(ownedRuntimeThumbnail);
             ownedRuntimeThumbnail = null;
-            if (thumbnailRawImage != null) thumbnailRawImage.texture = null;
+            if (thumbnailRawImage != null) { thumbnailRawImage.texture = null; thumbnailRawImage.enabled = false; }
             SetActive(thumbnailPlaceholderVisual, true);
         }
 
@@ -106,6 +108,7 @@ namespace ProjectAllTime.VN.SaveLoad
             if (thumbnailRawImage != null)
             {
                 thumbnailRawImage.texture = ownedRuntimeThumbnail;
+                thumbnailRawImage.enabled = true;
                 var fitter = thumbnailRawImage.GetComponent<AspectRatioFitter>();
                 if (fitter != null) fitter.aspectRatio = (float)ownedRuntimeThumbnail.width / ownedRuntimeThumbnail.height;
             }

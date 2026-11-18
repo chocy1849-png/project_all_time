@@ -27,7 +27,9 @@ namespace ProjectAllTime.Tests.Editor
                 var focus = instance.transform.Find("M13_Focus").gameObject;
                 var selected = instance.transform.Find("M13_Active").gameObject;
                 var surface = instance.transform.Find("M13_SelectedSurface").gameObject;
-                state.SetActive(true);
+                instance.GetComponent<VNSaveSlotItem>().SetSelected(true);
+                var slotLabel = instance.transform.Find("SlotLabel").GetComponent<TMPro.TMP_Text>();
+                Assert.That((Color32)slotLabel.color, Is.EqualTo(new Color32(240, 218, 187, 255)));
                 state.OnSelect(null);
                 Assert.That(focus.activeSelf && selected.activeSelf && surface.activeSelf, Is.True);
                 state.OnDeselect(null);

@@ -1,0 +1,20 @@
+{
+  "status": "completed",
+  "duration": 30.48,
+  "summary": {
+    "total": 1,
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNFullSnapshotTests.ExpandedGraph_ValidatesAndRestoresReconstructedS005SaveThroughCoordinator",
+      "Status": "Passed",
+      "Duration": 41.5246679,
+      "Message": null,
+      "StackTrace": null
+    }
+  ]
+}

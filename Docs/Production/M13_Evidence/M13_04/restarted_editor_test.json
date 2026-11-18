@@ -1,0 +1,20 @@
+{
+  "status": "completed",
+  "duration": 32.57,
+  "summary": {
+    "total": 1,
+    "passed": 0,
+    "failed": 1,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNFullSnapshotTests.ExpandedGraph_ValidatesAndRestoresReconstructedS005SaveThroughCoordinator",
+      "Status": "Failed",
+      "Duration": 45.2614049,
+      "Message": "M10-15 integration did not reach: integration coroutine",
+      "StackTrace": "at ProjectAllTime.Tests.Editor.VNFullSnapshotTests+<WaitForM1015>d__15.MoveNext () [0x0006a] in C:\\Dev\\project_all_time\\Assets\\_Project\\Scripts\\Tests\\Editor\\VNFullSnapshotTests.cs:542\r\nat UnityEngine.TestTools.TestEnumerator+<Execute>d__7.MoveNext () [0x0003a] in .\\Library\\PackageCache\\com.unity.test-framework@bd7f943e9647\\UnityEngine.TestRunner\\NUnitExtensions\\Attributes\\TestEnumerator.cs:44\r\n"
+    }
+  ]
+}

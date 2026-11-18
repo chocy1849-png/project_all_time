@@ -24,6 +24,16 @@ public static class M1304SaveLoadBuilder
     {var old=parent.Find(name);if(old!=null)UnityEngine.Object.DestroyImmediate(old.gameObject);var prefab=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/UI/M13/M13_SharedButton.prefab");var go=(GameObject)PrefabUtility.InstantiatePrefab(prefab,parent);go.name=name;Style(go.GetComponentInChildren<TMP_Text>(true),25,"Medium",text);return go.GetComponent<Button>();}
     static void ExistingButton(Button b,string label)
     {ImageStyle(b.GetComponent<Image>(),"button",Color.white);b.targetGraphic=b.GetComponent<Image>();Style(b.GetComponentInChildren<TMP_Text>(true),24,"Medium",label);var old=b.transform.Find("M13_Focus");if(old!=null)UnityEngine.Object.DestroyImmediate(old.gameObject);var source=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/_Project/Prefabs/UI/M13/M13_SharedButton.prefab");var focus=UnityEngine.Object.Instantiate(source.transform.Find("Focus").gameObject,b.transform,false);focus.name="M13_Focus";var state=b.GetComponent<M13SharedControlState>()??b.gameObject.AddComponent<M13SharedControlState>();state.Configure(focus,null);}
+    static void NavigationState(Button button)
+    {
+        var old=button.transform.Find("M13_SelectedSurface");if(old!=null)UnityEngine.Object.DestroyImmediate(old.gameObject);
+        var surface=new GameObject("M13_SelectedSurface",typeof(RectTransform),typeof(CanvasRenderer),typeof(Image));
+        surface.transform.SetParent(button.transform,false);surface.transform.SetAsFirstSibling();
+        Rect((RectTransform)surface.transform,Vector2.zero,Vector2.one,Vector2.zero,Vector2.zero);
+        ImageStyle(surface.GetComponent<Image>(),"selected",Color.white);surface.GetComponent<Image>().raycastTarget=false;
+        var state=button.GetComponent<M13SharedControlState>()??button.gameObject.AddComponent<M13SharedControlState>();
+        state.ConfigureSurface(surface);
+    }
     static void BuildCard()
     {
         var root=PrefabUtility.LoadPrefabContents(Card);
@@ -53,9 +63,10 @@ public static class M1304SaveLoadBuilder
         Rect((RectTransform)main,new Vector2(.045f,.045f),new Vector2(.955f,.955f),Vector2.zero,Vector2.zero);ImageStyle(main.GetComponent<Image>(),"panel",Color.white);main.GetComponent<Image>().raycastTarget=false;
         var header=main.Find("Header");Top((RectTransform)header,24,115,42,42);var title=header.Find("TitleText").GetComponent<TMP_Text>();Top((RectTransform)title.transform,25,54,0,500);Style(title,42,"SemiBold","기록 보관함");title.alignment=TextAlignmentOptions.MidlineLeft;
         var brand=Label("M13_Brand",header,"ALL TIME / INTERFACE SYSTEM",17,"SemiBold");Top((RectTransform)brand.transform,0,28,0,200);brand.color=new Color32(215,185,139,255);
-        var close=header.Find("CloseButton").GetComponent<Button>();ExistingButton(close,"×");var cr=(RectTransform)close.transform;cr.anchorMin=cr.anchorMax=new Vector2(1,.5f);cr.sizeDelta=new Vector2(70,50);cr.anchoredPosition=new Vector2(-35,0);
-        var save=Button("M13_SaveMode",header,"저장");var load=Button("M13_LoadMode",header,"불러오기");var sr=(RectTransform)save.transform;sr.anchorMin=sr.anchorMax=new Vector2(1,.5f);sr.sizeDelta=new Vector2(150,52);sr.anchoredPosition=new Vector2(-300,0);var lr=(RectTransform)load.transform;lr.anchorMin=lr.anchorMax=new Vector2(1,.5f);lr.sizeDelta=new Vector2(150,52);lr.anchoredPosition=new Vector2(-145,0);
-        var tabs=main.Find("CategoryTabs");Top((RectTransform)tabs,145,64,42,42);var hg=tabs.GetComponent<HorizontalLayoutGroup>();hg.childControlWidth=true;hg.childForceExpandWidth=true;hg.spacing=14;string[] tabnames={"수동 저장","자동 저장","퀵 저장"};for(int i=0;i<3;i++)ExistingButton(tabs.GetChild(i).GetComponent<Button>(),tabnames[i]);
+        var description=Label("M13_Description",header,"이야기의 순간을 저장하고 다시 이어가세요.",20);Top((RectTransform)description.transform,82,26,0,500);description.color=new Color32(185,196,194,255);
+        var close=header.Find("CloseButton").GetComponent<Button>();ExistingButton(close,"×");var cr=(RectTransform)close.transform;cr.pivot=new Vector2(.5f,.5f);cr.anchorMin=cr.anchorMax=new Vector2(1,.5f);cr.sizeDelta=new Vector2(70,50);cr.anchoredPosition=new Vector2(-35,0);
+        var save=Button("M13_SaveMode",header,"저장");var load=Button("M13_LoadMode",header,"불러오기");NavigationState(save);NavigationState(load);var sr=(RectTransform)save.transform;sr.anchorMin=sr.anchorMax=new Vector2(1,.5f);sr.sizeDelta=new Vector2(150,52);sr.anchoredPosition=new Vector2(-300,0);var lr=(RectTransform)load.transform;lr.anchorMin=lr.anchorMax=new Vector2(1,.5f);lr.sizeDelta=new Vector2(150,52);lr.anchoredPosition=new Vector2(-145,0);
+        var tabs=main.Find("CategoryTabs");Top((RectTransform)tabs,145,64,42,42);var hg=tabs.GetComponent<HorizontalLayoutGroup>();hg.childControlWidth=true;hg.childForceExpandWidth=true;hg.spacing=14;string[] tabnames={"수동 저장","자동 저장","퀵 저장"};for(int i=0;i<3;i++){var tab=tabs.GetChild(i).GetComponent<Button>();ExistingButton(tab,tabnames[i]);NavigationState(tab);}
         var grid=main.Find("SlotContainer");Rect((RectTransform)grid,Vector2.zero,Vector2.one,new Vector2(42,135),new Vector2(-42,-235));var layout=grid.GetComponent<GridLayoutGroup>();layout.constraint=GridLayoutGroup.Constraint.FixedColumnCount;layout.constraintCount=2;layout.cellSize=new Vector2(805,185);layout.spacing=new Vector2(20,18);layout.childAlignment=TextAnchor.UpperCenter;
         var footer=main.Find("Footer");Rect((RectTransform)footer,Vector2.zero,new Vector2(1,0),new Vector2(42,32),new Vector2(-42,105));
         var prev=footer.Find("PrevPageButton").GetComponent<Button>();var next=footer.Find("NextPageButton").GetComponent<Button>();ExistingButton(prev,"이전");ExistingButton(next,"다음");var pr=(RectTransform)prev.transform;pr.anchorMin=pr.anchorMax=new Vector2(.62f,.5f);pr.sizeDelta=new Vector2(100,50);pr.anchoredPosition=new Vector2(-95,0);var nr=(RectTransform)next.transform;nr.anchorMin=nr.anchorMax=new Vector2(.62f,.5f);nr.sizeDelta=new Vector2(100,50);nr.anchoredPosition=new Vector2(95,0);
