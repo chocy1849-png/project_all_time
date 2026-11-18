@@ -28,7 +28,7 @@ namespace ProjectAllTime.VN.Settings
             if (displayModeDropdown != null)
             {
                 displayModeDropdown.ClearOptions();
-                displayModeDropdown.AddOptions(new List<string> { "FullScreen Window", "Windowed" });
+                displayModeDropdown.AddOptions(new List<string> { "전체 화면 창", "창 모드" });
             }
             PopulateResolutionOptions();
             Refresh(service.Current, service.CanWrite);

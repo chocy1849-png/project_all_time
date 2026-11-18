@@ -35,10 +35,29 @@ namespace ProjectAllTime.VN.Settings
         }
         public void Refresh(VNInputBindingDisplay display, bool canMutate, bool listening)
         {
-            if (actionNameText != null) actionNameText.text = target.ToString();
-            if (bindingText != null) bindingText.text = listening ? "Press a key… (Esc to cancel)" : display?.DisplayString ?? "Unavailable";
+            if (TryGetComponent<Image>(out var background))
+                background.color = listening ? new Color32(75, 65, 50, 255) : new Color32(34, 48, 54, 255);
+            if (actionNameText != null) actionNameText.text = DisplayName(target);
+            if (bindingText != null)
+            {
+                bindingText.text = listening ? "키 입력 대기… (Esc 취소)" : display?.DisplayString ?? "사용 불가";
+                bindingText.color = listening ? new Color32(129, 213, 202, 255) : new Color32(247, 244, 239, 255);
+            }
             if (rebindButton != null) rebindButton.interactable = canMutate && !listening;
             if (resetButton != null) resetButton.interactable = canMutate && !listening;
+        }
+        private static string DisplayName(VNRebindTarget value)
+        {
+            switch (value.ToString())
+            {
+                case "Advance": return "진행";
+                case "ToggleAuto": return "자동 진행";
+                case "SkipHold": return "건너뛰기";
+                case "ToggleHide": return "대화창 숨기기";
+                case "QuickSave": return "빠른 저장";
+                case "QuickLoad": return "빠른 불러오기";
+                default: return value.ToString();
+            }
         }
         private void HandleRebind() => RebindRequested?.Invoke(target);
         private void HandleReset() => ResetRequested?.Invoke(target);

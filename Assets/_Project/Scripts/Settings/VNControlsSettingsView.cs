@@ -10,6 +10,7 @@ namespace ProjectAllTime.VN.Settings
     {
         [SerializeField] private VNRebindItem[] rebindItems;
         [SerializeField] private Button resetAllButton;
+        [SerializeField] private TMPro.TMP_Text guidanceText;
         private readonly Dictionary<VNRebindTarget, VNRebindItem> items = new();
         private VNSettingsService settingsService;
         private VNInputRebindService rebindService;
@@ -18,6 +19,10 @@ namespace ProjectAllTime.VN.Settings
         private bool listenersRegistered;
 
         public bool IsListening => rebindService != null && rebindService.IsRebinding;
+        public string GetBindingLabel(VNRebindTarget target)
+        {
+            return rebindService != null && rebindService.TryGetBindingDisplay(target, out var display, out _) ? display.DisplayString : "—";
+        }
 
         private void OnEnable() => RegisterListeners(true);
         private void OnDisable()
@@ -73,6 +78,7 @@ namespace ProjectAllTime.VN.Settings
                 pair.Value.Refresh(display, canWrite && !IsListening, listeningTarget == pair.Key);
             }
             if (resetAllButton != null) resetAllButton.interactable = canWrite && !IsListening;
+            if (guidanceText != null) guidanceText.text = IsListening ? "키 입력 대기 중… Esc를 누르면 취소합니다." : "변경 버튼을 누르면 새로운 키를 지정할 수 있습니다.";
         }
 
         public void PrepareForClose()

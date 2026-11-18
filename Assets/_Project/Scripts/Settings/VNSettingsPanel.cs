@@ -1,5 +1,6 @@
 using System;
 using TMPro;
+using ProjectAllTime.VN.Dialogue;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -107,7 +108,14 @@ namespace ProjectAllTime.VN.Settings
 
         public void ReportDiagnostic(string diagnostic)
         {
-            if (statusText != null) statusText.text = diagnostic ?? string.Empty;
+            if (statusText == null) return;
+            // Translate presentation only; services and their diagnostics remain unchanged.
+            statusText.text = diagnostic switch
+            {
+                "Input rebind was canceled." => "키 설정이 취소되었습니다.",
+                "Settings are read-only to preserve the current file." => "기존 설정 파일을 보호하기 위해 읽기 전용으로 열었습니다.",
+                _ => diagnostic ?? string.Empty
+            };
         }
 
         public void ShowCategory(VNSettingsCategory category)
@@ -119,6 +127,16 @@ namespace ProjectAllTime.VN.Settings
             SetActive(audioContent, category == VNSettingsCategory.Audio);
             SetActive(gameplayContent, category == VNSettingsCategory.Gameplay);
             SetActive(controlsContent, category == VNSettingsCategory.Controls);
+            SetCategoryVisual(displayCategoryButton, category == VNSettingsCategory.Display);
+            SetCategoryVisual(textCategoryButton, category == VNSettingsCategory.Text);
+            SetCategoryVisual(audioCategoryButton, category == VNSettingsCategory.Audio);
+            SetCategoryVisual(gameplayCategoryButton, category == VNSettingsCategory.Gameplay);
+            SetCategoryVisual(controlsCategoryButton, category == VNSettingsCategory.Controls);
+        }
+
+        private static void SetCategoryVisual(Button button, bool active)
+        {
+            if (button != null && button.TryGetComponent<M13SharedControlState>(out var visual)) visual.SetActive(active);
         }
 
         private void RegisterCategoryListeners(bool add)
