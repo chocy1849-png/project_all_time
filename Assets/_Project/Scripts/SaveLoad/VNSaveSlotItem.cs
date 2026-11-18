@@ -35,6 +35,13 @@ namespace ProjectAllTime.VN.SaveLoad
         private Action<VNSaveSlotViewModel> clickCallback;
 
         public VNSaveSlotViewModel BoundModel => boundModel;
+        public void SetSelected(bool selected)
+        {
+            if (slotLabelText != null)
+                slotLabelText.color = selected ? new Color32(240, 218, 187, 255) : new Color32(215, 185, 139, 255);
+            var state = GetComponent<ProjectAllTime.VN.Dialogue.M13SharedControlState>();
+            if (state != null) state.SetActive(selected);
+        }
 
         private void Awake()
         {
@@ -76,9 +83,9 @@ namespace ProjectAllTime.VN.SaveLoad
             SetActive(emptyStateRoot, model.State == VNSaveSlotState.Empty);
             SetActive(corruptedStateRoot, model.State == VNSaveSlotState.Corrupted || model.State == VNSaveSlotState.InvalidRequest);
             SetActive(unsupportedStateRoot, model.State == VNSaveSlotState.Unsupported);
-            SetText(emptyStateText, "Empty slot");
-            SetText(corruptedStateText, "Corrupted save");
-            SetText(unsupportedStateText, "Unsupported save");
+            SetText(emptyStateText, "새로운 기록\n빈 슬롯");
+            SetText(corruptedStateText, "손상된 저장 기록");
+            SetText(unsupportedStateText, "호환되지 않는 저장 기록");
             BindCharacterIcons(model, presentationCatalog);
             BindThumbnail(model, thumbnailService, repository);
         }
@@ -87,7 +94,7 @@ namespace ProjectAllTime.VN.SaveLoad
         {
             VNThumbnailService.ReleaseRuntimeTexture(ownedRuntimeThumbnail);
             ownedRuntimeThumbnail = null;
-            if (thumbnailRawImage != null) thumbnailRawImage.texture = null;
+            if (thumbnailRawImage != null) { thumbnailRawImage.texture = null; thumbnailRawImage.enabled = false; }
             SetActive(thumbnailPlaceholderVisual, true);
         }
 
@@ -98,7 +105,13 @@ namespace ProjectAllTime.VN.SaveLoad
             if (thumbnail.Status != VNThumbnailLoadStatus.Loaded || thumbnail.Texture == null) return;
 
             ownedRuntimeThumbnail = thumbnail.Texture;
-            if (thumbnailRawImage != null) thumbnailRawImage.texture = ownedRuntimeThumbnail;
+            if (thumbnailRawImage != null)
+            {
+                thumbnailRawImage.texture = ownedRuntimeThumbnail;
+                thumbnailRawImage.enabled = true;
+                var fitter = thumbnailRawImage.GetComponent<AspectRatioFitter>();
+                if (fitter != null) fitter.aspectRatio = (float)ownedRuntimeThumbnail.width / ownedRuntimeThumbnail.height;
+            }
             SetActive(thumbnailPlaceholderVisual, false);
         }
 

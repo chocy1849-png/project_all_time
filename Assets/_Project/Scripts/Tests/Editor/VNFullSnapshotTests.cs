@@ -159,15 +159,23 @@ namespace ProjectAllTime.Tests.Editor
                 UnityEditor.SceneManagement.NewSceneSetup.EmptyScene,
                 UnityEditor.SceneManagement.NewSceneMode.Single);
             yield return new EnterPlayMode();
-            var fixture = new VNFullSnapshotTests();
-            fixture.SetUp();
-            var host = new GameObject("M10-15 test coroutine").AddComponent<VNInteractionGate>();
-            integrationCompleted = false;
-            integrationFailure = null;
-            host.StartCoroutine(RunM1015Fixture(fixture, SetM1015Result));
-            yield return WaitForM1015(IsM1015Finished, "integration coroutine");
-            UnityEngine.Object.Destroy(host.gameObject);
-            if (integrationFailure != null) Assert.Fail(integrationFailure.ToString());
+            // The editor can be unfocused during automated runs. Without a
+            // player loop, the restoration coroutine never gets another frame.
+            var previousRunInBackground = Application.runInBackground;
+            Application.runInBackground = true;
+            try
+            {
+                var fixture = new VNFullSnapshotTests();
+                fixture.SetUp();
+                var host = new GameObject("M10-15 test coroutine").AddComponent<VNInteractionGate>();
+                integrationCompleted = false;
+                integrationFailure = null;
+                host.StartCoroutine(RunM1015Fixture(fixture, SetM1015Result));
+                yield return WaitForM1015(IsM1015Finished, "integration coroutine");
+                UnityEngine.Object.Destroy(host.gameObject);
+                if (integrationFailure != null) Assert.Fail(integrationFailure.ToString());
+            }
+            finally { Application.runInBackground = previousRunInBackground; }
             yield return new ExitPlayMode();
         }
 
@@ -540,6 +548,82 @@ namespace ProjectAllTime.Tests.Editor
                 yield return null;
             }
             Assert.Fail("M10-15 integration did not reach: " + stage);
+        }
+
+        [Test]
+        public void M1304_SelectedManual_UsesProductionControllerAndOverwriteConfirmation()
+        {
+            var runner = CreateRunner();
+            var checkpoint = CreateCheckpointService();
+            var presentation = CreatePresentationHarness();
+            var audio = CreateAudioHarness();
+            var sessionObject = new GameObject("M1304 transaction session");
+            ownedObjects.Add(sessionObject);
+            var session = sessionObject.AddComponent<VNDialogueSessionState>();
+            var gate = sessionObject.AddComponent<VNInteractionGate>();
+            var presenter = sessionObject.AddComponent<LinePresenter>();
+            presenter.canvasGroup = sessionObject.AddComponent<CanvasGroup>();
+            var textObject = new GameObject("M1304 transaction text", typeof(RectTransform), typeof(CanvasRenderer));
+            ownedObjects.Add(textObject);
+            presenter.lineText = textObject.AddComponent<TMPro.TextMeshProUGUI>();
+            runner.DialoguePresenters = new DialoguePresenterBase[] { presenter };
+            Assert.That(checkpoint.TryEnterCheckpoint(CheckpointId, runner, out var diagnostic), Is.True, diagnostic);
+            SetPrivate(session, "isLineActive", true);
+            SetPrivate(session, "currentLineId", "line:prologue_s001_016");
+            var coordinator = new VNYarnSaveCoordinator(repository, checkpoint, runner, new VNPlayTimeTracker(),
+                presentation.Controller, presentation.Transition, audio.Controller, session, gate);
+            const string path = "Assets/_Project/Scenes/VN_Main.unity";
+            var scene = UnityEngine.SceneManagement.SceneManager.GetSceneByPath(path);
+            var opened = !scene.isLoaded;
+            if (opened) scene = UnityEditor.SceneManagement.EditorSceneManager.OpenScene(path, UnityEditor.SceneManagement.OpenSceneMode.Additive);
+            try
+            {
+                var source = scene.GetRootGameObjects().SelectMany(x => x.GetComponentsInChildren<VNSaveLoadModal>(true)).Single();
+                var modalObject = UnityEngine.Object.Instantiate(source.gameObject);
+                ownedObjects.Add(modalObject);
+                var modal = modalObject.GetComponent<VNSaveLoadModal>();
+                var controllerObject = new GameObject("M1304 transaction controller");
+                ownedObjects.Add(controllerObject);
+                var controller = controllerObject.AddComponent<VNSaveLoadController>();
+                SetPrivate(controller, "repository", repository);
+                SetPrivate(controller, "saveCoordinator", coordinator);
+                SetPrivate(controller, "sessionState", session);
+                SetPrivate(controller, "saveLoadModal", modal);
+                var flags = BindingFlags.NonPublic | BindingFlags.Instance;
+                typeof(VNSaveLoadModal).GetMethod("Initialize", flags).Invoke(modal, new object[] { controller, repository, new VNThumbnailService(), null });
+                controller.OpenSave();
+                var firstKey = new VNSaveSlotKey(VNSaveSlotType.Manual, 0);
+                var otherKey = new VNSaveSlotKey(VNSaveSlotType.Manual, 1);
+                var select = typeof(VNSaveLoadModal).GetMethod("SelectSlot", flags);
+                var execute = typeof(VNSaveLoadModal).GetMethod("ExecuteSelected", flags);
+                VNSaveSlotViewModel Model() => VNSaveLoadSlotModelBuilder.Build(repository.InspectAllSlots(), VNSaveLoadCategory.Manual, 0)[0];
+                select.Invoke(modal, new object[] { Model() });
+                Assert.That(repository.Read(firstKey).State, Is.EqualTo(VNSaveSlotState.Empty));
+                execute.Invoke(modal, null);
+                Assert.That(repository.Read(firstKey).State, Is.EqualTo(VNSaveSlotState.Valid));
+                Assert.That(repository.Read(otherKey).State, Is.EqualTo(VNSaveSlotState.Empty));
+                // EditMode does not render the queued end-of-frame capture.
+                // Simulate its completion before testing the next transaction.
+                typeof(VNSaveLoadModal).GetMethod("EndThumbnailVisualSuppression", flags).Invoke(modal, null);
+                Assert.That(repository.TryGetSlotPath(firstKey, out var jsonPath), Is.True);
+                Assert.That(repository.TryGetThumbnailSidecarPath(firstKey, "manual_00.jpg", out var thumbnailPath), Is.True);
+                var json = File.ReadAllBytes(jsonPath);
+                var thumbnail = new byte[] { 1, 2, 3, 4 };
+                File.WriteAllBytes(thumbnailPath, thumbnail);
+                select.Invoke(modal, new object[] { Model() });
+                CollectionAssert.AreEqual(json, File.ReadAllBytes(jsonPath));
+                execute.Invoke(modal, null);
+                Assert.That(modal.IsOverwriteConfirmationActive, Is.True);
+                controller.CancelManualOverwrite();
+                CollectionAssert.AreEqual(json, File.ReadAllBytes(jsonPath));
+                CollectionAssert.AreEqual(thumbnail, File.ReadAllBytes(thumbnailPath));
+                execute.Invoke(modal, null);
+                Assert.That(modal.IsOverwriteConfirmationActive, Is.True);
+                Assert.That(controller.ConfirmManualOverwrite().Succeeded, Is.True);
+                Assert.That(repository.Read(firstKey).State, Is.EqualTo(VNSaveSlotState.Valid));
+                Assert.That(repository.Read(otherKey).State, Is.EqualTo(VNSaveSlotState.Empty));
+            }
+            finally { if (opened) UnityEditor.SceneManagement.EditorSceneManager.CloseScene(scene, true); }
         }
 
         [Test]

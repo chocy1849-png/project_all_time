@@ -1,0 +1,2498 @@
+{
+  "status": "completed",
+  "duration": 17.85,
+  "summary": {
+    "total": 594,
+    "passed": 594,
+    "failed": 0,
+    "skipped": 0,
+    "inconclusive": 0
+  },
+  "results": [
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNFullSnapshotTests.ExpandedGraph_ValidatesAndRestoresReconstructedS005SaveThroughCoordinator",
+      "Status": "Passed",
+      "Duration": 16.4978823,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNFullSnapshotTests.FullComposition_UsesRealM3M4StateAndRejectsUnstableOperations",
+      "Status": "Passed",
+      "Duration": 0.0252607,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNFullSnapshotTests.FullLoadValidation_RejectsPresentationAndAudioBeforeRuntimeMutation",
+      "Status": "Passed",
+      "Duration": 0.013865,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNFullSnapshotTests.M1304_SelectedManual_UsesProductionControllerAndOverwriteConfirmation",
+      "Status": "Passed",
+      "Duration": 0.8217068,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNFullSnapshotTests.PresentationCapture_UsesLogicalIdsAndDeterministicVisibleSlotOrder",
+      "Status": "Passed",
+      "Duration": 0.0052997,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNFullSnapshotTests.PresentationRestore_ClearsUnsavedStateAndNormalizesM4VisualChannels",
+      "Status": "Passed",
+      "Duration": 0.0055042,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNFullSnapshotTests.PresentationValidation_RejectsUnknownAndDuplicateLogicalStateBeforeRestore",
+      "Status": "Passed",
+      "Duration": 0.0039983,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNFullSnapshotTests.ProductionLine_ComposesV2ToDiskAndRejectsMismatchedResumeBeforeMutation",
+      "Status": "Passed",
+      "Duration": 1.0237665,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNFullSnapshotTests.ProductionMorningSixCharacterSnapshot_RoundTripsAndLegacyFiveSlotStateRemainsCompatible(\"rope_memory\")",
+      "Status": "Passed",
+      "Duration": 0.0287363,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNFullSnapshotTests.ProductionMorningSixCharacterSnapshot_RoundTripsAndLegacyFiveSlotStateRemainsCompatible(\"rope\")",
+      "Status": "Passed",
+      "Duration": 0.0077002,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNFullSnapshotTests.SemanticSpeakerAliases_SharePhysicalIdentity_AndThoughtsNeverShowHiddenCharacters",
+      "Status": "Passed",
+      "Duration": 0.0050212,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNGameplaySettingsControllerTests.DefaultStartupApply_UsesReadOnlyAndDefaultScreenShakeWithoutWriting",
+      "Status": "Passed",
+      "Duration": 0.0026121,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNGameplaySettingsControllerTests.FrozenMapping_UsesOnlyExistingM6Policies",
+      "Status": "Passed",
+      "Duration": 0.0002564,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNGameplaySettingsControllerTests.M7PolicyMapping_DelegatesToExistingM6SkipAndDoesNotFabricateReadHistory",
+      "Status": "Passed",
+      "Duration": 0.0097343,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNGameplaySettingsControllerTests.PolicyChanges_DoNotToggleExistingAutoOrSkipModes",
+      "Status": "Passed",
+      "Duration": 0.010551,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNGameplaySettingsControllerTests.ScreenShakeGate_TracksPersistedPreferenceWithoutConsumer",
+      "Status": "Passed",
+      "Duration": 0.0085461,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNGameplaySettingsControllerTests.StoredSkipUnreadEnabled_StartupMapsToAllWithoutAdditionalWrite",
+      "Status": "Passed",
+      "Duration": 0.005075,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNGameplaySettingsControllerTests.UserSkipUnreadChanges_PersistOnlyThatFieldThenApplyPolicy",
+      "Status": "Passed",
+      "Duration": 0.0126024,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNGameplaySettingsControllerTests.WriteProtectedScreenShakeChange_LeavesGateAndFileUnchanged",
+      "Status": "Passed",
+      "Duration": 0.0030453,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNGameplaySettingsControllerTests.WriteProtectedSkipChange_LeavesSettingAndPolicyUnchanged",
+      "Status": "Passed",
+      "Duration": 0.0021392,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNGameplaySettingsControllerTests.WriteProtectedStartupApply_UsesEffectiveDefaultsWithoutWriting",
+      "Status": "Passed",
+      "Duration": 0.0020889,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNInputRebindServiceTests.BeginRebind_ClosesActiveCtrlSkipHoldBeforeSuspendingRouter",
+      "Status": "Passed",
+      "Duration": 0.0225181,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNInputRebindServiceTests.EmptyStartupSettings_RemoveStaleRuntimeOverridesWithoutWriting",
+      "Status": "Passed",
+      "Duration": 0.0114487,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNInputRebindServiceTests.EscapeAndDuplicateCandidate_LeaveBindingsUnchangedAndDoNotRouteM6Shortcut",
+      "Status": "Passed",
+      "Duration": 0.0248227,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNInputRebindServiceTests.FixedBindingAndDuplicatePayloads_AreRejectedAndRolledBack",
+      "Status": "Passed",
+      "Duration": 0.0154035,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNInputRebindServiceTests.InteractiveKeyboardCapture_PersistsOverrideAndRestoresRouterAndActionState",
+      "Status": "Passed",
+      "Duration": 0.0119875,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNInputRebindServiceTests.MalformedNestedJson_RollsBackRuntimeWithoutTouchingSettingsFile",
+      "Status": "Passed",
+      "Duration": 0.0110099,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNInputRebindServiceTests.OfficialOverrideJsonRoundTrip_RestoresEffectivePath",
+      "Status": "Passed",
+      "Duration": 0.0094214,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNInputRebindServiceTests.PersistenceFailure_ResetRollsRuntimeOverridesBack",
+      "Status": "Passed",
+      "Duration": 0.008689,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNInputRebindServiceTests.ProcessorAndInteractionTampering_IsRejectedAndRolledBackForFrozenBindings",
+      "Status": "Passed",
+      "Duration": 0.026241,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNInputRebindServiceTests.ResetAll_RestoresDefaultsAndPersistsCanonicalEmptyString",
+      "Status": "Passed",
+      "Duration": 0.0138965,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNInputRebindServiceTests.ServiceDispose_CleansActiveCapture",
+      "Status": "Passed",
+      "Duration": 0.0061334,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNInputRebindServiceTests.SkipHoldCustomReset_RestoresBothCtrlsAndPreservesOtherOverride",
+      "Status": "Passed",
+      "Duration": 0.0128947,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNInputRebindServiceTests.StableInventoryAndDefaultDisplays_UseFrozenIdsAndFixedControlsStayOutsideTargets",
+      "Status": "Passed",
+      "Duration": 0.0074446,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNInputRebindServiceTests.StartupOverrides_WithRouterEnabledActions_PreserveEnablementWithoutCallbacks",
+      "Status": "Passed",
+      "Duration": 0.0115963,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNLineLifecycleTypewriterIntegrationTests.AuthoritativeRunnerPresenter_OverridesStaleSerializedPresenter",
+      "Status": "Passed",
+      "Duration": 0.0126298,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNLineLifecycleTypewriterIntegrationTests.CallbackPrimaryAuthority_AndLoadBarrierVisualStateStillPasses",
+      "Status": "Passed",
+      "Duration": 0.0024711,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNLineLifecycleTypewriterIntegrationTests.IncompleteMatchingVisualText_IsNotFullDisplayed_UntilVisibleCountReachesCharacterCount",
+      "Status": "Passed",
+      "Duration": 0.0015005,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNLineLifecycleTypewriterIntegrationTests.MatchingVisualText_AtOrAboveCharacterCount_RecordsOncePerOccurrence",
+      "Status": "Passed",
+      "Duration": 0.0012321,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNLineLifecycleTypewriterIntegrationTests.MultipleEnabledRunnerLinePresenters_RefuseFullDisplayAuthorization",
+      "Status": "Passed",
+      "Duration": 0.0031645,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNLineLifecycleTypewriterIntegrationTests.NextContentCancellation_DoesNotCreateVisualFullDisplayBacklog",
+      "Status": "Passed",
+      "Duration": 0.0015194,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNLineLifecycleTypewriterIntegrationTests.StaleOrSameFrameVisualState_CannotAuthorizeNewOccurrence",
+      "Status": "Passed",
+      "Duration": 0.0014275,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNLineLifecycleTypewriterIntegrationTests.VisualFullDisplay_DrivesAutoAndReadOnlySkipForExactYarnTextId",
+      "Status": "Passed",
+      "Duration": 0.0038533,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNLocalizedEffectTests.Load_ClearsEffect_AndStaleExternalEnumeratorCannotResurrectItOrEndANewOperation",
+      "Status": "Passed",
+      "Duration": 0.0023558,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNLocalizedEffectTests.LocalDoor_Lifecycle_KeepsOrdinaryExitAndUiStable_AndBlocksSaveUntilHidden",
+      "Status": "Passed",
+      "Duration": 0.0017126,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMainM6WiringAuditTests.VNMain_UsesOneAuthoritativePresenterAndFinalM6Baseline",
+      "Status": "Passed",
+      "Duration": 0.1076274,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMainM7SettingsWiringAuditTests.Bootstrap_IsWiredOnceToAuthoritativeProductionObjects",
+      "Status": "Passed",
+      "Duration": 0.1102191,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMainM7SettingsWiringAuditTests.CanvasInputAndDialogue_RetainProductionBaseline",
+      "Status": "Passed",
+      "Duration": 0.1011602,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMainM7SettingsWiringAuditTests.CategoryControls_HaveExactContractsAndNoPersistentMutationEvents",
+      "Status": "Passed",
+      "Duration": 0.1033681,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMainM7SettingsWiringAuditTests.Controls_HaveExactlySixUniqueTargetsAndRuntimeOwnedButtons",
+      "Status": "Passed",
+      "Duration": 0.0938222,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMainM7SettingsWiringAuditTests.MetaProgressBootstrap_IsWiredOnceToTheAuthoritativeRuntimeComposition",
+      "Status": "Passed",
+      "Duration": 0.1029775,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMainM7SettingsWiringAuditTests.RealMixer_ResolvesAllGroupsAndExactExposedParameters_ReadOnly",
+      "Status": "Passed",
+      "Duration": 0.0937381,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMainM7SettingsWiringAuditTests.SettingsGraph_HasFiveDistinctCategoriesAndHiddenActiveModal",
+      "Status": "Passed",
+      "Duration": 0.0916868,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMainM9RecordsWiringAuditTests.Composition_UsesOneRuntimeOwnerAndAllAuthoritativeReferences",
+      "Status": "Passed",
+      "Duration": 0.1233104,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMainM9RecordsWiringAuditTests.DomainViews_ValidateTheirInactiveTemplatesAndScrollContracts",
+      "Status": "Passed",
+      "Duration": 0.0929991,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMainM9RecordsWiringAuditTests.ExistingSceneAuthorities_KeepTheirBaselineAndHaveNoMissingScripts",
+      "Status": "Passed",
+      "Duration": 0.0932392,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMainM9RecordsWiringAuditTests.Modal_HasFourDistinctInactiveRootsAndRuntimeOwnedControls",
+      "Status": "Passed",
+      "Duration": 0.0901035,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMainM9RecordsWiringAuditTests.ProductionCatalogs_AreTheFourAuthoritativePopulatedAssetsAndValidate",
+      "Status": "Passed",
+      "Duration": 0.0889572,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMainM9RecordsWiringAuditTests.QuickControl_RetainsNineDistinctButtonsAndTheRecordsEntryPoint",
+      "Status": "Passed",
+      "Duration": 0.0891881,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMainM9RecordsWiringAuditTests.Replay_IsAnInactiveOverlayWithEntirelyLocalPresentationAndControls",
+      "Status": "Passed",
+      "Duration": 0.0904193,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressChangeTests.FailedAndWriteProtectedMutations_DoNotPublishOrCommit",
+      "Status": "Passed",
+      "Duration": 0.0092302,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressChangeTests.InvalidCurrentCandidate_FailsCanonicalValidationWithoutWritingOrPublishing",
+      "Status": "Passed",
+      "Duration": 0.0007717,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressChangeTests.NewMutations_PublishImmutableCategoriesAfterCommit_AndDuplicatesOrLoadDoNotPublish",
+      "Status": "Passed",
+      "Duration": 0.0327104,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressChangeTests.ObserverException_DoesNotChangeSuccessfulMutationResultOrStopOtherObservers",
+      "Status": "Passed",
+      "Duration": 0.0050427,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressPersistenceTests.AllCategories_RoundTripAndPreserveOrdinalCaseSensitivity",
+      "Status": "Passed",
+      "Duration": 0.0322272,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressPersistenceTests.AtomicFirstWriteAndReplace_LeaveNoOwnedTemporaryFiles",
+      "Status": "Passed",
+      "Duration": 0.0095768,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressPersistenceTests.Defaults_AreSchemaOneEmptyAndIndependent_AndMissingLoadCreatesNothing",
+      "Status": "Passed",
+      "Duration": 0.0009526,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressPersistenceTests.EveryRequiredSchemaV1RootField_MustBePresent(\"schemaVersion\")",
+      "Status": "Passed",
+      "Duration": 0.0040197,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressPersistenceTests.EveryRequiredSchemaV1RootField_MustBePresent(\"readLineIds\")",
+      "Status": "Passed",
+      "Duration": 0.0025388,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressPersistenceTests.EveryRequiredSchemaV1RootField_MustBePresent(\"unlockedCGs\")",
+      "Status": "Passed",
+      "Duration": 0.002281,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressPersistenceTests.EveryRequiredSchemaV1RootField_MustBePresent(\"unlockedChapters\")",
+      "Status": "Passed",
+      "Duration": 0.0026961,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressPersistenceTests.EveryRequiredSchemaV1RootField_MustBePresent(\"unlockedArchiveEntries\")",
+      "Status": "Passed",
+      "Duration": 0.0023046,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressPersistenceTests.EveryRequiredSchemaV1RootField_MustBePresent(\"unlockedAchievements\")",
+      "Status": "Passed",
+      "Duration": 0.0023667,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressPersistenceTests.EveryRequiredSchemaV1RootField_MustBePresent(\"completedEndings\")",
+      "Status": "Passed",
+      "Duration": 0.0022498,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressPersistenceTests.ExtraSchemaV1RootFields_AreAccepted",
+      "Status": "Passed",
+      "Duration": 0.0083583,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressPersistenceTests.FailedQuarantine_PreservesAuthoritativeFileAndBlocksWrites",
+      "Status": "Passed",
+      "Duration": 0.0026529,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressPersistenceTests.FailedWrite_CleansOnlyOwnedTempAndDoesNotCommitServiceCandidate",
+      "Status": "Passed",
+      "Duration": 0.005914,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressPersistenceTests.FutureSchema_IsPreservedAndBlocksWrites",
+      "Status": "Passed",
+      "Duration": 0.0022845,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressPersistenceTests.InvalidIds_AreRejectedForEveryMutationWithoutWriteOrStateChange",
+      "Status": "Passed",
+      "Duration": 0.0008708,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressPersistenceTests.MalformedJson_IsQuarantinedWithExactOriginalBytes",
+      "Status": "Passed",
+      "Duration": 0.0028552,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressPersistenceTests.NullCollectionsAndBlankIds_AreRejectedAndQuarantined",
+      "Status": "Passed",
+      "Duration": 0.0056369,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressPersistenceTests.ProductionRoot_IsDedicatedToMetaProgress",
+      "Status": "Passed",
+      "Duration": 0.0010528,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressPersistenceTests.RepeatedMutation_IsSuccessfulNoOpWithoutSecondWrite",
+      "Status": "Passed",
+      "Duration": 0.0043857,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressPersistenceTests.SnapshotsAndInputData_DoNotRetainAuthoritativeCollectionReferences",
+      "Status": "Passed",
+      "Duration": 0.0047145,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressPersistenceTests.Validation_RejectsNullEmptyAndWhitespaceIdsForEveryCollection(\"schemaVersion\")",
+      "Status": "Passed",
+      "Duration": 0.0005468,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressPersistenceTests.Validation_RejectsNullEmptyAndWhitespaceIdsForEveryCollection(\"readLineIds\")",
+      "Status": "Passed",
+      "Duration": 0.0002795,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressPersistenceTests.Validation_RejectsNullEmptyAndWhitespaceIdsForEveryCollection(\"unlockedCGs\")",
+      "Status": "Passed",
+      "Duration": 0.0001323,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressPersistenceTests.Validation_RejectsNullEmptyAndWhitespaceIdsForEveryCollection(\"unlockedChapters\")",
+      "Status": "Passed",
+      "Duration": 0.0001385,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressPersistenceTests.Validation_RejectsNullEmptyAndWhitespaceIdsForEveryCollection(\"unlockedArchiveEntries\")",
+      "Status": "Passed",
+      "Duration": 0.0001307,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressPersistenceTests.Validation_RejectsNullEmptyAndWhitespaceIdsForEveryCollection(\"unlockedAchievements\")",
+      "Status": "Passed",
+      "Duration": 0.0001343,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressPersistenceTests.Validation_RejectsNullEmptyAndWhitespaceIdsForEveryCollection(\"completedEndings\")",
+      "Status": "Passed",
+      "Duration": 0.0001331,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressPersistenceTests.Write_CanonicalizesDedupesAndSerializesDeterministically",
+      "Status": "Passed",
+      "Duration": 0.0110016,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressReadHistoryIntegrationTests.AuthorizedConsume_PersistsThenPromotesAndClearSessionRetainsDurableRead",
+      "Status": "Passed",
+      "Duration": 0.007549,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressReadHistoryIntegrationTests.AuthorizedSessionRead_RemainsOverlayOnlyUntilTheBridgePersistsIt",
+      "Status": "Passed",
+      "Duration": 0.0006836,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressReadHistoryIntegrationTests.DuplicateOccurrence_DoesNotEmitAnotherPersistenceWrite",
+      "Status": "Passed",
+      "Duration": 0.0043084,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressReadHistoryIntegrationTests.InitializationIsIdempotent_AndDisposalStopsWrites",
+      "Status": "Passed",
+      "Duration": 0.004846,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressReadHistoryIntegrationTests.M5TransientInvalidation_DoesNotRollBackPersistentBaselineOrMetaProgress",
+      "Status": "Passed",
+      "Duration": 0.0047043,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressReadHistoryIntegrationTests.OptionsAndInvalidOrFullDisplayOnlyPaths_DoNotPersist",
+      "Status": "Passed",
+      "Duration": 0.0011396,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressReadHistoryIntegrationTests.PersistenceFailure_LeavesReadSessionOnlyUntilClearSession",
+      "Status": "Passed",
+      "Duration": 0.0045877,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressReadHistoryIntegrationTests.PersistentSeed_AndReadOnlySkipTreatPersistedIdsAsRead",
+      "Status": "Passed",
+      "Duration": 0.0054624,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressReadHistoryIntegrationTests.PersistentSeed_IsEffectiveOrdinalUnionAndDoesNotClearSessionOverlay",
+      "Status": "Passed",
+      "Duration": 0.0015362,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressReadHistoryIntegrationTests.Restart_ReseedsDurableReadWithoutSecondConsume",
+      "Status": "Passed",
+      "Duration": 0.0046785,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressReadHistoryIntegrationTests.SameFrameAdvanceRejection_DoesNotPersist",
+      "Status": "Passed",
+      "Duration": 0.0010829,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressRuntimeBootstrapTests.CommandCollision_RollsBackBridgeAndLeavesNoPartialM8Commands",
+      "Status": "Passed",
+      "Duration": 0.0067648,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressRuntimeBootstrapTests.Destruction_RemovesOwnedHandlersAndUnsubscribesBridge_AndIsSafeBeforeComposition",
+      "Status": "Passed",
+      "Duration": 0.0028003,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressRuntimeBootstrapTests.ExecutionOrder_LeavesSettingsAtMinusOneAndMetaProgressAtMinusTwo",
+      "Status": "Passed",
+      "Duration": 0.0003751,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressRuntimeBootstrapTests.FutureSchemaAndRecoverableCorruption_ComposeSafelyWithDiagnostics",
+      "Status": "Passed",
+      "Duration": 0.0052061,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressRuntimeBootstrapTests.Initialization_IsStableAndMissingFileDoesNotCreateStorage",
+      "Status": "Passed",
+      "Duration": 0.001352,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressRuntimeBootstrapTests.MissingWiring_FailsBeforeRepositoryCreation",
+      "Status": "Passed",
+      "Duration": 0.0009932,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressRuntimeBootstrapTests.SuccessfulComposition_LoadsSeedsSubscribesAndRegistersCommandsBeforeUse",
+      "Status": "Passed",
+      "Duration": 0.0181393,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressSmokeFixtureTests.GameNarrative_CompilesWithOnlyExplicitUniqueLineIds",
+      "Status": "Passed",
+      "Duration": 0.1876035,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressSmokeFixtureTests.SmokeFixture_CompilesAndMatchesTheTechnicalContract",
+      "Status": "Passed",
+      "Duration": 0.1943964,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressUnlockCommandTests.Commands_InvalidAndWriteFailureLogDiagnosticsWithoutFalseUnlocks",
+      "Status": "Passed",
+      "Duration": 0.0141332,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressUnlockCommandTests.Commands_RegisterExactNamesDispatchToCorrectCollectionsAndDoNotTouchReadHistory",
+      "Status": "Passed",
+      "Duration": 0.0241388,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressUnlockCommandTests.Dispose_RemovesOnlyOwnedHandlersAndIsIdempotent",
+      "Status": "Passed",
+      "Duration": 0.0014066,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressUnlockCommandTests.ReadAndUnlockAuthoritiesRemainIndependent",
+      "Status": "Passed",
+      "Duration": 0.0256861,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressUnlockCommandTests.ServiceQueries_RespectPersistenceFirstOrdinalSetSemantics(\"cg\")",
+      "Status": "Passed",
+      "Duration": 0.0178782,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressUnlockCommandTests.ServiceQueries_RespectPersistenceFirstOrdinalSetSemantics(\"chapter\")",
+      "Status": "Passed",
+      "Duration": 0.0204515,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressUnlockCommandTests.ServiceQueries_RespectPersistenceFirstOrdinalSetSemantics(\"archive\")",
+      "Status": "Passed",
+      "Duration": 0.0171316,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressUnlockCommandTests.ServiceQueries_RespectPersistenceFirstOrdinalSetSemantics(\"achievement\")",
+      "Status": "Passed",
+      "Duration": 0.0152898,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNMetaProgressUnlockCommandTests.ServiceQueries_RespectPersistenceFirstOrdinalSetSemantics(\"ending\")",
+      "Status": "Passed",
+      "Duration": 0.0146525,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNPresentationAudioSpikeTests.FiniteHandoff_AndSeparateFollowingOneShots_UseExistingSource_AndLoadStopsThem",
+      "Status": "Passed",
+      "Duration": 0.0032065,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNPresentationAudioSpikeTests.SourceOnlyLowering_IsLostByExistingSnapshotRestore_RequiresDecision",
+      "Status": "Passed",
+      "Duration": 0.0024963,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNPrologueContinuationTests.CanonicalParagraphs_KeepExactOrderTextAndSpeaker",
+      "Status": "Passed",
+      "Duration": 0.017909,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNPrologueContinuationTests.Catalogs_ResolveAllContinuationResourcesAndDistinctRopeAliases",
+      "Status": "Passed",
+      "Duration": 0.0011389,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNPrologueContinuationTests.LocalEffectAdapter_InvalidInputReportsDiagnostic",
+      "Status": "Passed",
+      "Duration": 0.0022568,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNPrologueContinuationTests.ManualHoldAdapter_ArmsSessionAndDisableClearsTransientHold",
+      "Status": "Passed",
+      "Duration": 0.0013658,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNPrologueContinuationTests.NodesAndCues_KeepManualAgencyMusicAndRopeRevealOrder",
+      "Status": "Passed",
+      "Duration": 0.0222073,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNPrologueContinuationTests.ProductionFont_CoversContinuationText",
+      "Status": "Passed",
+      "Duration": 0.0081115,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNPrologueFinalTests.BeatsAndEnding_ArePresentWithoutChoicesOrUnlocks",
+      "Status": "Passed",
+      "Duration": 0.0422649,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNPrologueFinalTests.CanonicalParagraphs_MatchTextAndSpeaker",
+      "Status": "Passed",
+      "Duration": 0.0047455,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNPrologueFinalTests.Panels_DiagramLoadAndTitleLifecycle_AreTransient",
+      "Status": "Passed",
+      "Duration": 0.003167,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNPrologueFinalTests.ProductionCatalogs_ResolveNewIds",
+      "Status": "Passed",
+      "Duration": 0.0004198,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNPrologueFinalTests.ProductionFont_CoversNewYarn",
+      "Status": "Passed",
+      "Duration": 0.0017102,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNPrologueSliceTests.CanonicalParagraphs_ExactOrderedSpeakerAndText_NoDirectionsOrAddedLines",
+      "Status": "Passed",
+      "Duration": 0.004493,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNPrologueSliceTests.CueOrder_NoS002RestartOrGain_FirstInformationAfterIdentity_IdenticalLaughTwice",
+      "Status": "Passed",
+      "Duration": 0.0009307,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNPrologueSliceTests.InformationCommand_ExactFacts_NoHistory_AndDisableClears",
+      "Status": "Passed",
+      "Duration": 0.0033449,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNPrologueSliceTests.InformationCommand_MissingReferencesDiagnosed",
+      "Status": "Passed",
+      "Duration": 0.0017745,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNPrologueSliceTests.Nodes_CoverAll33Beats_AndLinkToS004",
+      "Status": "Passed",
+      "Duration": 0.0086933,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNPrologueSliceTests.ProductionCatalogs_AllAuthoredLookupsResolve_AndHaveRealImportedResources",
+      "Status": "Passed",
+      "Duration": 0.0018626,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNPrologueSliceTests.Scene_AllFiveCatalogReferencesMatch_ProductionStartUnchanged",
+      "Status": "Passed",
+      "Duration": 0.0045545,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNPrologueSliceTests.StaticFont_CoversEveryProductionGlyphWithoutRuntimeAtlasMutation",
+      "Status": "Passed",
+      "Duration": 0.0023035,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNQuickControlModalTests.Backlog_BindsInsertionOrder_ReusesPool_AndPreservesSessionData",
+      "Status": "Passed",
+      "Duration": 0.0074034,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNQuickControlModalTests.BacklogEmptyState_OnlyChangesVisibilityAndPreservesAuthoredText",
+      "Status": "Passed",
+      "Duration": 0.0017541,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNQuickControlModalTests.Cancel_ClosesConvenienceModalBeforeRestoringHiddenUi_AndNeverAdvances",
+      "Status": "Passed",
+      "Duration": 0.0022309,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNQuickControlModalTests.ModalArbitration_OptionsMayOpenBacklog_AndCloseClearsOnlyConvenienceBlock",
+      "Status": "Passed",
+      "Duration": 0.0047116,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNQuickControlModalTests.ModalCloseButtons_DelegateClosureToTheCoordinator",
+      "Status": "Passed",
+      "Duration": 0.0016723,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNQuickControlModalTests.QuickControl_DispatchesOnce_AndModeIndicatorsMirrorRuntimeTruth",
+      "Status": "Passed",
+      "Duration": 0.0030811,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNQuickControlModalTests.SettingsShell_UsesCanvasGroupAndLoadSafeStateClosesIt",
+      "Status": "Passed",
+      "Duration": 0.001743,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Achievement_AllConditionsRejectEmptyReferencedCatalogs",
+      "Status": "Passed",
+      "Duration": 0.0153336,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Achievement_AllOfRequiresExistingUniqueNonSelfPrerequisites",
+      "Status": "Passed",
+      "Duration": 0.0034496,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Achievement_CGAndArchiveThresholdsMustFitAuthoredTotals",
+      "Status": "Passed",
+      "Duration": 0.0029071,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Achievement_ChapterUnlockedMustResolveTimelineChapter",
+      "Status": "Passed",
+      "Duration": 0.0013428,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Achievement_ManualAndKnownEndingDefinitionsAreValid",
+      "Status": "Passed",
+      "Duration": 0.0021508,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Achievement_RejectsDuplicateStableIds",
+      "Status": "Passed",
+      "Duration": 0.0010544,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Achievement_RejectsIrrelevantOrConflictingConditionFields(Manual)",
+      "Status": "Passed",
+      "Duration": 0.0018438,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Achievement_RejectsIrrelevantOrConflictingConditionFields(EndingCompleted)",
+      "Status": "Passed",
+      "Duration": 0.0008588,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Achievement_RejectsIrrelevantOrConflictingConditionFields(ChapterUnlocked)",
+      "Status": "Passed",
+      "Duration": 0.00073,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Achievement_RejectsIrrelevantOrConflictingConditionFields(CGCountAtLeast)",
+      "Status": "Passed",
+      "Duration": 0.0007604,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Achievement_RejectsIrrelevantOrConflictingConditionFields(ArchiveCountAtLeast)",
+      "Status": "Passed",
+      "Duration": 0.0007989,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Achievement_RejectsIrrelevantOrConflictingConditionFields(AllCGsUnlocked)",
+      "Status": "Passed",
+      "Duration": 0.0007265,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Achievement_RejectsIrrelevantOrConflictingConditionFields(AllArchiveEntriesUnlocked)",
+      "Status": "Passed",
+      "Duration": 0.0007028,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Achievement_RejectsIrrelevantOrConflictingConditionFields(AllOfAchievements)",
+      "Status": "Passed",
+      "Duration": 0.0006915,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Achievement_RejectsTwoNodeAndMultiNodeCycles",
+      "Status": "Passed",
+      "Duration": 0.0014895,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.ActualYarnAuthority_ContainsExactM8NodeAndRuntimeLineIds",
+      "Status": "Passed",
+      "Duration": 0.0012585,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Archive_EmptyAndOptionalImageAndLockDisclosurePoliciesAreValid",
+      "Status": "Passed",
+      "Duration": 0.0020968,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Archive_RejectsBlankRequiredText(\"DisplayTitle\")",
+      "Status": "Passed",
+      "Duration": 0.0011992,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Archive_RejectsBlankRequiredText(\"Summary\")",
+      "Status": "Passed",
+      "Duration": 0.0007009,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Archive_RejectsBlankRequiredText(\"Body\")",
+      "Status": "Passed",
+      "Duration": 0.000687,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Archive_RejectsDuplicateCategoryAndEntryIdsAndUnknownCategory",
+      "Status": "Passed",
+      "Duration": 0.0019113,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.CatalogLookups_AreOrdinalAndDefinitionCollectionsAreReadOnly",
+      "Status": "Passed",
+      "Duration": 0.0091834,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.CurrentProjectAuthorities_ValidateCompleteInMemoryTechnicalCatalogs",
+      "Status": "Passed",
+      "Duration": 0.0014561,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.EmptyCatalogs_AreValidAndAllLookupApisReturnFalseForUnknownIds",
+      "Status": "Passed",
+      "Duration": 0.0011522,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Gallery_RejectsDuplicateAndUnresolvedPresentationCGs",
+      "Status": "Passed",
+      "Duration": 0.0013082,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Gallery_UsesPresentationCatalogForSpriteAuthorityAndAllowsLockedTitleMetadata",
+      "Status": "Passed",
+      "Duration": 0.0009355,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.StableIds_UseLowercaseAsciiSnakeCase(\"chapter_prologue\",True)",
+      "Status": "Passed",
+      "Duration": 0.0005829,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.StableIds_UseLowercaseAsciiSnakeCase(\"chapter9\",True)",
+      "Status": "Passed",
+      "Duration": 0.0001156,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.StableIds_UseLowercaseAsciiSnakeCase(\"a1_b2\",True)",
+      "Status": "Passed",
+      "Duration": 0.0001038,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.StableIds_UseLowercaseAsciiSnakeCase(null,False)",
+      "Status": "Passed",
+      "Duration": 0.0001026,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.StableIds_UseLowercaseAsciiSnakeCase(\"\",False)",
+      "Status": "Passed",
+      "Duration": 0.0001052,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.StableIds_UseLowercaseAsciiSnakeCase(\"   \",False)",
+      "Status": "Passed",
+      "Duration": 0.0001426,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.StableIds_UseLowercaseAsciiSnakeCase(\"Chapter_prologue\",False)",
+      "Status": "Passed",
+      "Duration": 0.0001122,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.StableIds_UseLowercaseAsciiSnakeCase(\"chapter prologue\",False)",
+      "Status": "Passed",
+      "Duration": 0.000105,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.StableIds_UseLowercaseAsciiSnakeCase(\"_chapter\",False)",
+      "Status": "Passed",
+      "Duration": 0.0001034,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.StableIds_UseLowercaseAsciiSnakeCase(\"chapter_\",False)",
+      "Status": "Passed",
+      "Duration": 0.0001258,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.StableIds_UseLowercaseAsciiSnakeCase(\"chapter__one\",False)",
+      "Status": "Passed",
+      "Duration": 0.0001041,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.StableIds_UseLowercaseAsciiSnakeCase(\"chapter-1\",False)",
+      "Status": "Passed",
+      "Duration": 0.0001003,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Timeline_AllowsSingleStepDiscoveryAndCompletion",
+      "Status": "Passed",
+      "Duration": 0.0012846,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Timeline_RejectsDuplicateChapterIds",
+      "Status": "Passed",
+      "Duration": 0.0008439,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Timeline_RejectsDuplicateEntryIdsUsingOrdinalIdentity",
+      "Status": "Passed",
+      "Duration": 0.0008486,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Timeline_RejectsDuplicateMilestoneLine",
+      "Status": "Passed",
+      "Duration": 0.0007852,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Timeline_RejectsMissingDiscoveryAndCompletionLines",
+      "Status": "Passed",
+      "Duration": 0.0012617,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Timeline_RejectsMissingSelfAndCrossChapterParents",
+      "Status": "Passed",
+      "Duration": 0.0018209,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Timeline_RejectsNullBlankAndMissingMilestonesAndInvalidMetadata",
+      "Status": "Passed",
+      "Duration": 0.0029194,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Timeline_RejectsParentCycles",
+      "Status": "Passed",
+      "Duration": 0.0012771,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Timeline_RejectsUnknownChapterReference",
+      "Status": "Passed",
+      "Duration": 0.0011639,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Timeline_RejectsUnknownReplayNodeAndRelatedCG",
+      "Status": "Passed",
+      "Duration": 0.0016501,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsCatalogTests.Timeline_RequiresDiscoveryAndCompletionInMilestones",
+      "Status": "Passed",
+      "Duration": 0.0014875,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsModalTests.ButtonCallbacks_MapToTabsAndAreRemovedAndReRegisteredOnce",
+      "Status": "Passed",
+      "Duration": 0.0065939,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsModalTests.Close_IsIdempotentAndClosedEventObservesHiddenShell",
+      "Status": "Passed",
+      "Duration": 0.0021696,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsModalTests.CloseButtonCancelAndLoadSafeStateUseCoordinatorOwnership",
+      "Status": "Passed",
+      "Duration": 0.0015829,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsModalTests.Controller_ArbitratesRecordsWithBacklogAndSettingsAndUsesTheExistingGate",
+      "Status": "Passed",
+      "Duration": 0.0021152,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsModalTests.Controller_RejectsRecordsForM5ModalLoadAndHiddenUi",
+      "Status": "Passed",
+      "Duration": 0.0013293,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsModalTests.Controller_RollsBackGateWhenRecordsWiringIsInvalid",
+      "Status": "Passed",
+      "Duration": 0.0010198,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsModalTests.InitialState_IsClosedAndAllDomainRootsAreInactive",
+      "Status": "Passed",
+      "Duration": 0.0011181,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsModalTests.OpenAndTabSwitch_UpdateShellBeforeEventsAndSelectOneRoot",
+      "Status": "Passed",
+      "Duration": 0.0027041,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsModalTests.QuickControlRecordsListenerIsSingleAndSurvivesDisableEnable",
+      "Status": "Passed",
+      "Duration": 0.002498,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsModalTests.WiringValidation_RejectsEachMissingSelectedIndicator(\"timelineSelectedIndicator\",\"Timeline\")",
+      "Status": "Passed",
+      "Duration": 0.0015802,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsModalTests.WiringValidation_RejectsEachMissingSelectedIndicator(\"gallerySelectedIndicator\",\"Gallery\")",
+      "Status": "Passed",
+      "Duration": 0.0008698,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsModalTests.WiringValidation_RejectsEachMissingSelectedIndicator(\"archiveSelectedIndicator\",\"Archive\")",
+      "Status": "Passed",
+      "Duration": 0.0008635,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsModalTests.WiringValidation_RejectsEachMissingSelectedIndicator(\"achievementsSelectedIndicator\",\"Achievements\")",
+      "Status": "Passed",
+      "Duration": 0.0008395,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsModalTests.WiringValidation_RejectsEveryDuplicateSelectedIndicatorPair(0,1)",
+      "Status": "Passed",
+      "Duration": 0.001751,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsModalTests.WiringValidation_RejectsEveryDuplicateSelectedIndicatorPair(0,2)",
+      "Status": "Passed",
+      "Duration": 0.0009419,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsModalTests.WiringValidation_RejectsEveryDuplicateSelectedIndicatorPair(0,3)",
+      "Status": "Passed",
+      "Duration": 0.0009409,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsModalTests.WiringValidation_RejectsEveryDuplicateSelectedIndicatorPair(1,2)",
+      "Status": "Passed",
+      "Duration": 0.0008931,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsModalTests.WiringValidation_RejectsEveryDuplicateSelectedIndicatorPair(1,3)",
+      "Status": "Passed",
+      "Duration": 0.0008631,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsModalTests.WiringValidation_RejectsEveryDuplicateSelectedIndicatorPair(2,3)",
+      "Status": "Passed",
+      "Duration": 0.0008537,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsModalTests.WiringValidation_ReportsMissingReferencesAndDuplicateRoots",
+      "Status": "Passed",
+      "Duration": 0.0012905,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsProjectionTests.Achievement_UsesPersistedUnlockAndHidesLockedHiddenMetadata",
+      "Status": "Passed",
+      "Duration": 0.0230456,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsProjectionTests.AllDomains_IgnorePreserveUnknownIdsAndRepeatedCallsAreSideEffectFree",
+      "Status": "Passed",
+      "Duration": 0.0331503,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsProjectionTests.Archive_HidesLockedFieldsCountsOnlyByOptInAndSortsDeterministically",
+      "Status": "Passed",
+      "Duration": 0.0096018,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsProjectionTests.Archive_StaleUnlockDoesNotCreateAnEntryOrInflateCompletionCount",
+      "Status": "Passed",
+      "Duration": 0.0066789,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsProjectionTests.Gallery_LockMetadataProtectsTitleAndArtworkAndFreshQueriesSeeUnlocks",
+      "Status": "Passed",
+      "Duration": 0.0073133,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsProjectionTests.Gallery_UnlockedMissingSpriteReturnsDeterministicDiagnostic",
+      "Status": "Passed",
+      "Duration": 0.0055922,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsProjectionTests.Gallery_UsesActualM3SpriteAndIgnoresStaleUnlockIds",
+      "Status": "Passed",
+      "Duration": 0.0108878,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsProjectionTests.ProjectionCollectionsAreReadOnlySnapshots",
+      "Status": "Passed",
+      "Duration": 0.0265877,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsProjectionTests.ServiceConstructors_RejectNullDependencies",
+      "Status": "Passed",
+      "Duration": 0.0028291,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsProjectionTests.Timeline_CompletionWinsAndMilestonesAloneRemainHidden",
+      "Status": "Passed",
+      "Duration": 0.0192021,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsProjectionTests.Timeline_HidesLockedChaptersAndProjectsOnlyDurablyDiscoveredEntries",
+      "Status": "Passed",
+      "Duration": 0.0308344,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsProjectionTests.Timeline_OrdersChaptersAndEntriesBySortThenOrdinalId",
+      "Status": "Passed",
+      "Duration": 0.0326418,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsProjectionTests.Timeline_UsesExactM8LineIdsForHiddenDiscoveredCompletedTransitions",
+      "Status": "Passed",
+      "Duration": 0.0350957,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsProjectionTests.UnlockMapping_UsesCommittedHistoryAndCatchesUpIdempotently",
+      "Status": "Passed",
+      "Duration": 0.0225502,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsRuntimeBootstrapTests.Destroy_DisposesOnlyTheOwnedEvaluatorAndRetainsM8AndSceneUi",
+      "Status": "Passed",
+      "Duration": 0.1224234,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsRuntimeBootstrapTests.EvaluatorFailure_PreservesDiagnosticAndDoesNotInitializeViews",
+      "Status": "Passed",
+      "Duration": 0.1073819,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsRuntimeBootstrapTests.FailedAttempt_DoesNotRetryAfterWiringIsRepaired",
+      "Status": "Passed",
+      "Duration": 0.0997559,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsRuntimeBootstrapTests.InvalidCatalog_PropagatesTheExistingValidatorDiagnostic",
+      "Status": "Passed",
+      "Duration": 0.101104,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsRuntimeBootstrapTests.InvalidView_IsRejectedBeforeEvaluatorSubscription",
+      "Status": "Passed",
+      "Duration": 0.1014905,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsRuntimeBootstrapTests.MetaProgress_MustAlreadyBeInitializedAndMustExposeItsSingleAuthority",
+      "Status": "Passed",
+      "Duration": 0.0969196,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsRuntimeBootstrapTests.MissingMetaProgressService_IsRejectedWithoutCreatingAnotherAuthority",
+      "Status": "Passed",
+      "Duration": 0.0941088,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsRuntimeBootstrapTests.NullDependency_FailsBeforeCompositionOrPersistence(\"metaProgressBootstrap\")",
+      "Status": "Passed",
+      "Duration": 0.0905516,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsRuntimeBootstrapTests.NullDependency_FailsBeforeCompositionOrPersistence(\"yarnProject\")",
+      "Status": "Passed",
+      "Duration": 0.0912878,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsRuntimeBootstrapTests.NullDependency_FailsBeforeCompositionOrPersistence(\"presentationCatalog\")",
+      "Status": "Passed",
+      "Duration": 0.0912582,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsRuntimeBootstrapTests.NullDependency_FailsBeforeCompositionOrPersistence(\"timelineCatalog\")",
+      "Status": "Passed",
+      "Duration": 0.0914763,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsRuntimeBootstrapTests.NullDependency_FailsBeforeCompositionOrPersistence(\"galleryCatalog\")",
+      "Status": "Passed",
+      "Duration": 0.0924457,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsRuntimeBootstrapTests.NullDependency_FailsBeforeCompositionOrPersistence(\"archiveCatalog\")",
+      "Status": "Passed",
+      "Duration": 0.0936855,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsRuntimeBootstrapTests.NullDependency_FailsBeforeCompositionOrPersistence(\"achievementCatalog\")",
+      "Status": "Passed",
+      "Duration": 0.0919737,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsRuntimeBootstrapTests.NullDependency_FailsBeforeCompositionOrPersistence(\"timelineView\")",
+      "Status": "Passed",
+      "Duration": 0.0946356,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsRuntimeBootstrapTests.NullDependency_FailsBeforeCompositionOrPersistence(\"galleryView\")",
+      "Status": "Passed",
+      "Duration": 0.0935721,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsRuntimeBootstrapTests.NullDependency_FailsBeforeCompositionOrPersistence(\"archiveView\")",
+      "Status": "Passed",
+      "Duration": 0.0961288,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsRuntimeBootstrapTests.NullDependency_FailsBeforeCompositionOrPersistence(\"achievementsView\")",
+      "Status": "Passed",
+      "Duration": 0.0935662,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsRuntimeBootstrapTests.NullDependency_FailsBeforeCompositionOrPersistence(\"replayController\")",
+      "Status": "Passed",
+      "Duration": 0.0936823,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsRuntimeBootstrapTests.SameBootstrap_InitializesServicesAndEvaluatorExactlyOnce",
+      "Status": "Passed",
+      "Duration": 0.0954096,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNRecordsRuntimeBootstrapTests.ValidComposition_UsesM8ServiceAndInitializesEvaluationBeforeFirstViewProjection",
+      "Status": "Passed",
+      "Duration": 0.2322036,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNReplayIntegrationTests.ControllerInitializationAndEligibility_AreFreshFailClosedAndWriteFree",
+      "Status": "Passed",
+      "Duration": 0.0657203,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNReplayIntegrationTests.ReplayView_ValidatesOwnedWiringAndButtonRebindingDoesNotAccumulateListeners",
+      "Status": "Passed",
+      "Duration": 0.0450688,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNReplayIntegrationTests.StaleTimelineRow_RechecksFreshSnapshotBeforeCreatingRunner",
+      "Status": "Passed",
+      "Duration": 0.0379591,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNReplayIntegrationTests.TimelineReplayFlow_UsesManualNextAndCleansUpOnCompletionCloseTabAndRecordsClose",
+      "Status": "Passed",
+      "Duration": 2.4289659,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNReplayRuntimeIsolationTests.CompiledProgramValidator_AcceptsOnlyExplicitLinearVisualClosure",
+      "Status": "Passed",
+      "Duration": 0.0025559,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNReplayRuntimeIsolationTests.ConcurrentProductionAndReplayRunnersRemainIsolatedInRealPlayMode",
+      "Status": "Passed",
+      "Duration": 2.2462858,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSaveLoadUiTests.AutoModels_AreNewestFirstThenAllNonValidPhysicalSlots",
+      "Status": "Passed",
+      "Duration": 0.0140812,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSaveLoadUiTests.AutosaveGuard_ConsumesOnlyOneMatchingLoadResumeCheckpoint",
+      "Status": "Passed",
+      "Duration": 0.0004923,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSaveLoadUiTests.ManualPages_MapPhysicalIndicesAndDisplayOneBasedLabels",
+      "Status": "Passed",
+      "Duration": 0.0030566,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSaveLoadUiTests.MetadataFormat_UsesExplicitTimezoneAndUnwrappedHours",
+      "Status": "Passed",
+      "Duration": 0.0003752,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSaveLoadUiTests.QuickModelsAndInteractionPolicy_RespectManualAutoQuickRules",
+      "Status": "Passed",
+      "Duration": 0.0033078,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSaveLoadUiTests.QuickSave_PreservesCorruptAndFutureVersionFiles",
+      "Status": "Passed",
+      "Duration": 0.0042249,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSaveLoadUiTests.ThumbnailCrop_PreservesAspectByCenterCropping",
+      "Status": "Passed",
+      "Duration": 0.0009171,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSaveLoadUiTests.ThumbnailJpgSidecar_IsCanonicalOptionalAndDoesNotInvalidateJson",
+      "Status": "Passed",
+      "Duration": 0.0129849,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSaveRepositoryTests.AutoAllocation_BreaksEqualTimestampTiesByLowestIndex_AndFailsWhenNoSafeCandidateExists",
+      "Status": "Passed",
+      "Duration": 0.0196491,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSaveRepositoryTests.AutoAllocation_SkipsIncompatibleValidSlotsAndPreservesTheirBytes",
+      "Status": "Passed",
+      "Duration": 0.0230074,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSaveRepositoryTests.AutoAllocation_UsesLowestEmptyThenOldestValidAndPreservesUnsupportedSlots",
+      "Status": "Passed",
+      "Duration": 0.0159309,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSaveRepositoryTests.AutoAndQuickSlotPaths_RespectTheirFixedRanges",
+      "Status": "Passed",
+      "Duration": 0.0007146,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSaveRepositoryTests.Delete_MakesOccupiedSlotEmpty",
+      "Status": "Passed",
+      "Duration": 0.0047328,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSaveRepositoryTests.EmptyThumbnail_IsValid_AndNeverRequiresAFile",
+      "Status": "Passed",
+      "Duration": 0.0037341,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSaveRepositoryTests.ExactLineV2_RejectsIncompleteResumeIdentityWithoutReplacingValidFile",
+      "Status": "Passed",
+      "Duration": 0.0050704,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSaveRepositoryTests.ExactLineV2_RoundTripsThroughDiskWithoutCheckpointMetadata",
+      "Status": "Passed",
+      "Duration": 0.0044178,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSaveRepositoryTests.FirstWrite_CreatesAuthoritativeFile_AndOverwriteReplacesIt",
+      "Status": "Passed",
+      "Duration": 0.0071305,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSaveRepositoryTests.FullSaveData_RoundTripsEveryM5StorageField",
+      "Status": "Passed",
+      "Duration": 0.0044174,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSaveRepositoryTests.FutureSchema_IsUnsupported_AndStoredKeyMismatchIsCorrupted",
+      "Status": "Passed",
+      "Duration": 0.003135,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSaveRepositoryTests.InvalidNumbersTimestampAndUnsafeThumbnail_AreRejected",
+      "Status": "Passed",
+      "Duration": 0.0005893,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSaveRepositoryTests.MalformedAndMissingFieldJson_AreCorrupted_WithoutAffectingOtherSlots",
+      "Status": "Passed",
+      "Duration": 0.0058277,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSaveRepositoryTests.ManualSlotPaths_MapBoundaryIndices_AndRejectInvalidIndices",
+      "Status": "Passed",
+      "Duration": 0.0005755,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSaveRepositoryTests.PlayTimeTracker_RestoresAndAdvancesOnlyFiniteNonNegativeValues",
+      "Status": "Passed",
+      "Duration": 0.0003782,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSaveRepositoryTests.QuickSlot_AlwaysOverwritesQuickZero",
+      "Status": "Passed",
+      "Duration": 0.0066517,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSaveRepositoryTests.RejectedOverwrite_LeavesKnownGoodAuthoritativeSaveReadable",
+      "Status": "Passed",
+      "Duration": 0.0039632,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSaveRepositoryTests.StaleOwnedTemporaryFile_IsIgnoredAndRemovedByDelete",
+      "Status": "Passed",
+      "Duration": 0.004933,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSettingsPersistenceTests.CompleteSchemaV1_ExplicitZeroAndFalseValuesRemainValid",
+      "Status": "Passed",
+      "Duration": 0.0031515,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSettingsPersistenceTests.CompleteSchemaV1_ExtraFieldRemainsAccepted",
+      "Status": "Passed",
+      "Duration": 0.0020823,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSettingsPersistenceTests.CompleteSettings_RoundTripEveryField",
+      "Status": "Passed",
+      "Duration": 0.0052313,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSettingsPersistenceTests.Defaults_AreExactAndIndependent",
+      "Status": "Passed",
+      "Duration": 0.0005876,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSettingsPersistenceTests.FailedQuarantine_PreservesCanonicalBytesAndBlocksServiceWrites",
+      "Status": "Passed",
+      "Duration": 0.0034323,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSettingsPersistenceTests.FutureSchema_IsPreservedAndBlocksRepositoryAndServiceWrites",
+      "Status": "Passed",
+      "Duration": 0.0043529,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSettingsPersistenceTests.InvalidSchemaOneJson_IsQuarantined",
+      "Status": "Passed",
+      "Duration": 0.0031756,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSettingsPersistenceTests.MalformedJson_IsQuarantinedWithExactOriginalBytes",
+      "Status": "Passed",
+      "Duration": 0.0029105,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSettingsPersistenceTests.MissingRead_ReturnsMissingAndDoesNotCreateFiles",
+      "Status": "Passed",
+      "Duration": 0.0005864,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSettingsPersistenceTests.Overwrite_ReplacesCanonicalFileWithoutTemporaryResidue",
+      "Status": "Passed",
+      "Duration": 0.0092354,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSettingsPersistenceTests.PartialSchemaV1_MissingBooleanField_IsQuarantined",
+      "Status": "Passed",
+      "Duration": 0.0033007,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSettingsPersistenceTests.PartialSchemaV1_MissingNormalizedField_IsQuarantined",
+      "Status": "Passed",
+      "Duration": 0.0027973,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSettingsPersistenceTests.ProductionSettingsRoot_IsSeparateFromM5SaveData_AndTestsUseInjectedRoot",
+      "Status": "Passed",
+      "Duration": 0.0009798,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSettingsPersistenceTests.Validation_RejectsEveryRequiredInvalidValue",
+      "Status": "Passed",
+      "Duration": 0.0003808,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSettingsRuntimeBootstrapTests.Destruction_BeforeComposition_IsSafe",
+      "Status": "Passed",
+      "Duration": 0.0022695,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSettingsRuntimeBootstrapTests.Destruction_DisposesOwnedCaptureAndReleasesRouterSuspension",
+      "Status": "Passed",
+      "Duration": 0.0018445,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSettingsRuntimeBootstrapTests.InvalidPanel_IsFatalBeforeLoadingSettings",
+      "Status": "Passed",
+      "Duration": 0.0012883,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSettingsRuntimeBootstrapTests.MissingSerializedDependency_FailsBeforePersistenceOrApplication(\"dialogueRunner\",\"Dialogue Runner\")",
+      "Status": "Passed",
+      "Duration": 0.0010219,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSettingsRuntimeBootstrapTests.MissingSerializedDependency_FailsBeforePersistenceOrApplication(\"settingsPanel\",\"Settings Panel\")",
+      "Status": "Passed",
+      "Duration": 0.0004722,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSettingsRuntimeBootstrapTests.MissingSerializedDependency_FailsBeforePersistenceOrApplication(\"audioMixer\",\"Audio Mixer\")",
+      "Status": "Passed",
+      "Duration": 0.0004351,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSettingsRuntimeBootstrapTests.MissingSerializedDependency_FailsBeforePersistenceOrApplication(\"inputActions\",\"Input Actions\")",
+      "Status": "Passed",
+      "Duration": 0.0004592,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSettingsRuntimeBootstrapTests.MissingSiblingController_FailsClearlyWithoutAddingIt",
+      "Status": "Passed",
+      "Duration": 0.0006832,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSettingsRuntimeBootstrapTests.MissingSiblingRouter_FailsClearlyWithoutAddingIt",
+      "Status": "Passed",
+      "Duration": 0.0006481,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSettingsRuntimeBootstrapTests.RepeatedOwnerConstruction_RetainsSingleServiceAndAllControllerIdentities",
+      "Status": "Passed",
+      "Duration": 0.0018705,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSettingsUiRuntimeTests.PanelRefresh_IsAnAuthorityInspectionAndDoesNotCreateSettingsFile",
+      "Status": "Passed",
+      "Duration": 0.002423,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSettingsUiRuntimeTests.SliderCommit_AuthoritativeBaselineMakesDuplicateCompletionAndFailureRecoveryNoOps",
+      "Status": "Passed",
+      "Duration": 0.002894,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNSettingsUiRuntimeTests.SliderCommit_CoalescesPreviewChangesIntoOneExplicitMutation",
+      "Status": "Passed",
+      "Duration": 0.0005957,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTextAutoSettingsControllerTests.AmbiguousOrIncompatiblePresenter_RejectsTextChangeBeforePersistence",
+      "Status": "Passed",
+      "Duration": 0.0023451,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTextAutoSettingsControllerTests.AutoMultiplierChange_ResetsOnlyAutoScheduling",
+      "Status": "Passed",
+      "Duration": 0.0009373,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTextAutoSettingsControllerTests.AutoSpeedMappingAndPersistence_UseFrozenEndpointsAndDefault",
+      "Status": "Passed",
+      "Duration": 0.0089726,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTextAutoSettingsControllerTests.ConvenienceAutoDelay_ExtremesRemainPerceptiblyOrderedAtShortAndLongBaseDelays",
+      "Status": "Passed",
+      "Duration": 0.000829,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTextAutoSettingsControllerTests.ConvenienceAutoDelay_PreservesM6BaseThenAppliesMultiplierAndEffectiveBounds",
+      "Status": "Passed",
+      "Duration": 0.000965,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTextAutoSettingsControllerTests.DefaultApplication_UpdatesBothYarnTextSpeedFieldsAndDefaultAutoMultiplier",
+      "Status": "Passed",
+      "Duration": 0.0008465,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTextAutoSettingsControllerTests.PersistenceFailure_PreventsTextAndAutoRuntimeMutation",
+      "Status": "Passed",
+      "Duration": 0.002415,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTextAutoSettingsControllerTests.ProtectedStartupApplication_AppliesDefaultsWithoutWritingFutureFile",
+      "Status": "Passed",
+      "Duration": 0.0026816,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTextAutoSettingsControllerTests.StoredTextSpeedOutsideProductRange_AppliesClampedRuntimeValueWithoutRewriting",
+      "Status": "Passed",
+      "Duration": 0.0091522,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTextAutoSettingsControllerTests.UserTextSpeedChange_PersistsOnlyTextThenSynchronizesBothYarnFields",
+      "Status": "Passed",
+      "Duration": 0.0105481,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTimelineRuntimeTests.ChapterCompletion_ConsidersHiddenAuthoredEntries_AndCompletionReadCanRevealEntry",
+      "Status": "Passed",
+      "Duration": 0.0224705,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTimelineRuntimeTests.ChapterStates_UseM8CompletionMarkersAndKeepZeroEntryChaptersAvailable",
+      "Status": "Passed",
+      "Duration": 0.04022,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTimelineRuntimeTests.Constructor_RejectsNullDependencies",
+      "Status": "Passed",
+      "Duration": 0.0009844,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTimelineRuntimeTests.LockedChapters_DoNotInferUnlockFromInconsistentReadHistory",
+      "Status": "Passed",
+      "Duration": 0.0152889,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTimelineRuntimeTests.Ordering_IsSortOrderThenOrdinalIdRegardlessOfAuthoredListOrder",
+      "Status": "Passed",
+      "Duration": 0.0460124,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTimelineRuntimeTests.Snapshot_IsImmutableFreshReadOnlyAndIgnoresUnknownMetaProgressIds",
+      "Status": "Passed",
+      "Duration": 0.030333,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTimelineRuntimeTests.VisibleTopology_ReparentsChildrenWhenParentBecomesVisibleInFreshSnapshot",
+      "Status": "Passed",
+      "Duration": 0.0225402,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTimelineViewTests.ActualM8StableIdsFlowThroughProjectionRuntimeAndUi",
+      "Status": "Passed",
+      "Duration": 0.0389825,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTimelineViewTests.ChapterItem_RebindingAndDisableEnableNeverAccumulatesClickListeners",
+      "Status": "Passed",
+      "Duration": 0.0034185,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTimelineViewTests.ChapterStates_RenderLockedAvailableInProgressAndCompletedWithoutCounts",
+      "Status": "Passed",
+      "Duration": 0.0289596,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTimelineViewTests.EmptySnapshot_ShowsGlobalEmptyStateAndClearsAllContent",
+      "Status": "Passed",
+      "Duration": 0.0035513,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTimelineViewTests.EntryItem_WithHiddenOrInvalidStateClearsMetadataAndNeverBecomesInteractive",
+      "Status": "Passed",
+      "Duration": 0.0030244,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTimelineViewTests.EntryTree_FlattensDepthFirstInRuntimeChildOrderAndIndentsRows",
+      "Status": "Passed",
+      "Duration": 0.0313153,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTimelineViewTests.HiddenParentAndLockedChapterNeverExposeEntryTopologyOrRelatedCgIds",
+      "Status": "Passed",
+      "Duration": 0.0153826,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTimelineViewTests.Initialization_RejectsNullIsIdempotentAndRefreshesWhenAlreadyActive",
+      "Status": "Passed",
+      "Duration": 0.0029686,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTimelineViewTests.InitializeRefreshSelectionScrollAndRootLifecycleProduceZeroWrites",
+      "Status": "Passed",
+      "Duration": 0.0193604,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTimelineViewTests.InitialSelection_SkipsEarlierLockedChapterAndPreservesValidSelection",
+      "Status": "Passed",
+      "Duration": 0.0141474,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTimelineViewTests.InitialSelection_UsesFirstLockedWhenEveryVisibleChapterIsLocked",
+      "Status": "Passed",
+      "Duration": 0.004533,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTimelineViewTests.InvalidWiring_ReturnsDiagnosticAndClearsRatherThanThrowing",
+      "Status": "Passed",
+      "Duration": 0.0032351,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTimelineViewTests.Pools_GrowToMaximumReuseInstancesAndDeactivateSurplus",
+      "Status": "Passed",
+      "Duration": 0.0611436,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTimelineViewTests.ReplayButton_RequiresCompletedVisibleSafeEntryAndRebindingKeepsOneListener",
+      "Status": "Passed",
+      "Duration": 0.040265,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTimelineViewTests.RootReactivationBuildsFreshSnapshotAndPreservesSelection",
+      "Status": "Passed",
+      "Duration": 0.0184215,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTimelineViewTests.SelectingDifferentChapterAndRefreshingResetScrollToTop",
+      "Status": "Passed",
+      "Duration": 0.0279732,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNTimelineViewTests.UiComponentsExposeNoReplayCatalogMetaProgressOrGalleryDependency",
+      "Status": "Passed",
+      "Duration": 0.0052154,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNYarnPersistenceTests.Catalog_RejectsDuplicatesBadIdsAndMissingNodes",
+      "Status": "Passed",
+      "Duration": 0.0014814,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNYarnPersistenceTests.Catalog_ResolvesACompleteDefinition_AndChecksItsYarnNode",
+      "Status": "Passed",
+      "Duration": 0.0005483,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNYarnPersistenceTests.CheckpointService_OnlyAdoptsAValidatedCheckpoint_AndNeverStartsDialogue",
+      "Status": "Passed",
+      "Duration": 0.0014667,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNYarnPersistenceTests.Coordinator_RequiresFullM3M4DependenciesBeforeComposingACompleteSave",
+      "Status": "Passed",
+      "Duration": 0.002075,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNYarnPersistenceTests.LoadValidation_RejectsMalformedAndUnsupportedFilesWithoutMutatingRuntimeState",
+      "Status": "Passed",
+      "Duration": 0.0067844,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNYarnPersistenceTests.LoadValidation_RejectsResumeMismatchAndMissingCatalogNodeBeforeMutation",
+      "Status": "Passed",
+      "Duration": 0.0102579,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNYarnPersistenceTests.LoadValidation_RejectsUnknownCheckpointWithoutMutatingRuntimeState",
+      "Status": "Passed",
+      "Duration": 0.005397,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNYarnPersistenceTests.YarnVariableSnapshot_CapturesOrdinalOrder_AndRestoreClearsStaleVariables",
+      "Status": "Passed",
+      "Duration": 0.0076031,
+      "Message": null,
+      "StackTrace": null
+    },
+    {
+      "FullName": "ProjectAllTime.Tests.Editor.VNYarnPersistenceTests.YarnVariableSnapshot_RejectsMalformedDataBeforeStorageMutation",
+      "Status": "Passed",
+      "Duration": 0.0013318,
+      "Message": null,
+      "StackTrace": null
+    }
+  ]
+}

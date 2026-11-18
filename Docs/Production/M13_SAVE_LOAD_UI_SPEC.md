@@ -1,0 +1,9 @@
+# M13-04 Save/Load UI specification
+
+`VN_Main` retains the existing `VNSaveLoadController`, `VNSaveLoadModal`, `VNSaveSlotItem`, input arbitration, repository, serialization and asynchronous load coordinator. The Direction B modal uses the M13 panel, button, card, selected surface and focus assets with Pretendard. Its full-screen CanvasGroup remains the input shield and thumbnail-suppression owner; a nested confirmation disables and shields the main content.
+
+Manual uses six cards per page and two pages (12 physical slots); Auto uses five physical slots in model order; Quick uses one. The model builder remains the source of page counts and slot identities. Cards show a 16:9 viewport with an aspect-preserving texture fitter. Empty or unreadable thumbnails show a dark placeholder and do not affect save validity. Titles use ellipsis on cards; the footer displays the complete selected title with wrapping.
+
+A click selects the authoritative `VNSaveSlotKey` without reading or writing through the operation path. Execution re-inspects the current category and page, checks the interaction policy again, and invokes the existing operation. Page and category changes clear selection. Auto is read-only in Save mode. Manual valid records use the existing pending-overwrite authority; cancellation and confirmation restore the parent input group. Corrupt, unsupported and invalid records are protected. Focus and selection have separate gold and teal indicators.
+
+When Load opens, the controller captures the existing gameplay interaction gate before the modal itself blocks input. Save switching is available in eligible gameplay and disabled for Title Load. Quick shortcuts and M12 asynchronous load semantics remain in their existing code paths. No schema, storage path, slot allocation, thumbnail ownership or narrative compatibility changes are intended.
