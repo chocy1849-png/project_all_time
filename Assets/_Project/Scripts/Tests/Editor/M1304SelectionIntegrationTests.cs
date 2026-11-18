@@ -61,6 +61,19 @@ namespace ProjectAllTime.Tests.Editor
             Call(controller, "ExecuteSelected", model.SlotKey);
             Assert.That(repository.Read(model.SlotKey).State, Is.EqualTo(VNSaveSlotState.Empty));
         }
+        [Test] public void RefreshPreservesSlotKey_AndChangedCorruptStateCannotExecute()
+        {
+            var key = First(VNSaveLoadCategory.Manual).SlotKey;
+            Select(First(VNSaveLoadCategory.Manual));
+            controller.RefreshSlots();
+            Assert.That(Get(modal, "selectedKey"), Is.EqualTo(key));
+            Assert.That(repository.TryGetSlotPath(key, out var path), Is.True);
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
+            File.WriteAllText(path, "{ broken");
+            Call(controller, "ExecuteSelected", key);
+            Assert.That(File.ReadAllText(path), Is.EqualTo("{ broken"));
+            Assert.That(((VNSaveSlotViewModel)Get(modal, "selectedModel")).State, Is.EqualTo(VNSaveSlotState.Corrupted));
+        }
         [Test] public void SelectAutoInSaveMode_CannotExecuteOrCreateSlot()
         {
             controller.SetCategory(VNSaveLoadCategory.Auto);
