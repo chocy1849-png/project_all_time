@@ -255,27 +255,16 @@ namespace ProjectAllTime.VN.SaveLoad
             return interaction != VNSaveSlotInteraction.Disabled;
         }
 
-        internal void HandleSlotSelected(VNSaveSlotViewModel model)
+        internal void ExecuteSelected(VNSaveSlotKey key)
         {
-            if (model == null || saveLoadModal == null) return;
-            if (saveLoadModal.Mode == VNSaveLoadMode.Load)
-            {
-                Load(model.SlotKey);
-                return;
-            }
-
-            switch (saveLoadModal.Category)
-            {
-                case VNSaveLoadCategory.Manual:
-                    SaveManual(model.SlotKey.SlotIndex);
-                    break;
-                case VNSaveLoadCategory.Quick:
-                    QuickSave();
-                    break;
-                default:
-                    Complete(VNSaveLoadOperationStatus.InvalidRequest, "Auto saves are visible for inspection but are not manually writable.");
-                    break;
-            }
+            if (saveLoadModal == null || !saveLoadModal.IsOpen || loadInProgress || saveLoadModal.IsOverwriteConfirmationActive) return;
+            var models = VNSaveLoadSlotModelBuilder.Build(repository.InspectAllSlots(), saveLoadModal.Category, saveLoadModal.Page);
+            VNSaveSlotViewModel selected = null;
+            foreach (var model in models) if (model.SlotKey.Equals(key)) { selected = model; break; }
+            if (selected == null || !IsSlotInteractive(selected)) { RefreshSlots(); PublishStatus("선택한 기록을 사용할 수 없습니다."); return; }
+            if (saveLoadModal.Mode == VNSaveLoadMode.Load) { Load(key); return; }
+            if (saveLoadModal.Category == VNSaveLoadCategory.Manual) SaveManual(key.SlotIndex);
+            else if (saveLoadModal.Category == VNSaveLoadCategory.Quick) QuickSave();
         }
 
         /// <summary>
