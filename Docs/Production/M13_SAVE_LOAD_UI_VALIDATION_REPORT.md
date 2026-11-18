@@ -1,5 +1,7 @@
 # M13-04 validation report
 
+Implementation commit: `a270d66e0dd1615e567d27df58d9b403766f862f`.
+
 ## Automated validation
 
 The latest full unfiltered EditMode run passed **594/594**, including the 14 M13-04 tests. The new integration tests use an isolated temporary repository and production modal/controller wiring. They cover selection without writing, actual empty-slot save, overwrite prompt/cancel/confirm and JSON/thumbnail preservation on cancel, target isolation, stale selection across pages, refreshed keys and changed on-disk state, Auto read-only behavior, protected corrupt/unsupported records, Title Load restriction, confirmation input shielding and thumbnail suppression restoration. Existing tests cover repository, serialization, thumbnails, quick operations, M12 restoration and M13-03 font integrity. Coverage of all original requested transaction permutations is not claimed.
